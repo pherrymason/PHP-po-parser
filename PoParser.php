@@ -255,7 +255,11 @@ class PoParser
 
         //	fwrite( $handle, "\xEF\xBB\xBF" );	//UTF-8 BOM header
 
+        $entriesCount = count($this->entries);
+        $counter = 0;
         foreach ($this->entries as $entry) {
+            $counter++;
+
             $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
             $isPlural = isset($entry['msgid_plural']);
 
@@ -325,7 +329,9 @@ class PoParser
                 }
             }
 
-            fwrite($handle, "\n");
+            if ($counter != $entriesCount) {
+                fwrite($handle, "\n");
+            }
         }
 
         fclose($handle);
