@@ -9,7 +9,7 @@ Usage
 ## Read Po Content
 
     $poparser = new PoParser();
-    entries = $poparser->read('my-pofile.po');
+    $entries = $poparser->read('my-pofile.po');
     // Now $entries contains every string information in your pofile
     
     echo '<ul>';
@@ -34,7 +34,7 @@ Usage
     $poparser->read('my-pofile.po');
     // Entries are stored in array, so you can modify them.
     
-    // Use `updateEntry(msgid, msgstr)` to change the messages you want.
+    // Use updateEntry method to change messages you want.
     $poparser->updateEntry('Write your email', 'Escribe tu email');
     $poparser->write('my-pofile.po');
 
@@ -42,4 +42,4 @@ Usage
 Todo
 ====
 * Improve interface to edit entries.
-* Discover what's the meaning of the line "#@ ".
+* Discover what's the meaning of "#@ " line.
