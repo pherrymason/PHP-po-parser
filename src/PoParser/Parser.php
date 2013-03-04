@@ -1,13 +1,21 @@
 <?php
 
-class PoParser
+namespace PoParser;
+
+class Parser
 {
+    /**
+     * @var PoEntry[]
+     */
     protected $entries = array();
 
+    /**
+     * @var array
+     */
     protected $entriesAsArrays = array();
 
     /**
-     * @return mixed
+     * @return PoEntry[]
      */
     public function getEntries()
     {
@@ -15,7 +23,7 @@ class PoParser
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getEntriesAsArrays()
     {
@@ -216,7 +224,7 @@ class PoParser
             $id = is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
 
             $this->entriesAsArrays[$id] = $entry;
-            $this->entries[$id] = new PoEntry($entry);
+            $this->entries[$id] = new Entry($entry);
         }
 
         return $this->entriesAsArrays;

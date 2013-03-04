@@ -1,7 +1,8 @@
 <?php
 
+namespace PoParser;
 
-class PoEntry
+class Entry
 {
     protected $msgId;
 
@@ -19,6 +20,7 @@ class PoEntry
         $this->msgIdPlural = $properties['msgid_plural'];
         $this->fuzzy = !empty($properties['fuzzy']);
         $this->obsolete = !empty($properties['obsolete']);
+        $this->translations = $properties['msgstr'];
     }
 
     public function isFuzzy()
@@ -49,5 +51,10 @@ class PoEntry
     public function getTranslation($index)
     {
         return (isset($this->translations[$index])) ? $this->translations[$index] : '';
+    }
+
+    public function isPlural()
+    {
+        return !empty($this->msgIdPlural);
     }
 }

@@ -8,10 +8,11 @@ Usage
 =====
 ## Read Po Content
 
-    $poparser = new PoParser();
-    $entries = $poparser->read('my-pofile.po');
+    $parser = new PoParser\Parser();
+    $parser->read('my-pofile.po');
+    $entries = $parser->getEntriesAsArrays();
     // Now $entries contains every string information in your pofile
-    
+
     echo '<ul>';
     foreach ($entries as $entry) {
        echo '<li>'.
@@ -26,17 +27,17 @@ Usage
 		'</li>';
 	}
 	echo '</ul>';
-	
-	
+
+
 ## Modify Content
 
-    $poparser = new PoParser();
-    $poparser->read('my-pofile.po');
+    $parser = new PoParser\Parser();
+    $parser->read('my-pofile.po');
     // Entries are stored in array, so you can modify them.
-    
+
     // Use updateEntry method to change messages you want.
-    $poparser->updateEntry('Write your email', 'Escribe tu email');
-    $poparser->write('my-pofile.po');
+    $parser->updateEntry('Write your email', 'Escribe tu email');
+    $parser->write('my-pofile.po');
 
 
 Todo
