@@ -1,20 +1,19 @@
-Po Parser
+PoParser
 =========
 
-Po Parser is a personal project to fulfill a need I got: parse po files and edit its content using PHP.
+Po Parser is a personal project to fullfill a need I got: parse po files and edit its content using PHP.
 
 
 Usage
 =====
 ## Read Po Content
 
-    $poparser = new I18_Pofile();
-    entries = $poparser->read( 'my-pofile.po' );
+    $poparser = new PoParser();
+    entries = $poparser->read('my-pofile.po');
     // Now $entries contains every string information in your pofile
     
     echo '<ul>';
-    foreach( $entries AS $entry )
-    {
+    foreach ($entries as $entry) {
        echo '<li>'.
        '<b>msgid:</b> '.$entry['msgid'].'<br>'.         // Message ID
        '<b>msgstr:</b> '.$entry['msgstr'].'<br>'.       // Translation
@@ -31,13 +30,13 @@ Usage
 	
 ## Modify Content
 
-    $poparser = new I18_Pofile();
-    $poparser->read( 'my-pofile.po' );
-    // Entries are stored in `$pofile` object, so you can modify them.
+    $poparser = new PoParser();
+    $poparser->read('my-pofile.po');
+    // Entries are stored in array, so you can modify them.
     
-    // Use `update_entry( msgid, msgstr )` to change the messages you want.
-    $poparser->update_entry( 'Write your email', 'Escribe tu email' );
-    $poparser->write( 'my-pofile.po' );
+    // Use `updateEntry(msgid, msgstr)` to change the messages you want.
+    $poparser->updateEntry('Write your email', 'Escribe tu email');
+    $poparser->write('my-pofile.po');
 
 
 Todo
