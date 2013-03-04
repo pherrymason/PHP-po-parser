@@ -2,7 +2,9 @@
 
 class PoParser
 {
-    protected $entries;
+    protected $entries = array();
+
+    protected $entriesAsArrays = array();
 
     /**
      * @return mixed
@@ -10,6 +12,14 @@ class PoParser
     public function getEntries()
     {
         return $this->entries;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntriesAsArrays()
+    {
+        return $this->entriesAsArrays;
     }
 
     /**
@@ -192,6 +202,7 @@ class PoParser
 
         // Cleanup data, merge multiline entries, reindex hash for ksort
         $temp = $hash;
+        $this->entriesAsArrays = array();
         $this->entries = array();
         foreach ($temp as $entry) {
             foreach ($entry as & $v) {
@@ -204,10 +215,11 @@ class PoParser
 
             $id = is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
 
-            $this->entries[$id] = $entry;
+            $this->entriesAsArrays[$id] = $entry;
+            $this->entries[$id] = new PoEntry($entry);
         }
 
-        return $this->entries;
+        return $this->entriesAsArrays;
     }
 
 
@@ -221,12 +233,12 @@ class PoParser
      */
     public function updateEntry($original, $translation)
     {
-        $this->entries[$original]['fuzzy'] = false;
-        $this->entries[$original]['msgstr'] = array($translation);
+        $this->entriesAsArrays[$original]['fuzzy'] = false;
+        $this->entriesAsArrays[$original]['msgstr'] = array($translation);
 
-        if (isset($this->entries[$original]['flags'])) {
-            $flags = $this->entries[$original]['flags'];
-            $this->entries[$original]['flags'] = str_replace('fuzzy', '', $flags);
+        if (isset($this->entriesAsArrays[$original]['flags'])) {
+            $flags = $this->entriesAsArrays[$original]['flags'];
+            $this->entriesAsArrays[$original]['flags'] = str_replace('fuzzy', '', $flags);
         }
     }
 
@@ -255,9 +267,9 @@ class PoParser
 
         //	fwrite( $handle, "\xEF\xBB\xBF" );	//UTF-8 BOM header
 
-        $entriesCount = count($this->entries);
+        $entriesCount = count($this->entriesAsArrays);
         $counter = 0;
-        foreach ($this->entries as $entry) {
+        foreach ($this->entriesAsArrays as $entry) {
             $counter++;
 
             $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
@@ -342,7 +354,7 @@ class PoParser
      */
     public function clearFuzzy()
     {
-        foreach ($this->entries as &$str) {
+        foreach ($this->entriesAsArrays as &$str) {
             if (isset($str['fuzzy']) && $str['fuzzy'] == true) {
                 $flags = $str['flags'];
                 $str['flags'] = str_replace('fuzzy', '', $flags);
