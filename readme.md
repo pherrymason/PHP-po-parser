@@ -1,7 +1,7 @@
 PoParser
 =========
 
-Po Parser is a personal project to fullfill a need I got: parse po files and edit its content using PHP.
+PoParser is PO parser for PHP.
 
 
 Usage
