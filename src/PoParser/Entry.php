@@ -30,12 +30,12 @@ class Entry
 
     public function getMsgId()
     {
-        return $this->msgId;
+        return is_array($this->msgId) ? implode('', $this->msgId) : $this->msgId;
     }
 
     public function getMsgIdPlural()
     {
-        return $this->msgIdPlural;
+        return is_array($this->msgIdPlural) ? implode('', $this->msgIdPlural) : $this->msgIdPlural;
     }
 
     public function isObsolete()
