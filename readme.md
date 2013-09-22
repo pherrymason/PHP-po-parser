@@ -5,7 +5,7 @@ This package is compliant with [PSR-0](http://www.php-fig.org/psr/0/), [PSR-1](h
 If you notice compliance oversights, please send a patch via pull request.
 
 ## Usage
-### Read Po Content
+### Read file content
 ```php
     $parser = new PoParser\Parser();
     $parser->read('my-pofile.po');
@@ -28,7 +28,7 @@ If you notice compliance oversights, please send a patch via pull request.
 	echo '</ul>';
 ```
 
-### Modify Content
+### Modify content
 ```php
     $parser = new PoParser\Parser();
     $parser->read('my-pofile.po');
