@@ -1,13 +1,9 @@
-PoParser
-=========
-
+# PoParser
 PoParser is PO parser for PHP.
 
-
-Usage
-=====
-## Read Po Content
-
+## Usage
+### Read Po Content
+```php
     $parser = new PoParser\Parser();
     $parser->read('my-pofile.po');
     $entries = $parser->getEntriesAsArrays();
@@ -27,10 +23,10 @@ Usage
 		'</li>';
 	}
 	echo '</ul>';
+```
 
-
-## Modify Content
-
+### Modify Content
+```php
     $parser = new PoParser\Parser();
     $parser->read('my-pofile.po');
     // Entries are stored in array, so you can modify them.
@@ -38,9 +34,11 @@ Usage
     // Use updateEntry method to change messages you want.
     $parser->updateEntry('Write your email', 'Escribe tu email');
     $parser->write('my-pofile.po');
+```
 
-
-Todo
-====
+## Todo
 * Improve interface to edit entries.
 * Discover what's the meaning of "#@ " line.
+
+## License
+This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.
