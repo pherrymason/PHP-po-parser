@@ -56,8 +56,15 @@ class PoParser
 				if( $first_line )
 				{
 					$first_line = false;
-					array_shift( $entry['msgstr'] );
-					$headers = $entry['msgstr'];
+					if( self::is_header( $entry ) )
+					{
+						array_shift( $entry['msgstr'] );
+						$headers = $entry['msgstr'];
+					}
+					else
+					{
+						$hash[] = $entry;
+					}
 				}
 				else
 				{
@@ -502,5 +509,43 @@ class PoParser
 		}
 
 		return $x;
+	}
+
+
+	/**
+	*	Checks if entry is a header by 
+	*/
+	static protected function is_header( $entry )
+	{
+ 		$header_keys = array(
+			'Project-Id-Version:'	=> false,
+			'Report-Msgid-Bugs-To:'	=> false,
+			'POT-Creation-Date:'	=> false,
+			'PO-Revision-Date:'		=> false,
+			'Last-Translator:'		=> false,
+			'Language-Team:'		=> false,
+			'MIME-Version:'			=> false,
+			'Content-Type:'			=> false,
+			'Content-Transfer-Encoding:' => false,
+			'Plural-Forms:'			=> false
+		);
+		$count = count($header_keys);
+		$keys = array_keys($header_keys);
+
+ 		$header_items = 0;
+ 		foreach( $entry['msgstr'] AS $str )
+ 		{
+ 			$tokens = explode(':', $str);
+ 			$tokens[0] = trim( $tokens[0], "\"" ) . ':';
+
+ 			if( in_array($tokens[0], $keys) )
+ 			{
+ 				$header_items++;
+ 				unset( $header_keys[ $tokens[0] ] );
+ 				$keys = array_keys($header_keys);
+ 			}
+ 		}
+
+ 		return ($header_items==$count)? true:false;
 	}
 }
