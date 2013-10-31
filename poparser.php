@@ -80,7 +80,7 @@ class PoParser
 			}
 
 			$just_new_entry = false;
-			$split = preg_split( '/\s/ ', $line, 2 );
+			$split = preg_split( '/\s+/ ', $line, 2 );
 			$key   = $split[0];
 			$data  = isset($split[1])? $split[1]:null;
 
