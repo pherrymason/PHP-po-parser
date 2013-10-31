@@ -411,7 +411,7 @@ class PoParser
 					}
 					else
 					{
-						foreach( $entry['msgstr'] AS $i=>$t )
+						foreach( (array) $entry['msgstr'] AS $i=>$t )
 						{
 							if( $i==0 )
 							{
