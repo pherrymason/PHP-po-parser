@@ -157,7 +157,19 @@ class PoParser
 					break;
 
 				// context
-				case 'msgctxt' :
+				// Allows disambiguations of different messages that have same msgid.
+				// Example:
+				//
+				// #: tools/observinglist.cpp:700
+				// msgctxt "First letter in 'Scope'"
+				// msgid "S"
+				// msgstr ""
+				//
+				// #: skycomponents/horizoncomponent.cpp:429
+				// msgctxt "South"
+				// msgid "S"
+				// msgstr ""
+				case 'msgctxt':
 				// untranslated-string
 				case 'msgid' :
 				// untranslated-string-plural
@@ -249,7 +261,7 @@ class PoParser
 
 			if( isset($entry['msgid']) && isset($entry['msgstr']) )
 			{
-				$id = is_array( $entry['msgid'] )? implode('', $entry['msgid']):$entry['msgid'];
+				$id = $this->entry_id( $entry );
 				$this->entries[$id] = $entry;
 			}
 		}
@@ -258,6 +270,14 @@ class PoParser
 	}
 
 
+	/**
+	*	Get File headers
+	*
+	*/
+	public function headers()
+	{
+		return $this->headers;
+	}
 
 
 	/**
@@ -352,7 +372,7 @@ class PoParser
 
 				if( isset($entry['msgctxt']) )
 				{
-					fwrite( $handle, 'msgctxt '.$entry['msgctxt'] . "\n" );
+					fwrite( $handle, 'msgctxt '. $this->clean_export($entry['msgctxt'][0]) . "\n" );
 				}
 
 				if( $isObsolete )
@@ -482,6 +502,23 @@ class PoParser
 
 
 
+	/**
+	*	Generates the internal key for a msgid.
+	*/
+	protected function entry_id($entry)
+	{
+		if( isset($entry['msgctxt']) )
+		{
+			$id = implode(',',(array)$entry['msgctxt']).'!'.implode(',',(array)$entry['msgid']);
+		}
+		else
+		{
+			$id = implode(',',(array)$entry['msgid']);
+		}
+
+		return $id;
+	}
+
 
 
 	/**
@@ -521,14 +558,14 @@ class PoParser
 	{
  		$header_keys = array(
 			'Project-Id-Version:'	=> false,
-			'Report-Msgid-Bugs-To:'	=> false,
-			'POT-Creation-Date:'	=> false,
+		//	'Report-Msgid-Bugs-To:'	=> false,
+		//	'POT-Creation-Date:'	=> false,
 			'PO-Revision-Date:'		=> false,
-			'Last-Translator:'		=> false,
-			'Language-Team:'		=> false,
+		//	'Last-Translator:'		=> false,
+		//	'Language-Team:'		=> false,
 			'MIME-Version:'			=> false,
-			'Content-Type:'			=> false,
-			'Content-Transfer-Encoding:' => false,
+		//	'Content-Type:'			=> false,
+		//	'Content-Transfer-Encoding:' => false,
 			'Plural-Forms:'			=> false
 		);
 		$count = count($header_keys);

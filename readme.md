@@ -6,7 +6,7 @@ Po Parser is a personal project to fulfill a need I got: parse po files and edit
 Methods
 =======
 ## read( $file_path )
-This function parses a `po` file and returns an array with its entries.  
+This method parses a `po` file and returns an array with its entries.  
 
 ### Parameters
 `$file_path`: String. po filepath.
@@ -18,31 +18,47 @@ Each `entry` has the following keys:
 - `msgid`: String Array. Entry identifier.
 - `msgstr`: String Array. Translated string.
 - `reference`: String Array. Source code filepaths where this message is found.
-- `msgctxt`: String. Message context.
+- `msgctxt`: String. Disambiguating context.
 - `tcomment`: String Array. Translator comments.
 - `ccomment`: String Array. Source code comments linked to the message.
 - `obsolete`: Bool (1/0). Marks the entry as obsolete.
 - `fuzzy`: Bool (1/0). Marks the entry as a fuzzy translation.
 
 ### Throws
-This function throws `Exception` if file cannot be opened and parse error or a logic error occurs.
+This method throws `Exception` if file cannot be opened and parse error or a logic error occurs.
 
 
+## headers()
+Called after `read()` method, returns the headers of the file, if present.
+
+### Returns 
+An `Array` of strings containing all headers present in the file.
 
 ## write( $file_path )
-This function writes a `po` file from the internal `$entries` property.  
+This method writes a `po` file from the internal `$entries` property.  
 
 ### Throws
-This function throws `Exception` if output file cannot be opened to write.
+This method throws `Exception` if output file cannot be opened to write.
 
 
 ## update_entry( $msgid, $msgstr )
-This functions updates an entry parsed previously with `read` method.
+This method updates an entry parsed previously with `read` method.
 
 ### Parameters
 `$msgid`: Entry identifier.  
 `$msgstr`: Translation to be stored.
 
+When updating an entry that makes use of a **Disambiguating Context**, use &lt;context>!&lt;msgid> as the first parameter.
+Example:
+
+    // Edit the message "Welcome user!"
+    $poparser->update_entry( "Welcome user!", "Bienvenido usuario!" );
+    
+    // Edit the message "N" in the Dissambiguating Context "North"
+    $poparser->update_entry( "N!Norte" );
+
+    // Edit the message "N" in the Dissambiguating Context "No"
+    $poparser->update_entry( "N!No" );
 
 
 
@@ -84,12 +100,22 @@ Usage
 
 Todo
 ====
+* Define as composer project.
+* Unit tests.
 * Improve interface to edit entries.
 * <strike>Discover what's the meaning of the line "#@ ".</strike> It was just a comment `# @`.
 
 
 Changelog
 =========
+
+###v2.1
+Version 2.1 has the following changes:
+
+* fixes errors when saving msgid_plurals (thanks felixgilles).
+* Now it handles entries using msgctxt correctly by not merging them into a single entry.
+* Headers of some file headers were being ignored because of a too strict check.
+* A new method is introduced to read file headers: `headers()`.
 
 ###v2.0
 Version 2.0 introduces a lot of bug fixes, mainly related to multiline entries. I also decide to change class name to something more semantic (`PoParser`) as I felt old name was not well suited.  
