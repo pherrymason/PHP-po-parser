@@ -385,7 +385,21 @@ class PoParser
 				
 				if( isset($entry['msgid_plural']) )
 				{
-					fwrite( $handle, 'msgid_plural '.$entry['msgid_plural'] . "\n" );
+					// Special clean for msgid_plural
+					if( is_string($entry['msgid_plural']) )
+					{
+						$msgid_plural = explode("\n", $entry['msgid_plural']);
+					}
+					elseif( is_array($entry['msgid_plural']) )
+					{
+						$msgid_plural = $entry['msgid_plural'];
+					}
+
+					fwrite( $handle, 'msgid_plural ');
+					foreach( $msgid_plural AS $plural )
+					{
+						fwrite( $handle, $this->clean_export($plural). "\n");
+					}
 				}
 
 				if( isset($entry['msgstr']) )
@@ -394,19 +408,7 @@ class PoParser
 					{
 						foreach( $entry['msgstr'] AS $i=>$t )
 						{
-							if( $i==0 )
-							{
-								fwrite( $handle, 'msgstr '.$this->clean_export($entry['msgstr'][0]). "\n");
-							}
-							else
-							{
-								if( $isObsolete )
-								{
-									fwrite($handle, "#~ ");
-								}
-
-								fwrite( $handle, "msgstr[$i] " . $this->clean_export($t) . "\n");
-							}
+							fwrite( $handle, "msgstr[$i] " . $this->clean_export($t) . "\n");
 						}
 					}
 					else
