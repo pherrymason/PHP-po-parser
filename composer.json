@@ -1,0 +1,26 @@
+{
+	"name"        : "raulferras/po-parser",
+	"description" : "PO file parser for PHP.",
+	"type"        : "library",
+	"keywords"    : ["i18n","i10n","po","gettext"],
+	"homepage"    : "https://github.com/raulferras/PHP-po-parser",
+	"license"     : "MIT",
+	"authors"     : [
+				{
+					"name": "Raúl Ferràs",
+					"email": "raul.ferras@gmail.com",
+					"role" : "developer"
+				}
+				],
+	"support" : {
+		"issues" : "https://github.com/raulferras/PHP-po-parser/issues"
+	},
+	"require-dev" : {
+		"phpunit/phpunit":"3.7.*"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"Sepia": "src/"
+		}
+	}
+}

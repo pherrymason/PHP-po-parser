@@ -1,0 +1,90 @@
+# Translation of Administration in Spanish (Spain)
+# This file is distributed under the same license as the Administration package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2013-10-23 09:51:48+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Administration\n"
+
+
+#: wp-admin/edit.php:238
+msgid "%s post not updated, somebody is editing it."
+msgid_plural "%s posts not updated, somebody is editing them."
+msgstr[0] "%s entrada no actualizada, alguien la está editando."
+msgstr[1] "%s entradas no actualizadas, alguien las está editando."
+
+#: wp-admin/edit.php:239
+msgid "%s post permanently deleted."
+msgid_plural "%s posts permanently deleted."
+msgstr[0] "%s entrada borrada permanentemente."
+msgstr[1] "%s entradas borradas permanentemente."
+
+#: wp-admin/edit.php:240
+msgid "%s post moved to the Trash."
+msgid_plural "%s posts moved to the Trash."
+msgstr[0] "%s entrada movida a la Papelera."
+msgstr[1] "%s entradas movidas a la Papelera."
+
+#: wp-admin/edit.php:241
+msgid "%s post restored from the Trash."
+msgid_plural "%s posts restored from the Trash."
+msgstr[0] "%s entrada restaurada desde la Papelera."
+msgstr[1] "%s entradas restauradas desde la Papelera."
+
+#: wp-admin/edit.php:244
+msgid "%s page updated."
+msgid_plural "%s pages updated."
+msgstr[0] "%s página actualizada."
+msgstr[1] "%s páginas actualizadas."
+
+#: wp-admin/edit.php:245
+msgid "%s page not updated, somebody is editing it."
+msgid_plural "%s pages not updated, somebody is editing them."
+msgstr[0] "%s página no actualizada, alguien la está editando."
+msgstr[1] "%s páginas no actualizadas, alguien las está editando."
+
+#: wp-admin/edit.php:246
+msgid "%s page permanently deleted."
+msgid_plural "%s pages permanently deleted."
+msgstr[0] "%s página borrada permanentemente."
+msgstr[1] "%s páginas borradas permanentemente."
+
+#: wp-admin/edit.php:247
+msgid "%s page moved to the Trash."
+msgid_plural "%s pages moved to the Trash."
+msgstr[0] "%s página movida a la Papelera."
+msgstr[1] "%s páginas movidas a la Papelera."
+
+#: wp-admin/edit.php:248
+msgid "%s page restored from the Trash."
+msgid_plural "%s pages restored from the Trash."
+msgstr[0] "%s página restaurada desde la Papelera."
+msgstr[1] "%s páginas restauradas desde la Papelera."
+
+#: wp-admin/revision.php:107
+msgid "Compare two different revisions by <strong>selecting the &#8220;Compare any two revisions&#8221; box</strong> to the side."
+msgstr "Compara dos revisiones <strong>seleccionando &#8220;Compara dos revisiones cualquiera&#8221;</strong> en el lateral."
+
+#: wp-admin/includes/template.php:1891
+msgid "Compare Revisions"
+msgstr "Comparar revisiones"
+
+#: wp-admin/includes/class-wp-ms-themes-list-table.php:207
+msgid "Broken <span class=\"count\">(%s)</span>"
+msgid_plural "Broken <span class=\"count\">(%s)</span>"
+msgstr[0] "Roto <span class=\"count\">(%s)</span>"
+msgstr[1] "Rotos <span class=\"count\">(%s)</span>"
+
+#: wp-admin/includes/theme.php:169
+msgid "Light"
+msgstr "Ligero"
+
+msgid "http://akismet.com/?return=true"
+msgstr "http://akismet.com/?return=true"
+
+msgid "Used by millions, Akismet is quite possibly the best way in the world to <strong>protect your blog from comment and trackback spam</strong>. It keeps your site protected from spam even while you sleep. To get started: 1) Click the \"Activate\" link to the left of this description, 2) <a href=\"http://akismet.com/get/?return=true\">Sign up for an Akismet API key</a>, and 3) Go to your Akismet configuration page, and save your API key."
+msgstr "Utilizado por millones de usuarios, Akismet es probablemente el mejor modo que hay en el mundo para <strong>proteger tu sitio de spam en comentarios y trackbacks</strong>. Mantiene tu sitio protegido de spam incluso mientras duermes. Para empezar: 1) Haz clic en el enlace \"Activar\" a la izquierda de la descripción, 2) <a href=\"http://akismet.com/get/?return=true\">Regístrate para obtener una clave API de Akismet</a>, y 3) Ve a tu página de <a href=\"admin.php?page=akismet-key-config\">configuración de Akismet</a> y guarda tu clave API."

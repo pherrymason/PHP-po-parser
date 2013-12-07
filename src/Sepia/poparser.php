@@ -1,4 +1,7 @@
-<?php
+<?php 
+
+namespace Sepia;
+
 /**
 *	Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
 *	All rights reserved.
@@ -30,6 +33,7 @@
 *	https://github.com/raulferras/PHP-po-parser
 *
 *	Class to parse .po file and extract its strings.
+*	@version 3.0
 */
 class PoParser
 {
@@ -40,21 +44,22 @@ class PoParser
 	/**
 	*	Reads and parses strings of a .po file.
 	*
+	*	@throws Exception.
 	*	@return Array. List of entries found in .po file.
 	*/
 	public function read( $file_path )
 	{
 		if( empty($file_path) )
 		{
-			throw new Exception('PoParser: Input File not defined.');
+			throw new \Exception('PoParser: Input File not defined.');
 		}
 		elseif( file_exists($file_path)===false )
 		{
-			throw new Exception('PoParser: Input File does not exists: "' . htmlspecialchars($file_path) . '"' );
+			throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($file_path) . '"' );
 		}
 		elseif( is_readable($file_path)===false )
 		{
-			throw new Exception('PoParser: File is not readable: "' . htmlspecialchars($file_path) . '"' );
+			throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($file_path) . '"' );
 		}
 
 
@@ -246,7 +251,7 @@ class PoParser
 										break;
 
 									default:
-										throw new Exception('PoParser: Parse error! Unknown key "'.$key.'" on line '.$line);
+										throw new \Exception('PoParser: Parse error! Unknown key "'.$key.'" on line '.$line);
 								}
 							}
 							break;
@@ -282,7 +287,7 @@ class PoParser
 				if( $v === false )
 				{
 					// parse error
-					throw new Exception('PoParser: Parse error! poparser::clean returned false on "'.htmlspecialchars($or).'"');
+					throw new \Exception('PoParser: Parse error! poparser::clean returned false on "'.htmlspecialchars($or).'"');
 				}
 			}
 
@@ -496,7 +501,7 @@ class PoParser
 		}
 		else
 		{
-			throw new Exception('PoParser: Could not write into file "'.htmlspecialchars($file_path).'"');
+			throw new \Exception('PoParser: Could not write into file "'.htmlspecialchars($file_path).'"');
 		}
 	}
 
@@ -583,6 +588,11 @@ class PoParser
 	*/
 	static protected function is_header( $entry )
 	{
+		if( empty($entry) || !isset($entry['msgstr']) )
+		{
+			return false;
+		}
+
  		$header_keys = array(
 			'Project-Id-Version:'	=> false,
 		//	'Report-Msgid-Bugs-To:'	=> false,

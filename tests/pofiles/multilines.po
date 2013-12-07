@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-25 15:55+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Raúl Ferràs <xxxxxxxxxx@xxxxxxx.xxxxx>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n;_t\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ../..\n"
+"X-Poedit-SearchPath-2: ../../../modules\n"
+
+# @ default
+#: ../../classes/dddddd.php:33
+msgid "Lo sentimos, ha ocurrido un error..."
+msgstr "Ho sentim, s'ha produït un error"
+
+#: ../../classes/xxxxx.php:96 ../../classes/controller/iiiiiii.php:107
+#: ../../classes/controller/yyyyyyy/zzzzzz.php:288
+msgid "Debes indicar un nombre."
+msgstr "Has d'indicar un nom."
+
+#: ../../classes/ccccc.php:100 ../../classes/cccc.php:104
+#: ../../classes/controller/cccc/mmmmm.php:295
+#: ../../classes/controller/cccc/mmmmm.php:513
+msgid "Ya existe otro usuari con este mismo nombre."
+msgstr "Ja existeix un altre usuari amb aquest nom."
+
+#: ../../classes/ccccc.php:108 ../../classes/controller/cccc/mmmmm.php:305
+#: ../../classes/controller/ccccc/mmmmm.php:518
+msgid "Debes indicar una dirección web!"
+msgstr "Has d'indicar una direcció web!"
+
+# @ default
+#: ../../classes/uuuuuuu.php:175
+#, fuzzy
+msgid "El archivo supera el tamaño máximo permitido: %size%MB"
+msgstr ""
+"El fitxer {file} es massa gran, el tamany máxim de fitxer es {sizeLimit}."
+
+#: ../../classes/controller/ccccc.php:361
+msgid ""
+"%user% acaba de responder tu comentario.<br>Consulta que te ha "
+"dicho %link%aquí</a>."
+msgstr ""
+"%user% acaba de respondre el teu comentari.<br>Consulta que t'ha "
+"dit %link%aquí</a>."
+
+#: ../../classes/controller/eeee.php:786
+msgid ""
+"Atención, para finalizar el proceso debes iniciar sesión con tu usuario "
+".<br/>No sufras, hemos guardado los datos introducidos, una vez "
+"te autentifiques te redirigiremos al paso final."
+msgstr ""
+"Atenció, per finalitzar el procés has de iniciar sessió amb el teu usuari "
+".<br/>No pateixis, hem desat les teves dades, un cop "
+"t'autentifiquis finalitzarem el procés."
+
+# @ default
+#~ msgid "Arrastra imagenes aquí para subirlas."
+#~ msgstr "Arrossega les teves imatges aquí per pujarles."
+
+# @ default
+#~ msgid ""
+#~ "El archivo {file} es demasiado pequeño, el tamaño mínimo de archivo es "
+#~ "{minSizeLimit}."
+#~ msgstr ""
+#~ "El fitxer {file} es massa petit, el tamany mínim de fitxer es "
+#~ "{minSizeLimit}."
