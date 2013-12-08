@@ -66,7 +66,7 @@ Usage
 =====
 ## Reading Po Content
 
-    $poparser = new PoParser();
+    $poparser = new Sepia\PoParser();
     entries = $poparser->read( 'my-pofile.po' );
     // Now $entries contains every string information in your pofile
     
@@ -89,7 +89,7 @@ Usage
 	
 ## Modify Content
 
-    $poparser = new PoParser();
+    $poparser = new Sepia\PoParser();
     $poparser->read( 'my-pofile.po' );
     // Entries are stored in `$pofile` object, so you can modify them.
     
@@ -100,14 +100,19 @@ Usage
 
 Todo
 ====
-* Define as composer project.
-* Unit tests.
 * Improve interface to edit entries.
-* <strike>Discover what's the meaning of the line "#@ ".</strike> It was just a comment `# @`.
 
 
 Changelog
 =========
+
+###v3.0
+Version 3.0 changes:
+
+* Library namespaced.
+* Adds composer support.
+* Includes some simple unit tests to better avoid regressions or detect errors.
+* Fixes an error when no header is found.
 
 ###v2.1
 Version 2.1 has the following changes:
