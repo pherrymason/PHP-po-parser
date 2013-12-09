@@ -603,7 +603,7 @@ class PoParser
 			'MIME-Version:'			=> false,
 		//	'Content-Type:'			=> false,
 		//	'Content-Transfer-Encoding:' => false,
-			'Plural-Forms:'			=> false
+		//	'Plural-Forms:'			=> false
 		);
 		$count = count($header_keys);
 		$keys = array_keys($header_keys);
@@ -621,7 +621,6 @@ class PoParser
  				$keys = array_keys($header_keys);
  			}
  		}
-
  		return ($header_items==$count)? true:false;
 	}
 }
