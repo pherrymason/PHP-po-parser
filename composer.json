@@ -1,6 +1,6 @@
 {
     "name": "maxakawizard/po-parser",
-    "description": "Gettext parser for PHP",
+    "description": "Gettext *.po parser for PHP",
     "keywords": ["po", "gettext", "i18n", "l10n"],
     "homepage": "http://github.com/MAXakaWIZARD/PoParser",
     "type": "library",
