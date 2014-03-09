@@ -312,27 +312,30 @@ class PoParser
 	}
 
 
-	/**
-	*	Updates an entry.
-	*
-	*	@param $original. String. Original string to translate.
-	*	@param $translation. String. Translated string
-	*/
-	public function update_entry( $original, $translation )
+    /**
+     *    Updates an entry.
+     *
+     * @param string $original Original string to translate.
+     * @param string|array $translation Translated string
+     * @param string|array $tcomment
+     * @param string|array $ccomment
+     */
+	public function update_entry( $original, $translation = null, $tcomment = array(), $ccomment = array() )
 	{
-        if (!is_array($translation))
+        if (null !== $translation)
         {
-            $translation = array($translation);
+            $this->entries[ $original ]['fuzzy'] = false;
+            $this->entries[ $original ]['msgstr'] = !is_array($translation) ? array($translation) : $translation;
+
+            if( isset( $this->entries[$original]['flags']) )
+            {
+                $flags = $this->entries[ $original ]['flags'];
+                $this->entries[ $original ]['flags'] = str_replace('fuzzy', '', $flags );
+            }
         }
 
-		$this->entries[ $original ]['fuzzy'] = false;
-		$this->entries[ $original ]['msgstr'] = $translation;
-
-		if( isset( $this->entries[$original]['flags']) )
-		{
-			$flags = $this->entries[ $original ]['flags'];
-			$this->entries[ $original ]['flags'] = str_replace('fuzzy', '', $flags );
-		}
+        $this->entries[ $original ]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
+        $this->entries[ $original ]['tcomment'] = !is_array($tcomment) ? array($tcomment) : $tcomment;
 	}
 
 

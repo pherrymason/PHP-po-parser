@@ -181,4 +181,27 @@ class poparserTest extends \PHPUnit_Framework_TestCase
         $newPlurals = $tmpPofile->read( __DIR__.'/pofiles/temp.po' );
         $this->assertEquals($newPlurals[$msgid]['msgstr'], $msgstr);
     }
+
+    /**
+     * Test update comments
+     */
+    public function testUpdateComments()
+    {
+        $msgid = 'Background Attachment!Attachment';
+        $ccomment = 'Test write ccomment';
+        $tcomment = 'Test write tcomment';
+
+        $pofile = new Poparser();
+        $pofile->read( __DIR__.'/pofiles/context.po' );
+
+        $pofile->update_entry($msgid, null, $tcomment, $ccomment);
+
+        $pofile->write( __DIR__.'/pofiles/temp.po' );
+
+        $tmpPofile = new Poparser();
+        $newParsedArray = $tmpPofile->read( __DIR__.'/pofiles/temp.po' );
+
+        $this->assertEquals($newParsedArray[$msgid]['tcomment'][0], $tcomment);
+        $this->assertEquals($newParsedArray[$msgid]['ccomment'][0], $ccomment);
+    }
 }
