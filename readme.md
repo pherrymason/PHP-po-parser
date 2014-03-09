@@ -3,6 +3,11 @@ Po Parser
 
 Po Parser is a personal project to fulfill a need I got: parse po files and edit its content using PHP.
 
+[![Build Status](https://travis-ci.org/newage/PHP-po-parser.png?branch=master)](https://travis-ci.org/newage/PHP-po-parser)
+[![Code Coverage](https://scrutinizer-ci.com/g/newage/PHP-po-parser/badges/coverage.png?s=c3ba0b632e9aeefd69a7ca0e1f363fda59470197)](https://scrutinizer-ci.com/g/newage/PHP-po-parser/)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/newage/PHP-po-parser/badges/quality-score.png?s=ff6b76132c5562c0ff281900c326bd392b54bc46)](https://scrutinizer-ci.com/g/newage/PHP-po-parser/)
+[![Latest Stable Version](https://poser.pugx.org/leaphly/cart-bundle/version.png)](https://packagist.org/packages/sepia/po-parser)
+
 Methods
 =======
 ## read( $file_path )
