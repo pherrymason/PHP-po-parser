@@ -320,8 +320,13 @@ class PoParser
 	*/
 	public function update_entry( $original, $translation )
 	{
+        if (!is_array($translation))
+        {
+            $translation = array($translation);
+        }
+
 		$this->entries[ $original ]['fuzzy'] = false;
-		$this->entries[ $original ]['msgstr'] = array($translation);
+		$this->entries[ $original ]['msgstr'] = $translation;
 
 		if( isset( $this->entries[$original]['flags']) )
 		{
