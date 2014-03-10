@@ -46,7 +46,7 @@ This method writes a `po` file from the internal `$entries` property.
 This method throws `Exception` if output file cannot be opened to write.
 
 
-## update_entry( $msgid, $msgstr )
+## update_entry( $msgid, $msgstr = null, $tcomment = array(), $ccomment = array() )
 This method updates an entry parsed previously with `read` method.
 
 ### Parameters
