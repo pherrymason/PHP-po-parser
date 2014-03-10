@@ -113,6 +113,25 @@ Todo
 Changelog
 =========
 
+###v3.0.4
+
+* Fix updating multiline plural messages (thanks @newage)
+* `update_entry` method now allows update translator comments and developer comments (thanks @newage)
+* Added travis and scrutinizer files (thanks @newage)
+
+###v3.0.3
+
+* Project renamed to sepia/po-parser in composer.json
+
+###v3.0.2
+
+* Changes to follow PSR-0
+
+###v3.0.1
+
+* Po Header detection was too strict by expecting “Plural-Forms” to be present
+
+
 ###v3.0
 Version 3.0 changes:
 
@@ -124,7 +143,7 @@ Version 3.0 changes:
 ###v2.1
 Version 2.1 has the following changes:
 
-* fixes errors when saving msgid_plurals (thanks felixgilles).
+* fixes errors when saving msgid_plurals (thanks @felixgilles).
 * Now it handles entries using msgctxt correctly by not merging them into a single entry.
 * Headers of some file headers were being ignored because of a too strict check.
 * A new method is introduced to read file headers: `headers()`.
