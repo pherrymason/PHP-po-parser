@@ -51,7 +51,9 @@ This method updates an entry parsed previously with `read` method.
 
 ### Parameters
 `$msgid`: Entry identifier.  
-`$msgstr`: Translation to be stored.
+`$msgstr`: String. Optional. Translation to be stored.
+`$tcomment`: Array. Optional. Translator comments. 
+`$ccomment`: Array. Optional. Developer comments.
 
 When updating an entry that makes use of a **Disambiguating Context**, use &lt;context>!&lt;msgid> as the first parameter.
 Example:
