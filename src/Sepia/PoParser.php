@@ -61,9 +61,31 @@ class PoParser
 		{
 			throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($file_path) . '"' );
 		}
-
-
 		$handle   = fopen( $file_path, 'r' );
+        return $this->readHandle( $handle );
+    }
+
+	/**
+	*	Reads and parses strings of a variable that contains the contents of a .po file.
+	*
+	*	@throws Exception.
+	*	@return Array. List of entries found in .po file.
+	*/
+	public function readVariable( $contents )
+	{
+        $handle = fopen('data://text/plain,' . $contents, 'r');
+        return $this->readHandle( $handle );
+    }
+
+	/**
+	*	Reads and parses strings of a .po file.
+	*
+	*	@throws Exception.
+	*	@return Array. List of entries found in .po file.
+	*/
+	public function readHandle( $handle )
+	{
+
 		$headers  = array();
 		$hash     = array();
 		$fuzzy    = false;
