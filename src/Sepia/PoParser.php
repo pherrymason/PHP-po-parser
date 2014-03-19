@@ -311,6 +311,34 @@ class PoParser
 		return $this->headers;
 	}
 
+    /**
+     * Set new headers
+     *
+     * {code}
+     *  array(
+     *   '"Project-Id-Version: \n"',
+     *   '"Report-Msgid-Bugs-To: \n"',
+     *   '"POT-Creation-Date: \n"',
+     *   '"PO-Revision-Date: \n"',
+     *   '"Last-Translator: none\n"',
+     *   '"Language-Team: \n"',
+     *   '"MIME-Version: 1.0\n"',
+     *   '"Content-Type: text/plain; charset=UTF-8\n"',
+     *  );
+     * {code}
+     *
+     * @param array $newHeaders
+     * @return bool
+     */
+    public function set_headers($newHeaders)
+    {
+        if (!is_array($newHeaders)) {
+            return false;
+        } else {
+            $this->headers = $newHeaders;
+            return true;
+        }
+    }
 
     /**
      *    Updates an entry.

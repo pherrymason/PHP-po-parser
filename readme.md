@@ -36,6 +36,9 @@ This method throws `Exception` if file cannot be opened and parse error or a log
 ## headers()
 Called after `read()` method, returns the headers of the file, if present.
 
+## set_headers(array)
+Called before `write()` method, set new headers.
+
 ### Returns 
 An `Array` of strings containing all headers present in the file.
 

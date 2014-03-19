@@ -204,4 +204,45 @@ class poparserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($newParsedArray[$msgid]['tcomment'][0], $tcomment);
         $this->assertEquals($newParsedArray[$msgid]['ccomment'][0], $ccomment);
     }
+
+    /**
+     * Test for success update headers
+     */
+    public function testUpdateHeaders()
+    {
+        $pofile = new Poparser();
+        $pofile->read( __DIR__.'/pofiles/context.po' );
+
+        $newHeaders = array(
+            '"Project-Id-Version: \n"',
+            '"Report-Msgid-Bugs-To: \n"',
+            '"POT-Creation-Date: \n"',
+            '"PO-Revision-Date: \n"',
+            '"Last-Translator: none\n"',
+            '"Language-Team: \n"',
+            '"MIME-Version: 1.0\n"',
+            '"Content-Type: text/plain; charset=UTF-8\n"',
+            '"Content-Transfer-Encoding: 8bit\n"',
+            '"Plural-Forms: nplurals=2; plural=n != 1;\n"'
+        );
+
+        $result = $pofile->set_headers($newHeaders);
+        $this->assertTrue($result);
+        $pofile->write(__DIR__ . '/pofiles/temp.po');
+
+        $newPoFile = new Poparser();
+        $newPoFile->read(__DIR__ . '/pofiles/temp.po');
+        $readHeaders = $newPoFile->headers();
+        $this->assertEquals($newHeaders, $readHeaders);
+    }
+
+    /**
+     * Test for fail update headers
+     */
+    public function testUpdateHeadersWrong()
+    {
+        $pofile = new Poparser();
+        $result = $pofile->set_headers('header');
+        $this->assertFalse($result);
+    }
 }
