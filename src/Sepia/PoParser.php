@@ -34,6 +34,8 @@ namespace Sepia;
  *
  * Class to parse .po file and extract its strings.
  *
+ * @method array headers() deprecated
+ * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @version 3.0
  */
 class PoParser
@@ -270,17 +272,6 @@ class PoParser
         return $this->entries;
     }
 
-
-    /**
-     * Get File headers
-     *
-     * @deprecated
-     */
-    public function headers()
-    {
-        return $this->getHeaders();
-    }
-
     /**
      * Get headers from .po file
      *
@@ -334,11 +325,11 @@ class PoParser
         if (null !== $translation) {
             $this->entries[$original]['fuzzy'] = false;
             $this->entries[$original]['msgstr'] = !is_array($translation) ? array($translation) : $translation;
+        }
 
-            if (isset($this->entries[$original]['flags'])) {
-                $flags = $this->entries[$original]['flags'];
-                $this->entries[$original]['flags'] = str_replace('fuzzy', '', $flags);
-            }
+        if (isset($this->entries[$original]['flags'])) {
+            $flags = $this->entries[$original]['flags'];
+            $this->entries[$original]['flags'] = str_replace('fuzzy', '', $flags);
         }
 
         $this->entries[$original]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
@@ -348,14 +339,26 @@ class PoParser
     }
 
     /**
-     * {@inheritDoc}
-     * @deprecated
+     * Call old deprecated methods
+     *
+     * @param $method
+     * @param $args
+     * @return mixed
+     * @throws \Exception
      */
-    public function update_entry($original, $translation = null, $tcomment = array(), $ccomment = array())
+    public function __call($method, $args)
     {
-        return $this->updateEntry($original, $translation, $tcomment, $ccomment);
+        switch ($method) {
+            case 'update_entry':
+                return call_user_func(array($this, 'updateEntry'), $args);
+                break;
+            case 'headers':
+                return call_user_func(array($this, 'getHeaders'), $args);
+                break;
+            default:
+                throw new \Exception('Not registered called method '.$method);
+        }
     }
-
 
     /**
      * Write entries to a po file.
@@ -368,10 +371,13 @@ class PoParser
      *        $pofile->update_entry( $msgid, $msgstr );
      *        // Save Changes back into `ca.po`
      *        $pofile->write('ca.po');
+     * @param string $filePath
+     * @throws \Exception
+     * @return null
      */
-    public function write($file_path)
+    public function write($filePath)
     {
-        $handle = @fopen($file_path, "wb");
+        $handle = @fopen($filePath, "wb");
         if ($handle !== false) {
             if (count($this->headers) > 0) {
                 fwrite($handle, "msgid \"\"\n");
@@ -429,6 +435,8 @@ class PoParser
                         $msgid = explode("\n", $entry['msgid']);
                     } elseif (is_array($entry['msgid'])) {
                         $msgid = $entry['msgid'];
+                    } else {
+                        throw new \Exception('msgid not string or array');
                     }
 
                     fwrite($handle, 'msgid ');
@@ -446,6 +454,8 @@ class PoParser
                         $msgid_plural = explode("\n", $entry['msgid_plural']);
                     } elseif (is_array($entry['msgid_plural'])) {
                         $msgid_plural = $entry['msgid_plural'];
+                    } else {
+                        throw new \Exception('msgid_plural not string or array');
                     }
 
                     fwrite($handle, 'msgid_plural ');
@@ -487,7 +497,7 @@ class PoParser
 
             fclose($handle);
         } else {
-            throw new \Exception('PoParser: Could not write into file "' . htmlspecialchars($file_path) . '"');
+            throw new \Exception('PoParser: Could not write into file "' . htmlspecialchars($filePath) . '"');
         }
     }
 
@@ -523,7 +533,7 @@ class PoParser
      * Generates the internal key for a msgid.
      *
      * @param array $entry
-     * @return int
+     * @return string
      */
     protected function getEntryId(array $entry)
     {
