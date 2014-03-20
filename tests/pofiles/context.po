@@ -37,6 +37,7 @@ msgid "0"
 msgstr "0"
 
 #: wp-admin/includes/template.php:662
+#, fuzzy
 msgid "%1$s-%2$s"
 msgstr "%1$s-%2$s"
 
