@@ -10,11 +10,12 @@ Po Parser is a personal project to fulfill a need I got: parse po files and edit
 
 Methods
 =======
-## read( $file_path )
+## read($filePath) @deprecated
+## parse($filePath)
 This method parses a `po` file and returns an array with its entries.  
 
 ### Parameters
-`$file_path`: String. po filepath.
+`$filePath`: String. po filepath.
 
 ### Returns
 An `Array` of `entries`.  
@@ -33,21 +34,28 @@ Each `entry` has the following keys:
 This method throws `Exception` if file cannot be opened and parse error or a logic error occurs.
 
 
-## headers()
-Called after `read()` method, returns the headers of the file, if present.
+## headers() @deprecated
+## getHeaders()
+Called after `parse()` method, returns the headers of the file, if present.
 
-### Returns 
+### Returns
 An `Array` of strings containing all headers present in the file.
 
-## write( $file_path )
+## setHeaders(array $newHeaders)
+Called before `write()` method, put new headers.
+
+### Parameters
+`$newHeaders` Array. Headers for .po file
+
+## write($filePath)
 This method writes a `po` file from the internal `$entries` property.  
 
 ### Throws
 This method throws `Exception` if output file cannot be opened to write.
 
-
-## update_entry( $msgid, $msgstr = null, $tcomment = array(), $ccomment = array() )
-This method updates an entry parsed previously with `read` method.
+## update_entry($msgid, $msgstr, $tcomment, $ccomment) @deprecated
+## updateEntry($msgid, $msgstr, $tcomment, $ccomment)
+This method updates an entry parsed previously with `parse` method.
 
 ### Parameters
 `$msgid`: Entry identifier.  
@@ -74,7 +82,7 @@ Usage
 ## Reading Po Content
 
     $poparser = new Sepia\PoParser();
-    entries = $poparser->read( 'my-pofile.po' );
+    entries = $poparser->parse( 'my-pofile.po' );
     // Now $entries contains every string information in your pofile
     
     echo '<ul>';
@@ -97,11 +105,11 @@ Usage
 ## Modify Content
 
     $poparser = new Sepia\PoParser();
-    $poparser->read( 'my-pofile.po' );
+    $poparser->parse( 'my-pofile.po' );
     // Entries are stored in `$pofile` object, so you can modify them.
     
     // Use `update_entry( msgid, msgstr )` to change the messages you want.
-    $poparser->update_entry( 'Write your email', 'Escribe tu email' );
+    $poparser->updateEntry( 'Write your email', 'Escribe tu email' );
     $poparser->write( 'my-pofile.po' );
 
 
