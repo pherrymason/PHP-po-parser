@@ -33,11 +33,18 @@ Each `entry` has the following keys:
 This method throws `Exception` if file cannot be opened and parse error or a logic error occurs.
 
 
-## headers()
+## headers() @deprecated
+## getHeaders()
 Called after `read()` method, returns the headers of the file, if present.
 
-### Returns 
+### Returns
 An `Array` of strings containing all headers present in the file.
+
+## setHeaders(array $newHeaders)
+Called before `write()` method, put new headers.
+
+### Parameters
+`$newHeaders` Array. Headers for .po file
 
 ## write( $file_path )
 This method writes a `po` file from the internal `$entries` property.  
@@ -45,8 +52,8 @@ This method writes a `po` file from the internal `$entries` property.
 ### Throws
 This method throws `Exception` if output file cannot be opened to write.
 
-
-## update_entry( $msgid, $msgstr = null, $tcomment = array(), $ccomment = array() )
+## update_entry($msgid, $msgstr, $tcomment, $ccomment) @deprecated
+## updateEntry($msgid, $msgstr, $tcomment, $ccomment)
 This method updates an entry parsed previously with `read` method.
 
 ### Parameters

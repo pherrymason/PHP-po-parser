@@ -351,10 +351,8 @@ class PoParser
         switch ($method) {
             case 'update_entry':
                 return call_user_func(array($this, 'updateEntry'), $args);
-                break;
             case 'headers':
                 return call_user_func(array($this, 'getHeaders'), $args);
-                break;
             default:
                 throw new \Exception('Not registered called method '.$method);
         }
