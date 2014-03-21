@@ -36,6 +36,7 @@ namespace Sepia;
  *
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
+ * @method array read($filePath) deprecated
  * @version 3.0
  */
 class PoParser
@@ -47,41 +48,41 @@ class PoParser
     /**
      * Reads and parses strings of a .po file.
      *
-     * @param string $file_path
+     * @param string $filePath
      * @throws \Exception .
      * @return Array. List of entries found in .po file.
      */
-    public function read($file_path)
+    public function parse($filePath)
     {
-        if (empty($file_path)) {
+        if (empty($filePath)) {
             throw new \Exception('PoParser: Input File not defined.');
-        } elseif (file_exists($file_path) === false) {
-            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($file_path) . '"');
-        } elseif (is_readable($file_path) === false) {
-            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($file_path) . '"');
+        } elseif (file_exists($filePath) === false) {
+            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filePath) . '"');
+        } elseif (is_readable($filePath) === false) {
+            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
         }
 
 
-        $handle = fopen($file_path, 'r');
+        $handle = fopen($filePath, 'r');
         $headers = array();
         $hash = array();
         $entry = array();
-        $just_new_entry = false; // A new entry has been just inserted.
-        $first_line = true;
-        $last_obsolete_key = null; // Used to remember last key in a multiline obsolete entry.
+        $justNewEntry = false; // A new entry has been just inserted.
+        $firstLine = true;
+        $lastObsoleteKey = null; // Used to remember last key in a multiline obsolete entry.
         $state = null;
 
         while (!feof($handle)) {
             $line = trim(fgets($handle));
 
             if ($line === '') {
-                if ($just_new_entry) {
+                if ($justNewEntry) {
                     // Two consecutive blank lines
                     continue;
                 }
 
-                if ($first_line) {
-                    $first_line = false;
+                if ($firstLine) {
+                    $firstLine = false;
                     if (self::isHeader($entry)) {
                         array_shift($entry['msgstr']);
                         $headers = $entry['msgstr'];
@@ -95,12 +96,12 @@ class PoParser
 
                 $entry = array();
                 $state = null;
-                $just_new_entry = true;
-                $last_obsolete_key = null;
+                $justNewEntry = true;
+                $lastObsoleteKey = null;
                 continue;
             }
 
-            $just_new_entry = false;
+            $justNewEntry = false;
             $split = preg_split('/\s+/ ', $line, 2);
             $key = $split[0];
             $data = isset($split[1]) ? $split[1] : null;
@@ -142,7 +143,7 @@ class PoParser
                     $tmpKey = $tmpParts[0];
 
                     if ($tmpKey != 'msgid' && $tmpKey != 'msgstr') {
-                        $tmpKey = $last_obsolete_key;
+                        $tmpKey = $lastObsoleteKey;
                         $str = $data;
                     } else {
                         $str = implode(' ', array_slice($tmpParts, 1));
@@ -151,7 +152,7 @@ class PoParser
                     switch ($tmpKey) {
                         case 'msgid':
                             $entry['msgid'][] = $str;
-                            $last_obsolete_key = $tmpKey;
+                            $lastObsoleteKey = $tmpKey;
                             break;
 
                         case 'msgstr':
@@ -160,7 +161,7 @@ class PoParser
                             } else {
                                 $entry['msgstr'][] = $str;
                             }
-                            $last_obsolete_key = $tmpKey;
+                            $lastObsoleteKey = $tmpKey;
                             break;
 
                         default:
@@ -353,6 +354,8 @@ class PoParser
                 return call_user_func(array($this, 'updateEntry'), $args);
             case 'headers':
                 return call_user_func(array($this, 'getHeaders'), $args);
+            case 'read':
+                return call_user_func(array($this, 'parse'), $args[0]);
             default:
                 throw new \Exception('Not registered called method '.$method);
         }
@@ -363,10 +366,10 @@ class PoParser
      *
      * @example
      *        $pofile = new PoParser();
-     *        $pofile->read('ca.po');
+     *        $pofile->parse('ca.po');
      *
      *        // Modify an antry
-     *        $pofile->update_entry( $msgid, $msgstr );
+     *        $pofile->updateEntry( $msgid, $msgstr );
      *        // Save Changes back into `ca.po`
      *        $pofile->write('ca.po');
      * @param string $filePath
@@ -387,7 +390,7 @@ class PoParser
             }
 
 
-            $entries_count = count($this->entries);
+            $entriesCount = count($this->entries);
             $counter = 0;
             foreach ($this->entries as $entry) {
                 $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
@@ -449,15 +452,15 @@ class PoParser
                 if (isset($entry['msgid_plural'])) {
                     // Special clean for msgid_plural
                     if (is_string($entry['msgid_plural'])) {
-                        $msgid_plural = explode("\n", $entry['msgid_plural']);
+                        $msgidPlural = explode("\n", $entry['msgid_plural']);
                     } elseif (is_array($entry['msgid_plural'])) {
-                        $msgid_plural = $entry['msgid_plural'];
+                        $msgidPlural = $entry['msgid_plural'];
                     } else {
                         throw new \Exception('msgid_plural not string or array');
                     }
 
                     fwrite($handle, 'msgid_plural ');
-                    foreach ($msgid_plural as $plural) {
+                    foreach ($msgidPlural as $plural) {
                         fwrite($handle, $this->cleanExport($plural) . "\n");
                     }
                 }
@@ -488,7 +491,7 @@ class PoParser
 
                 $counter++;
                 // Avoid inserting an extra newline at end of file
-                if ($counter < $entries_count) {
+                if ($counter < $entriesCount) {
                     fwrite($handle, "\n");
                 }
             }
@@ -586,7 +589,7 @@ class PoParser
             return false;
         }
 
-        $header_keys = array(
+        $headerKeys = array(
             'Project-Id-Version:' => false,
             //	'Report-Msgid-Bugs-To:'	=> false,
             //	'POT-Creation-Date:'	=> false,
@@ -598,20 +601,20 @@ class PoParser
             //	'Content-Transfer-Encoding:' => false,
             //	'Plural-Forms:'			=> false
         );
-        $count = count($header_keys);
-        $keys = array_keys($header_keys);
+        $count = count($headerKeys);
+        $keys = array_keys($headerKeys);
 
-        $header_items = 0;
+        $headerItems = 0;
         foreach ($entry['msgstr'] as $str) {
             $tokens = explode(':', $str);
             $tokens[0] = trim($tokens[0], "\"") . ':';
 
             if (in_array($tokens[0], $keys)) {
-                $header_items++;
-                unset($header_keys[$tokens[0]]);
-                $keys = array_keys($header_keys);
+                $headerItems++;
+                unset($headerKeys[$tokens[0]]);
+                $keys = array_keys($headerKeys);
             }
         }
-        return ($header_items == $count) ? true : false;
+        return ($headerItems == $count) ? true : false;
     }
 }
