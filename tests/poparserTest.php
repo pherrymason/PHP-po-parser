@@ -5,6 +5,14 @@ namespace Sepia;
 class PoParserTest extends \PHPUnit_Framework_TestCase
 {
 
+    public function tearDown() {
+        parent::tearDown();
+
+        if (file_exists(__DIR__ . '/pofiles/temp.po')) {
+            unlink(__DIR__ . '/pofiles/temp.po');
+        }
+    }
+
     public function testRead()
     {
         $poparser = new PoParser();
