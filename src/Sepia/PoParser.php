@@ -78,9 +78,9 @@ class PoParser
             $key   = $split[0];
 
             // If a blank line is found, or a new msgid when already got one
-            if ($line === '' || ($key=='msgid' && isset($entry['msgid'])) ) {
+            if ($line === '' || ($key=='msgid' && isset($entry['msgid']))) {
+            	// Two consecutive blank lines
                 if ($justNewEntry) {
-                    // Two consecutive blank lines
                     continue;
                 }
 
@@ -102,14 +102,12 @@ class PoParser
                 $justNewEntry    = true;
                 $lastObsoleteKey = null;
 
-                if( $line==='' )
-                {
+                if ($line==='') {
                 	continue;
                 }
             }
 
             $justNewEntry = false;
-            
             $data         = isset($split[1]) ? $split[1] : null;
 
             switch ($key) {
