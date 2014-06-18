@@ -69,7 +69,6 @@ class PoParser
         $entry           = array();
         $justNewEntry    = false; // A new entry has been just inserted.
         $firstLine       = true;
-        $lastKey         = null; // Used to remember last key.
         $lastObsoleteKey = null; // Used to remember last key in a multiline obsolete entry.
         $state           = null;
 
