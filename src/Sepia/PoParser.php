@@ -37,7 +37,7 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 3.0.4
+ * @version 3.0.5
  */
 class PoParser
 {
@@ -63,19 +63,23 @@ class PoParser
         }
 
 
-        $handle = fopen($filePath, 'r');
-        $headers = array();
-        $hash = array();
-        $entry = array();
-        $justNewEntry = false; // A new entry has been just inserted.
-        $firstLine = true;
+        $handle          = fopen($filePath, 'r');
+        $headers         = array();
+        $hash            = array();
+        $entry           = array();
+        $justNewEntry    = false; // A new entry has been just inserted.
+        $firstLine       = true;
+        $lastKey         = null; // Used to remember last key.
         $lastObsoleteKey = null; // Used to remember last key in a multiline obsolete entry.
-        $state = null;
+        $state           = null;
 
         while (!feof($handle)) {
-            $line = trim(fgets($handle));
+            $line  = trim(fgets($handle));
+            $split = preg_split('/\s+/ ', $line, 2);
+            $key   = $split[0];
 
-            if ($line === '') {
+            // If a blank line is found, or a new msgid when already got one
+            if ($line === '' || ($key=='msgid' && isset($entry['msgid'])) ) {
                 if ($justNewEntry) {
                     // Two consecutive blank lines
                     continue;
@@ -94,17 +98,20 @@ class PoParser
                     $hash[] = $entry;
                 }
 
-                $entry = array();
-                $state = null;
-                $justNewEntry = true;
+                $entry           = array();
+                $state           = null;
+                $justNewEntry    = true;
                 $lastObsoleteKey = null;
-                continue;
+
+                if( $line==='' )
+                {
+                	continue;
+                }
             }
 
             $justNewEntry = false;
-            $split = preg_split('/\s+/ ', $line, 2);
-            $key = $split[0];
-            $data = isset($split[1]) ? $split[1] : null;
+            
+            $data         = isset($split[1]) ? $split[1] : null;
 
             switch ($key) {
                 // Flagged translation

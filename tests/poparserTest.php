@@ -247,4 +247,27 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
         $result = $pofile->setHeaders('header');
         $this->assertFalse($result);
     }
+
+    /**
+     * Test for po files with no blank lines between entries
+     */
+    public function testNoBlankLines()
+	{
+		$pofile = new PoParser();
+		$entries = $pofile->read( __DIR__ . '/pofiles/noblankline.po' );
+
+		$expected = array(
+            'one' => array(
+			    'msgid' => array(0 => 'one'),
+			    'msgstr' => array(0 => 'uno'),
+			 ),
+			'two' => array(
+			  'msgid' => array( 0 => 'two'),
+			  'msgstr' => array( 0 => 'dos')
+			  )
+		);
+
+		$this->assertEquals( $entries, $expected );
+	}
+
 }
