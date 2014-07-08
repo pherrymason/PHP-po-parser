@@ -144,6 +144,15 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFileEquals(__DIR__ . '/pofiles/context.po', __DIR__ . '/pofiles/temp.po');
 
+
+        // Read & write a po file with previous unstranslated strings
+        $pofile = new PoParser();
+        $pofile->read( __DIR__ . '/pofiles/previous_unstranslated.po' );
+        $pofile->write(__DIR__ . '/pofiles/temp.po');
+
+
+        $this->assertFileEquals(__DIR__ . '/pofiles/previous_unstranslated.po', __DIR__.'/pofiles/temp.po');
+
         unlink(__DIR__ . '/pofiles/temp.po');
     }
 
@@ -270,4 +279,39 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals( $entries, $expected );
 	}
 
+
+
+
+    /**
+     *  Test for entries with multiple flags
+     */
+    /*
+    public function testFlags()
+    {
+    
+    }
+    */
+
+
+    /**
+     *  Test for reading previous unstranslated strings
+     */
+    public function testPreviousUnstranslated()
+    {
+        $pofile = new PoParser();
+        $entries = $pofile->read( __DIR__ . '/pofiles/previous_unstranslated.po' );
+
+        $expected = array(
+            'this is a string' => array(
+                'msgid' => array('this is a string'),
+                'msgstr'=> array('this is a translation'),
+                'previous' => array(
+                    'msgid' => array('this is a previous string'),
+                    'msgstr'=> array('this is a previous translation string')
+                )
+            )
+        );
+
+        $this->assertEquals( $entries, $expected );
+    }
 }

@@ -37,7 +37,7 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 3.0.5
+ * @version 3.1.0
  */
 class PoParser
 {
@@ -61,7 +61,6 @@ class PoParser
         } elseif (is_readable($filePath) === false) {
             throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
         }
-
 
         $handle          = fopen($filePath, 'r');
         $headers         = array();
@@ -113,8 +112,9 @@ class PoParser
             switch ($key) {
                 // Flagged translation
                 case '#,':
+                    // @todo: remove $entry['fuzzy'] in favour of just use the `flags` key.
                     $entry['fuzzy'] = in_array('fuzzy', preg_split('/,\s*/', $data));
-                    $entry['flags'] = $data;
+                    $entry['flags'] = explode(',',$data);
                     break;
 
                 // # Translator comments
@@ -136,8 +136,33 @@ class PoParser
 
                 // #| Previous untranslated string
                 case '#|':
-                    // Start a new entry
+                    $tmpParts = explode(' ', $data);
+                    $tmpKey   = $tmpParts[0];
+                    if ($tmpKey != 'msgid' && $tmpKey != 'msgstr') {
+                        $tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
+                        $str = $data;
+                    } else {
+                        $str = implode(' ', array_slice($tmpParts, 1));
+                    }
+
+                    $entry['previous'] = isset($entry['previous'])? $entry['previous']:array('msgid'=>array(),'msgstr'=>array());
+
+                    switch ($tmpKey) {
+                        case 'msgid':
+                            $entry['previous']['msgid'][] = $str;
+                            $lastPreviousKey = $tmpKey;
+                            break;
+
+                        case 'msgstr':
+                            $entry['previous']['msgstr'][] = $str;
+                            $lastPreviousKey = $tmpKey;
+                            break;
+
+                        default:
+                            break;
+                    }
                     break;
+
 
                 // #~ Old entry
                 case '#~':
@@ -400,6 +425,29 @@ class PoParser
                 $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
                 $isPlural = isset($entry['msgid_plural']);
 
+                if (isset($entry['previous'])) {
+
+                    $msgid = $entry['previous']['msgid'];
+
+                    fwrite($handle, '#| msgid ');
+                    foreach ($msgid as $i => $id) {
+                        if ($i > 0 ) {
+                            fwrite($handle, '#| msgid ');
+                        }
+                        fwrite($handle, $this->cleanExport($id) . "\n");
+                    }
+
+                    $msgstr = $entry['previous']['msgstr'];
+
+                    fwrite($handle, '#| msgstr ');
+                    foreach ($msgstr as $i => $id) {
+                        if ($i > 0 ) {
+                            fwrite($handle, '#| msgstr ');
+                        }
+                        fwrite($handle, $this->cleanExport($id) . "\n");
+                    }
+                }
+
                 if (isset($entry['tcomment'])) {
                     foreach ($entry['tcomment'] as $comment) {
                         fwrite($handle, "# " . $comment . "\n");
@@ -419,7 +467,7 @@ class PoParser
                 }
 
                 if (isset($entry['flags']) && !empty($entry['flags'])) {
-                    fwrite($handle, "#, " . $entry['flags'] . "\n");
+                    fwrite($handle, "#, " . implode(',',$entry['flags']) . "\n");
                 }
 
                 if (isset($entry['@'])) {

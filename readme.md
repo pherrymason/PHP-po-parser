@@ -29,6 +29,8 @@ Each `entry` has the following keys:
 - `ccomment`: String Array. Source code comments linked to the message.
 - `obsolete`: Bool (1/0). Marks the entry as obsolete.
 - `fuzzy`: Bool (1/0). Marks the entry as a fuzzy translation.
+- `flags`: Array. List of entry flags
+- `previous`: Array. Contains previous unstranslated strings in a sub array with `msgid` and `msgstr`.
 
 ### Throws
 This method throws `Exception` if file cannot be opened and parse error or a logic error occurs.
@@ -113,6 +115,18 @@ Usage
     $poparser->write( 'my-pofile.po' );
 
 
+Testing
+=======
+Tests are done using PHPUnit.
+To execute tests, from command line type: 
+
+```
+php /vendor/bin/phpunit
+```
+
+
+
+
 Todo
 ====
 * Improve interface to edit entries.
@@ -120,6 +134,15 @@ Todo
 
 Changelog
 =========
+
+###v3.1.0
+* Adds support for `#| comments` #19 (thanks @Cellard)).
+* Properly parses entry flags (store them as an array in `flags` key instead of a string)
+
+
+###v3.0.5
+* Fixes #18
+* Merges #16 (fixes classname casing)
 
 ###v3.0.4
 
