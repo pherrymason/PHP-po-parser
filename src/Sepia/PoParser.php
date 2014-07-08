@@ -37,7 +37,7 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 3.1.0
+ * @version 3.1.1
  */
 class PoParser
 {
@@ -69,6 +69,7 @@ class PoParser
         $justNewEntry    = false; // A new entry has been just inserted.
         $firstLine       = true;
         $lastObsoleteKey = null; // Used to remember last key in a multiline obsolete entry.
+        $lastPreviousKey = null; // Used to remember last key in a multiline previous entry.
         $state           = null;
 
         while (!feof($handle)) {
