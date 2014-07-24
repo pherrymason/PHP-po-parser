@@ -37,11 +37,11 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 3.1.1
+ * @version 3.0.5
  */
 class PoParser
 {
-
+    protected $insertOnUpdate = false;
     protected $entries = array();
     protected $headers = array();
 
@@ -62,6 +62,7 @@ class PoParser
             throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
         }
 
+
         $handle          = fopen($filePath, 'r');
         $headers         = array();
         $hash            = array();
@@ -69,7 +70,6 @@ class PoParser
         $justNewEntry    = false; // A new entry has been just inserted.
         $firstLine       = true;
         $lastObsoleteKey = null; // Used to remember last key in a multiline obsolete entry.
-        $lastPreviousKey = null; // Used to remember last key in a multiline previous entry.
         $state           = null;
 
         while (!feof($handle)) {
@@ -113,9 +113,8 @@ class PoParser
             switch ($key) {
                 // Flagged translation
                 case '#,':
-                    // @todo: remove $entry['fuzzy'] in favour of just use the `flags` key.
                     $entry['fuzzy'] = in_array('fuzzy', preg_split('/,\s*/', $data));
-                    $entry['flags'] = explode(',',$data);
+                    $entry['flags'] = $data;
                     break;
 
                 // # Translator comments
@@ -137,33 +136,8 @@ class PoParser
 
                 // #| Previous untranslated string
                 case '#|':
-                    $tmpParts = explode(' ', $data);
-                    $tmpKey   = $tmpParts[0];
-                    if ($tmpKey != 'msgid' && $tmpKey != 'msgstr') {
-                        $tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
-                        $str = $data;
-                    } else {
-                        $str = implode(' ', array_slice($tmpParts, 1));
-                    }
-
-                    $entry['previous'] = isset($entry['previous'])? $entry['previous']:array('msgid'=>array(),'msgstr'=>array());
-
-                    switch ($tmpKey) {
-                        case 'msgid':
-                            $entry['previous']['msgid'][] = $str;
-                            $lastPreviousKey = $tmpKey;
-                            break;
-
-                        case 'msgstr':
-                            $entry['previous']['msgstr'][] = $str;
-                            $lastPreviousKey = $tmpKey;
-                            break;
-
-                        default:
-                            break;
-                    }
+                    // Start a new entry
                     break;
-
 
                 // #~ Old entry
                 case '#~':
@@ -351,8 +325,13 @@ class PoParser
      * @param string|array $ccomment
      * @return null
      */
-    public function updateEntry($original, $translation = null, $tcomment = array(), $ccomment = array())
+    public function updateEntry($original, $translation = null, $tcomment = array(), $ccomment = array(), array $flags = array())
     {
+	// insert new entry if not yet existing
+        if (true === $this->insertOnUpdate && !array_key_exists($original, $this->entries)) {
+            $this->entries[$original] = array('flags' => $flags, 'msgid' => $original);
+
+        }
         if (null !== $translation) {
             $this->entries[$original]['fuzzy'] = false;
             $this->entries[$original]['msgstr'] = !is_array($translation) ? array($translation) : $translation;
@@ -426,29 +405,6 @@ class PoParser
                 $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
                 $isPlural = isset($entry['msgid_plural']);
 
-                if (isset($entry['previous'])) {
-
-                    $msgid = $entry['previous']['msgid'];
-
-                    fwrite($handle, '#| msgid ');
-                    foreach ($msgid as $i => $id) {
-                        if ($i > 0 ) {
-                            fwrite($handle, '#| msgid ');
-                        }
-                        fwrite($handle, $this->cleanExport($id) . "\n");
-                    }
-
-                    $msgstr = $entry['previous']['msgstr'];
-
-                    fwrite($handle, '#| msgstr ');
-                    foreach ($msgstr as $i => $id) {
-                        if ($i > 0 ) {
-                            fwrite($handle, '#| msgstr ');
-                        }
-                        fwrite($handle, $this->cleanExport($id) . "\n");
-                    }
-                }
-
                 if (isset($entry['tcomment'])) {
                     foreach ($entry['tcomment'] as $comment) {
                         fwrite($handle, "# " . $comment . "\n");
@@ -468,7 +424,7 @@ class PoParser
                 }
 
                 if (isset($entry['flags']) && !empty($entry['flags'])) {
-                    fwrite($handle, "#, " . implode(',',$entry['flags']) . "\n");
+                    fwrite($handle, "#, " . $entry['flags'] . "\n");
                 }
 
                 if (isset($entry['@'])) {
@@ -669,5 +625,24 @@ class PoParser
             }
         }
         return ($headerItems == $count) ? true : false;
+    }
+
+    /**
+    * @param boolean $boolean
+    */
+    public function setInsertOnUpdate($value)
+    {
+        if (!is_bool($value)) {
+            throw new Exception('Boolean expected as parameter');
+        }
+        $this->insertOnUpdate = $value;
+    }
+
+    /**
+    * @return bool
+    */
+    public function getInsertOnUpdate()
+    {
+        return $this->insertOnUpdate;
     }
 }
