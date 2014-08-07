@@ -314,6 +314,10 @@ class Parser
             }
 
             if (isset($entry['msgid'])) {
+                if (is_array($entry['msgid'])) {
+                    $entry['msgid'] = implode('', $entry['msgid']);
+                }
+
                 // Special clean for msgid
                 $msgid = explode("\n", $entry['msgid']);
 
@@ -324,6 +328,9 @@ class Parser
             }
 
             if (isset($entry['msgid_plural'])) {
+					if (is_array($entry['msgid_plural'])) {
+                    $entry['msgid_plural'] = implode('', $entry['msgid_plural']);
+                }
                 fwrite($handle, 'msgid_plural ' . $this->cleanExport($entry['msgid_plural']) . "\n");
             }
 
