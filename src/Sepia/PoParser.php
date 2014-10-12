@@ -51,7 +51,7 @@ class PoParser
      *
      * @param string po content
      * @throws \Exception.
-     * @return Array. List of entries found in string po formatted
+     * @return array. List of entries found in string po formatted
      */
     public function parseString($string)
     {
@@ -66,7 +66,7 @@ class PoParser
      *
      * @param string $filePath
      * @throws \Exception.
-     * @return Array. List of entries found in string po formatted
+     * @return array. List of entries found in string po formatted
      */
     public function parseFile($filepath)
     {
@@ -81,19 +81,10 @@ class PoParser
      *
      * @param string $filePath
      * @throws \Exception .
-     * @return Array. List of entries found in .po file.
+     * @return array. List of entries found in .po file.
      */
     public function parse( $handle )
-    {/*
-        if (empty($filePath)) {
-            throw new \Exception('PoParser: Input File not defined.');
-        } elseif (file_exists($filePath) === false) {
-            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filePath) . '"');
-        } elseif (is_readable($filePath) === false) {
-            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
-        }
-        $handle          = fopen($filePath, 'r');
-    */
+    {
         $headers         = array();
         $hash            = array();
         $entry           = array();
@@ -103,9 +94,7 @@ class PoParser
         $lastPreviousKey = null; // Used to remember last key in a multiline previous entry.
         $state           = null;
 
-    //    while (!feof($handle)) {
         while (!$handle->ended()) {
-            //$line  = trim(fgets($handle));
             $line  = trim($handle->getNextLine());
             $split = preg_split('/\s+/ ', $line, 2);
             $key   = $split[0];
@@ -303,8 +292,8 @@ class PoParser
                     break;
             }
         }
-        //fclose($handle);
         $handle->close();
+
         // add final entry
         if ($state == 'msgstr') {
             $hash[] = $entry;
@@ -453,7 +442,7 @@ class PoParser
     {
         $output = $this->compile();
         $result = file_put_contents($filepath, /*"\xEF\xBB\xBF".*/ $output/* \ForceUTF8\Encoding::toUTF8($output)*/);
-        if ($result===FALSE) {
+        if ($result===false) {
             throw new \Exception('Could not write into file '.htmlspecialchars($filepath));
         }
         return true;
@@ -489,12 +478,12 @@ class PoParser
             $isPlural = isset($entry['msgid_plural']);
 
             if (isset($entry['previous'])) {
-                foreach ($entry['previous'] AS $key=>$data) {
+                foreach ($entry['previous'] as $key=>$data) {
 
                     if (is_string($data)) {
                         $output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
                     } elseif (is_array($data) && count($data)>0) {
-                        foreach ($data AS $line) {
+                        foreach ($data as $line) {
                             $output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
                         }
                     }

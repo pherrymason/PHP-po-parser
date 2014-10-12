@@ -34,40 +34,40 @@ namespace Sepia;
  */
 class StringHandler implements InterfaceHandler
 {
-	protected $string;
-	protected $line;
+    protected $string;
+    protected $line;
 
-	public function __construct( $string )
-	{
-		$this->line   = 0;
-		$this->strings = explode("\n",$string);
-		$this->total	= count($this->strings);
-	}
+    public function __construct( $string )
+    {
+        $this->line = 0;
+        $this->strings = explode("\n",$string);
+        $this->total = count($this->strings);
+    }
 
-	public function getNextLine()
-	{
-		if (isset($this->strings[$this->line])) {
-			$result = $this->strings[$this->line];
-			$this->line++;
-		} else {
-			$result = false;
-		}
-		return $result;
-	}
+    public function getNextLine()
+    {
+        if (isset($this->strings[$this->line])) {
+            $result = $this->strings[$this->line];
+            $this->line++;
+        } else {
+            $result = false;
+        }
+        return $result;
+    }
 
-	public function ended()
-	{
-		return ($this->line>=$this->total);
-	}
+    public function ended()
+    {
+        return ($this->line>=$this->total);
+    }
 
-	public function close()
-	{
-		$this->line = 0;
-	}
+    public function close()
+    {
+        $this->line = 0;
+    }
 
 
-	public function save($ignore)
-	{
+    public function save($ignore)
+    {
 
-	}
+    }
 }

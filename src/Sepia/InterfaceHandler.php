@@ -34,8 +34,8 @@ namespace Sepia;
  */
 interface InterfaceHandler
 {
-	public function getNextLine();
-	public function ended();
-	public function close();
-	public function save($output);
+    public function getNextLine();
+    public function ended();
+    public function close();
+    public function save($output);
 }

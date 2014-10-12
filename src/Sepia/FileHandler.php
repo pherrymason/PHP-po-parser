@@ -34,52 +34,52 @@ namespace Sepia;
  */
 class FileHandler implements InterfaceHandler
 {
-	protected $fileHandle;
-	protected $encoding;
+    protected $fileHandle;
+    protected $encoding;
 
-	public function __construct( $filepath )
-	{
-		if (file_exists($filepath) === false) {
+    public function __construct($filepath)
+    {
+        if (file_exists($filepath) === false) {
             throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filepath) . '"');
         } elseif (is_readable($filepath) === false) {
             throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filepath) . '"');
         }
 
-		$this->fileHandle = @fopen($filepath, "r");
-		if ($this->fileHandle===FALSE) {
-			throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
-		}
+        $this->fileHandle = @fopen($filepath, "r");
+        if ($this->fileHandle===false) {
+            throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
+        }
 
 
-		// Guess encoding
-		$wholefile = file_get_contents($filepath,false,null,0,1000);
-		$encoding  = mb_detect_encoding( $wholefile );
-		if ($encoding===FALSE) {
+        // Guess encoding
+        $wholefile = file_get_contents($filepath, false, null, 0, 1000);
+        $encoding  = mb_detect_encoding($wholefile);
+        if ($encoding===false) {
 
-		} else {
-			$this->encoding = $encoding;
-		}
-	}
-
-
-	public function getNextLine()
-	{
-		return fgets($this->fileHandle);
-	}
-
-	public function ended()
-	{
-		return feof($this->fileHandle);
-	}
-
-	public function close()
-	{
-		fclose($this->fileHandle);
-	}
+        } else {
+            $this->encoding = $encoding;
+        }
+    }
 
 
-	public function save( $outputFile )
-	{
+    public function getNextLine()
+    {
+        return fgets($this->fileHandle);
+    }
 
-	}
+    public function ended()
+    {
+        return feof($this->fileHandle);
+    }
+
+    public function close()
+    {
+        fclose($this->fileHandle);
+    }
+
+
+    public function save($outputFile)
+    {
+
+    }
 }
