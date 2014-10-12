@@ -74,7 +74,7 @@ class FileHandler implements InterfaceHandler
 
     public function close()
     {
-        fclose($this->fileHandle);
+        @fclose($this->fileHandle);
     }
 
 

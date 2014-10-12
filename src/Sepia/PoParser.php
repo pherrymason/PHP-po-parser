@@ -70,6 +70,10 @@ class PoParser
      */
     public function parseFile($filepath)
     {
+        if ($this->sourceHandle!==null) {
+            $this->sourceHandle->close();
+        }
+
         $this->sourceHandle = new FileHandler($filepath);
         return $this->parse($this->sourceHandle);
     }
@@ -478,7 +482,7 @@ class PoParser
             $isPlural = isset($entry['msgid_plural']);
 
             if (isset($entry['previous'])) {
-                foreach ($entry['previous'] as $key=>$data) {
+                foreach ($entry['previous'] as $key => $data) {
 
                     if (is_string($data)) {
                         $output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
@@ -510,7 +514,7 @@ class PoParser
             }
 
             if (isset($entry['flags']) && !empty($entry['flags'])) {
-                $output.= "#, " . implode(',',$entry['flags']) . "\n";
+                $output.= "#, " . implode(',', $entry['flags']) . "\n";
             }
 
             if (isset($entry['@'])) {
