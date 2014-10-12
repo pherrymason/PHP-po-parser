@@ -16,9 +16,6 @@
 	"support" : {
 		"issues" : "https://github.com/raulferras/PHP-po-parser/issues"
 	},
-	"require": {
-        "neitanod/forceutf8": "dev-master"
-    },
 	"require-dev" : {
 		"phpunit/phpunit": "3.7.*",
         "squizlabs/php_codesniffer": "1.5.*"
