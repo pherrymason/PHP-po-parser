@@ -55,8 +55,8 @@ class PoParser
      */
     public function parseString($string)
     {
-    	$this->sourceHandle = new StringHandler($string);
-    	return $this->parse($this->sourceHandle);
+        $this->sourceHandle = new StringHandler($string);
+        return $this->parse($this->sourceHandle);
     }
 
 
@@ -70,8 +70,8 @@ class PoParser
      */
     public function parseFile($filepath)
     {
-    	$this->sourceHandle = new FileHandler($filepath);
-    	return $this->parse($this->sourceHandle);
+        $this->sourceHandle = new FileHandler($filepath);
+        return $this->parse($this->sourceHandle);
     }
 
 
@@ -93,7 +93,7 @@ class PoParser
             throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
         }
         $handle          = fopen($filePath, 'r');
-	*/
+    */
         $headers         = array();
         $hash            = array();
         $entry           = array();
@@ -112,7 +112,7 @@ class PoParser
 
             // If a blank line is found, or a new msgid when already got one
             if ($line === '' || ($key=='msgid' && isset($entry['msgid']))) {
-            	// Two consecutive blank lines
+                // Two consecutive blank lines
                 if ($justNewEntry) {
                     continue;
                 }
@@ -136,7 +136,7 @@ class PoParser
                 $lastObsoleteKey = null;
 
                 if ($line==='') {
-                	continue;
+                    continue;
                 }
             }
 
@@ -173,10 +173,10 @@ class PoParser
                     $tmpParts = explode(' ', $data);
                     $tmpKey   = $tmpParts[0];
                     if (!in_array($tmpKey, array('msgid','msgid_plural','msgstr','msgctxt'))) {
-                    	$tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
-                    	$str = $data;
+                        $tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
+                        $str = $data;
                     } else {
-                    	$str = implode(' ', array_slice($tmpParts, 1));
+                        $str = implode(' ', array_slice($tmpParts, 1));
                     }
 
                     $entry['previous'] = isset($entry['previous'])? $entry['previous']:array('msgid'=>array(),'msgstr'=>array());
@@ -190,7 +190,7 @@ class PoParser
                             break;
 
                         default:
-                        	$entry['previous'][$tmpKey] = $str;
+                            $entry['previous'][$tmpKey] = $str;
                             break;
                     }
                     break;
@@ -236,7 +236,7 @@ class PoParser
 
                 // ¿previous obsolete? reported by @Cellard
                 case '#~|':
-                	break;
+                    break;
 
 
 
@@ -391,16 +391,16 @@ class PoParser
      * @param string|array $ccomment
      * @return null
      */
-    public function updateEntry($msgid, $msgstr = null, $tcomment = array(), $ccomment = array(), $flags = array(), $createNew=false)
+    public function updateEntry($msgid, $msgstr = null, $tcomment = array(), $ccomment = array(), $flags = array(), $createNew = false)
     {
-    	// In case of new entry
+        // In case of new entry
         if (!isset($this->entries[$msgid])) {
 
-        	if ($createNew==false) {
-        		return;
-        	}
+            if ($createNew==false) {
+                return;
+            }
 
-        	$this->entries[$msgid] = array('msgid'=>$msgid);
+            $this->entries[$msgid] = array('msgid'=>$msgid);
         }
 
         if (null !== $msgstr) {
@@ -409,8 +409,8 @@ class PoParser
         }
 
         if (count($flags)>0) {
-	        $flags = $this->entries[$msgid]['flags'];
-    	    $this->entries[$msgid]['flags'] = str_replace('fuzzy', '', $flags);
+            $flags = $this->entries[$msgid]['flags'];
+            $this->entries[$msgid]['flags'] = str_replace('fuzzy', '', $flags);
         }
 
         $this->entries[$msgid]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
@@ -423,11 +423,11 @@ class PoParser
 
 
     /**
-    *	Gets entries
+    *   Gets entries
     */
     public function entries()
     {
-    	return $this->entries;
+        return $this->entries;
     }
 
 
@@ -435,7 +435,7 @@ class PoParser
 
 
     /**
-     *	Writes entries to a po file
+     *  Writes entries to a po file
      *
      * @example
      *        $pofile = new PoParser();
@@ -451,12 +451,12 @@ class PoParser
     */
     public function writeFile($filepath)
     {
-    	$output = $this->compile();
-       	$result = file_put_contents($filepath, /*"\xEF\xBB\xBF".*/ $output/* \ForceUTF8\Encoding::toUTF8($output)*/);
-       	if ($result===FALSE) {
-       		throw new \Exception('Could not write into file '.htmlspecialchars($filepath));
-       	}
-       	return true;
+        $output = $this->compile();
+        $result = file_put_contents($filepath, /*"\xEF\xBB\xBF".*/ $output/* \ForceUTF8\Encoding::toUTF8($output)*/);
+        if ($result===FALSE) {
+            throw new \Exception('Could not write into file '.htmlspecialchars($filepath));
+        }
+        return true;
     }
 
 
@@ -470,12 +470,12 @@ class PoParser
      */
     public function compile()
     {
-    	$output = '';
+        $output = '';
 
         if (count($this->headers) > 0) {
             $output.= "msgid \"\"\n";
-			$output.= "msgstr \"\"\n";
-	        foreach ($this->headers as $header) {
+            $output.= "msgstr \"\"\n";
+            foreach ($this->headers as $header) {
                 $output.= $header . "\n";
             }
             $output.= "\n";
@@ -489,17 +489,17 @@ class PoParser
             $isPlural = isset($entry['msgid_plural']);
 
             if (isset($entry['previous'])) {
-            	foreach ($entry['previous'] AS $key=>$data) {
+                foreach ($entry['previous'] AS $key=>$data) {
 
-            		if (is_string($data)) {
-                		$output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
-            		} elseif (is_array($data) && count($data)>0) {
-            			foreach ($data AS $line) {
-            				$output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
-            			}
-            		}
+                    if (is_string($data)) {
+                        $output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
+                    } elseif (is_array($data) && count($data)>0) {
+                        foreach ($data AS $line) {
+                            $output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
+                        }
+                    }
 
-            	}
+                }
             }
 
             if (isset($entry['tcomment'])) {
@@ -697,15 +697,15 @@ class PoParser
 
         $headerKeys = array(
             'Project-Id-Version:' => false,
-            //	'Report-Msgid-Bugs-To:'	=> false,
-            //	'POT-Creation-Date:'	=> false,
+            //  'Report-Msgid-Bugs-To:' => false,
+            //  'POT-Creation-Date:'    => false,
             'PO-Revision-Date:' => false,
-            //	'Last-Translator:'		=> false,
-            //	'Language-Team:'		=> false,
+            //  'Last-Translator:'      => false,
+            //  'Language-Team:'        => false,
             'MIME-Version:' => false,
-            //	'Content-Type:'			=> false,
-            //	'Content-Transfer-Encoding:' => false,
-            //	'Plural-Forms:'			=> false
+            //  'Content-Type:'         => false,
+            //  'Content-Transfer-Encoding:' => false,
+            //  'Plural-Forms:'         => false
         );
         $count = count($headerKeys);
         $keys = array_keys($headerKeys);
