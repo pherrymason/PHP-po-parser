@@ -37,13 +37,44 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 3.1.1
+ * @version 4.0
  */
 class PoParser
 {
 
     protected $entries = array();
     protected $headers = array();
+    protected $sourceHandle = null;
+
+    /**
+     * Reads and parses a string
+     *
+     * @param string po content
+     * @throws \Exception.
+     * @return Array. List of entries found in string po formatted
+     */
+    public function parseString($string)
+    {
+    	$this->sourceHandle = new StringHandler($string);
+    	return $this->parse($this->sourceHandle);
+    }
+
+
+
+   /**
+     * Reads and parses a file
+     *
+     * @param string $filePath
+     * @throws \Exception.
+     * @return Array. List of entries found in string po formatted
+     */
+    public function parseFile($filepath)
+    {
+    	$this->sourceHandle = new FileHandler($filepath);
+    	return $this->parse($this->sourceHandle);
+    }
+
+
 
     /**
      * Reads and parses strings of a .po file.
@@ -52,8 +83,8 @@ class PoParser
      * @throws \Exception .
      * @return Array. List of entries found in .po file.
      */
-    public function parse($filePath)
-    {
+    public function parse( $handle )
+    {/*
         if (empty($filePath)) {
             throw new \Exception('PoParser: Input File not defined.');
         } elseif (file_exists($filePath) === false) {
@@ -61,8 +92,8 @@ class PoParser
         } elseif (is_readable($filePath) === false) {
             throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filePath) . '"');
         }
-
         $handle          = fopen($filePath, 'r');
+	*/
         $headers         = array();
         $hash            = array();
         $entry           = array();
@@ -72,8 +103,10 @@ class PoParser
         $lastPreviousKey = null; // Used to remember last key in a multiline previous entry.
         $state           = null;
 
-        while (!feof($handle)) {
-            $line  = trim(fgets($handle));
+    //    while (!feof($handle)) {
+        while (!$handle->ended()) {
+            //$line  = trim(fgets($handle));
+            $line  = trim($handle->getNextLine());
             $split = preg_split('/\s+/ ', $line, 2);
             $key   = $split[0];
 
@@ -139,27 +172,25 @@ class PoParser
                 case '#|':
                     $tmpParts = explode(' ', $data);
                     $tmpKey   = $tmpParts[0];
-                    if ($tmpKey != 'msgid' && $tmpKey != 'msgstr') {
-                        $tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
-                        $str = $data;
+                    if (!in_array($tmpKey, array('msgid','msgid_plural','msgstr','msgctxt'))) {
+                    	$tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
+                    	$str = $data;
                     } else {
-                        $str = implode(' ', array_slice($tmpParts, 1));
+                    	$str = implode(' ', array_slice($tmpParts, 1));
                     }
 
                     $entry['previous'] = isset($entry['previous'])? $entry['previous']:array('msgid'=>array(),'msgstr'=>array());
 
                     switch ($tmpKey) {
                         case 'msgid':
-                            $entry['previous']['msgid'][] = $str;
-                            $lastPreviousKey = $tmpKey;
-                            break;
-
+                        case 'msgid_plural':
                         case 'msgstr':
-                            $entry['previous']['msgstr'][] = $str;
+                            $entry['previous'][$tmpKey][] = $str;
                             $lastPreviousKey = $tmpKey;
                             break;
 
                         default:
+                        	$entry['previous'][$tmpKey] = $str;
                             break;
                     }
                     break;
@@ -199,6 +230,15 @@ class PoParser
                     }
 
                     continue;
+
+
+
+
+                // ¿previous obsolete? reported by @Cellard
+                case '#~|':
+                	break;
+
+
 
                 // context
                 // Allows disambiguations of different messages that have same msgid.
@@ -263,18 +303,18 @@ class PoParser
                     break;
             }
         }
-        fclose($handle);
-
+        //fclose($handle);
+        $handle->close();
         // add final entry
         if ($state == 'msgstr') {
             $hash[] = $entry;
         }
 
-
         // - Cleanup header data
         $this->headers = array();
         foreach ($headers as $header) {
-            $this->headers[] = "\"" . preg_replace("/\\n/", "\\n", $this->clean($header)) . "\"";
+            $header = $this->clean( $header );
+            $this->headers[] = "\"" . preg_replace("/\\n/", '\n', $header) . "\"";
         }
 
         // - Cleanup data,
@@ -345,54 +385,57 @@ class PoParser
     /**
      * Updates an entry.
      *
-     * @param string $original Original string to translate.
-     * @param string|array $translation Translated string
+     * @param string $msgid Original string to translate.
+     * @param string|array $msgstr Translated string
      * @param string|array $tcomment
      * @param string|array $ccomment
      * @return null
      */
-    public function updateEntry($original, $translation = null, $tcomment = array(), $ccomment = array())
+    public function updateEntry($msgid, $msgstr = null, $tcomment = array(), $ccomment = array(), $flags = array(), $createNew=false)
     {
-        if (null !== $translation) {
-            $this->entries[$original]['fuzzy'] = false;
-            $this->entries[$original]['msgstr'] = !is_array($translation) ? array($translation) : $translation;
+    	// In case of new entry
+        if (!isset($this->entries[$msgid])) {
+
+        	if ($createNew==false) {
+        		return;
+        	}
+
+        	$this->entries[$msgid] = array('msgid'=>$msgid);
         }
 
-        if (isset($this->entries[$original]['flags'])) {
-            $flags = $this->entries[$original]['flags'];
-            $this->entries[$original]['flags'] = str_replace('fuzzy', '', $flags);
+        if (null !== $msgstr) {
+            $this->entries[$msgid]['fuzzy']  = false;
+            $this->entries[$msgid]['msgstr'] = !is_array($msgstr) ? array($msgstr) : $msgstr;
         }
 
-        $this->entries[$original]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
-        $this->entries[$original]['tcomment'] = !is_array($tcomment) ? array($tcomment) : $tcomment;
+        if (isset($this->entries[$msgid]['flags'])) {
+            $flags = $this->entries[$msgid]['flags'];
+            $this->entries[$msgid]['flags'] = str_replace('fuzzy', '', $flags);
+        }
+
+        $this->entries[$msgid]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
+        $this->entries[$msgid]['tcomment'] = !is_array($tcomment) ? array($tcomment) : $tcomment;
 
         return;
     }
 
-    /**
-     * Call old deprecated methods
-     *
-     * @param $method
-     * @param $args
-     * @return mixed
-     * @throws \Exception
-     */
-    public function __call($method, $args)
-    {
-        switch ($method) {
-            case 'update_entry':
-                return call_user_func(array($this, 'updateEntry'), $args);
-            case 'headers':
-                return call_user_func(array($this, 'getHeaders'), $args);
-            case 'read':
-                return call_user_func(array($this, 'parse'), $args[0]);
-            default:
-                throw new \Exception('Not registered called method '.$method);
-        }
-    }
+
+
 
     /**
-     * Write entries to a po file.
+    *	Gets entries
+    */
+    public function entries()
+    {
+    	return $this->entries;
+    }
+
+
+
+
+
+    /**
+     *	Writes entries to a po file
      *
      * @example
      *        $pofile = new PoParser();
@@ -405,154 +448,162 @@ class PoParser
      * @param string $filePath
      * @throws \Exception
      * @return null
-     */
-    public function write($filePath)
+    */
+    public function writeFile($filepath)
     {
-        $handle = @fopen($filePath, "wb");
-        if ($handle !== false) {
-            if (count($this->headers) > 0) {
-                fwrite($handle, "msgid \"\"\n");
-                fwrite($handle, "msgstr \"\"\n");
-                foreach ($this->headers as $header) {
-                    fwrite($handle, $header . "\n");
-                }
-                fwrite($handle, "\n");
+    	$output = $this->compile();
+       	$result = file_put_contents($filepath, /*"\xEF\xBB\xBF".*/ $output/* \ForceUTF8\Encoding::toUTF8($output)*/);
+       	if ($result===FALSE) {
+       		throw new \Exception('Could not write into file '.htmlspecialchars($filepath));
+       	}
+       	return true;
+    }
+
+
+
+
+    /**
+     * Compiles entries into a string
+     *
+     * @throws \Exception
+     * @return null
+     */
+    public function compile()
+    {
+    	$output = '';
+
+        if (count($this->headers) > 0) {
+            $output.= "msgid \"\"\n";
+			$output.= "msgstr \"\"\n";
+	        foreach ($this->headers as $header) {
+                $output.= $header . "\n";
             }
-
-
-            $entriesCount = count($this->entries);
-            $counter = 0;
-            foreach ($this->entries as $entry) {
-                $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
-                $isPlural = isset($entry['msgid_plural']);
-
-                if (isset($entry['previous'])) {
-
-                    $msgid = $entry['previous']['msgid'];
-
-                    fwrite($handle, '#| msgid ');
-                    foreach ($msgid as $i => $id) {
-                        if ($i > 0 ) {
-                            fwrite($handle, '#| msgid ');
-                        }
-                        fwrite($handle, $this->cleanExport($id) . "\n");
-                    }
-
-                    $msgstr = $entry['previous']['msgstr'];
-
-                    fwrite($handle, '#| msgstr ');
-                    foreach ($msgstr as $i => $id) {
-                        if ($i > 0 ) {
-                            fwrite($handle, '#| msgstr ');
-                        }
-                        fwrite($handle, $this->cleanExport($id) . "\n");
-                    }
-                }
-
-                if (isset($entry['tcomment'])) {
-                    foreach ($entry['tcomment'] as $comment) {
-                        fwrite($handle, "# " . $comment . "\n");
-                    }
-                }
-
-                if (isset($entry['ccomment'])) {
-                    foreach ($entry['ccomment'] as $comment) {
-                        fwrite($handle, '#. ' . $comment . "\n");
-                    }
-                }
-
-                if (isset($entry['reference'])) {
-                    foreach ($entry['reference'] as $ref) {
-                        fwrite($handle, '#: ' . $ref . "\n");
-                    }
-                }
-
-                if (isset($entry['flags']) && !empty($entry['flags'])) {
-                    fwrite($handle, "#, " . implode(',',$entry['flags']) . "\n");
-                }
-
-                if (isset($entry['@'])) {
-                    fwrite($handle, "#@ " . $entry['@'] . "\n");
-                }
-
-                if (isset($entry['msgctxt'])) {
-                    fwrite($handle, 'msgctxt ' . $this->cleanExport($entry['msgctxt'][0]) . "\n");
-                }
-
-                if ($isObsolete) {
-                    fwrite($handle, "#~ ");
-                }
-
-                if (isset($entry['msgid'])) {
-                    // Special clean for msgid
-                    if (is_string($entry['msgid'])) {
-                        $msgid = explode("\n", $entry['msgid']);
-                    } elseif (is_array($entry['msgid'])) {
-                        $msgid = $entry['msgid'];
-                    } else {
-                        throw new \Exception('msgid not string or array');
-                    }
-
-                    fwrite($handle, 'msgid ');
-                    foreach ($msgid as $i => $id) {
-                        if ($i > 0 && $isObsolete) {
-                            fwrite($handle, "#~ ");
-                        }
-                        fwrite($handle, $this->cleanExport($id) . "\n");
-                    }
-                }
-
-                if (isset($entry['msgid_plural'])) {
-                    // Special clean for msgid_plural
-                    if (is_string($entry['msgid_plural'])) {
-                        $msgidPlural = explode("\n", $entry['msgid_plural']);
-                    } elseif (is_array($entry['msgid_plural'])) {
-                        $msgidPlural = $entry['msgid_plural'];
-                    } else {
-                        throw new \Exception('msgid_plural not string or array');
-                    }
-
-                    fwrite($handle, 'msgid_plural ');
-                    foreach ($msgidPlural as $plural) {
-                        fwrite($handle, $this->cleanExport($plural) . "\n");
-                    }
-                }
-
-                if (isset($entry['msgstr'])) {
-                    if ($isPlural) {
-                        foreach ($entry['msgstr'] as $i => $t) {
-                            fwrite($handle, "msgstr[$i] " . $this->cleanExport($t) . "\n");
-                        }
-                    } else {
-                        foreach ((array)$entry['msgstr'] as $i => $t) {
-                            if ($i == 0) {
-                                if ($isObsolete) {
-                                    fwrite($handle, "#~ ");
-                                }
-
-                                fwrite($handle, 'msgstr ' . $this->cleanExport($t) . "\n");
-                            } else {
-                                if ($isObsolete) {
-                                    fwrite($handle, "#~ ");
-                                }
-
-                                fwrite($handle, $this->cleanExport($t) . "\n");
-                            }
-                        }
-                    }
-                }
-
-                $counter++;
-                // Avoid inserting an extra newline at end of file
-                if ($counter < $entriesCount) {
-                    fwrite($handle, "\n");
-                }
-            }
-
-            fclose($handle);
-        } else {
-            throw new \Exception('PoParser: Could not write into file "' . htmlspecialchars($filePath) . '"');
+            $output.= "\n";
         }
+
+
+        $entriesCount = count($this->entries);
+        $counter = 0;
+        foreach ($this->entries as $entry) {
+            $isObsolete = isset($entry['obsolete']) && $entry['obsolete'];
+            $isPlural = isset($entry['msgid_plural']);
+
+            if (isset($entry['previous'])) {
+            	foreach ($entry['previous'] AS $key=>$data) {
+
+            		if (is_string($data)) {
+                		$output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
+            		} elseif (is_array($data) && count($data)>0) {
+            			foreach ($data AS $line) {
+            				$output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
+            			}
+            		}
+
+            	}
+            }
+
+            if (isset($entry['tcomment'])) {
+                foreach ($entry['tcomment'] as $comment) {
+                    $output.= "# " . $comment . "\n";
+                }
+            }
+
+            if (isset($entry['ccomment'])) {
+                foreach ($entry['ccomment'] as $comment) {
+                    $output.= '#. ' . $comment . "\n";
+                }
+            }
+
+            if (isset($entry['reference'])) {
+                foreach ($entry['reference'] as $ref) {
+                    $output.= '#: ' . $ref . "\n";
+                }
+            }
+
+            if (isset($entry['flags']) && !empty($entry['flags'])) {
+                $output.= "#, " . implode(',',$entry['flags']) . "\n";
+            }
+
+            if (isset($entry['@'])) {
+                $output.= "#@ " . $entry['@'] . "\n";
+            }
+
+            if (isset($entry['msgctxt'])) {
+                $output.= 'msgctxt ' . $this->cleanExport($entry['msgctxt'][0]) . "\n";
+            }
+
+
+            if ($isObsolete) {
+                $output.= "#~ ";
+            }
+
+            if (isset($entry['msgid'])) {
+                // Special clean for msgid
+                if (is_string($entry['msgid'])) {
+                    $msgid = explode("\n", $entry['msgid']);
+                } elseif (is_array($entry['msgid'])) {
+                    $msgid = $entry['msgid'];
+                } else {
+                    throw new \Exception('msgid not string or array');
+                }
+
+                $output.= 'msgid ';
+                foreach ($msgid as $i => $id) {
+                    if ($i > 0 && $isObsolete) {
+                        $output.= "#~ ";
+                    }
+                    $output.= $this->cleanExport($id) . "\n";
+                }
+            }
+
+            if (isset($entry['msgid_plural'])) {
+                // Special clean for msgid_plural
+                if (is_string($entry['msgid_plural'])) {
+                    $msgidPlural = explode("\n", $entry['msgid_plural']);
+                } elseif (is_array($entry['msgid_plural'])) {
+                    $msgidPlural = $entry['msgid_plural'];
+                } else {
+                    throw new \Exception('msgid_plural not string or array');
+                }
+
+                $output.= 'msgid_plural ';
+                foreach ($msgidPlural as $plural) {
+                    $output.= $this->cleanExport($plural) . "\n";
+                }
+            }
+
+            if (isset($entry['msgstr'])) {
+                if ($isPlural) {
+                    foreach ($entry['msgstr'] as $i => $t) {
+                        $output.= "msgstr[$i] " . $this->cleanExport($t) . "\n";
+                    }
+                } else {
+                    foreach ((array)$entry['msgstr'] as $i => $t) {
+                        if ($i == 0) {
+                            if ($isObsolete) {
+                                $output.= "#~ ";
+                            }
+
+                            $output.= 'msgstr ' . $this->cleanExport($t) . "\n";
+                        } else {
+                            if ($isObsolete) {
+                                $output.= "#~ ";
+                            }
+
+                            $output.= $this->cleanExport($t) . "\n";
+                        }
+                    }
+                }
+            }
+
+            $counter++;
+            // Avoid inserting an extra newline at end of file
+            if ($counter < $entriesCount) {
+                $output.= "\n";
+            }
+        }
+
+        return $output;
     }
 
 
@@ -602,7 +653,7 @@ class PoParser
 
 
     /**
-     * Undos `clean_export` actions on a string.
+     * Undos `cleanExport` actions on a string.
      *
      * @param string|array $x
      * @return string|array.
@@ -623,7 +674,9 @@ class PoParser
                 $x = substr($x, 1, -1);
             }
 
+            // Escapes C-style escape secuences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
             $x = stripcslashes($x);
+
         }
 
         return $x;
