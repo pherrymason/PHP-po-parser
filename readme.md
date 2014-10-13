@@ -5,9 +5,9 @@ Po Parser
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/badges/quality-score.png?s=6aaf3c31ce15cebd1d4bed718cd41fd2d921fd31)](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/)
 [![Latest Stable Version](https://poser.pugx.org/leaphly/cart-bundle/version.png)](https://packagist.org/packages/sepia/po-parser)
 
-Po Parser is a personal project to fulfill a need I got: parse po files and edit its content using PHP.  
+PoParser is a personal project to fulfill a need I got: parse Gettext Portable files (*.po files) and edit its content using PHP.  
 
-Po Parser will allow you to read PO Data from any source (files and strings built-in), update it and store back to a file (or get the compiled string).
+PoParser will allow you to read PO Data from any source (files and strings built-in), update it and store back to a file (or get the compiled string).
 
 It supports following parsing features:
 
