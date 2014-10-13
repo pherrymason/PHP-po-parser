@@ -52,7 +52,7 @@ class PoParser
     {
     	$defaultOptions = array(
     		'multiline-glue'=>'<##EOL##>',	// Token used to separate lines in msgid
-    		'ctxt-glue'	=> '<##EOC##>'		// Token used to separate ctxt from msgid
+    		'context-glue'	=> '<##EOC##>'		// Token used to separate ctxt from msgid
     	);
     	$this->options = array_merge($defaultOptions,$options);
     }
@@ -655,7 +655,7 @@ class PoParser
     protected function getEntryId(array $entry)
     {
         if (isset($entry['msgctxt'])) {
-            $id = implode($this->options['multiline-glue'], (array)$entry['msgctxt']) . $this->options['ctxt-glue'] . implode($this->options['multiline-glue'], (array)$entry['msgid']);
+            $id = implode($this->options['multiline-glue'], (array)$entry['msgctxt']) . $this->options['context-glue'] . implode($this->options['multiline-glue'], (array)$entry['msgid']);
         } else {
             $id = implode($this->options['multiline-glue'], (array)$entry['msgid']);
         }
