@@ -37,7 +37,7 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 4.0
+ * @version 4.1.0
  */
 class PoParser
 {
@@ -45,6 +45,25 @@ class PoParser
     protected $entries = array();
     protected $headers = array();
     protected $sourceHandle = null;
+    protected $options = array();
+
+
+    public function __construct($options=array())
+    {
+    	$defaultOptions = array(
+    		'multiline-glue'=>'<##EOL##>',	// Token used to separate lines in msgid
+    		'ctxt-glue'	=> '<##EOC##>'		// Token used to separate ctxt from msgid
+    	);
+    	$this->options = array_merge($defaultOptions,$options);
+    }
+
+
+    public function getOptions()
+    {
+    	return $this->options;
+    }
+
+
 
     /**
      * Reads and parses a string
@@ -514,7 +533,7 @@ class PoParser
             }
 
             if (isset($entry['flags']) && !empty($entry['flags'])) {
-                $output.= "#, " . implode(',', $entry['flags']) . "\n";
+                $output.= "#, " . implode($this->options['multiline-glue'], $entry['flags']) . "\n";
             }
 
             if (isset($entry['@'])) {
@@ -636,9 +655,9 @@ class PoParser
     protected function getEntryId(array $entry)
     {
         if (isset($entry['msgctxt'])) {
-            $id = implode(',', (array)$entry['msgctxt']) . '!' . implode(',', (array)$entry['msgid']);
+            $id = implode($this->options['multiline-glue'], (array)$entry['msgctxt']) . $this->options['ctxt-glue'] . implode($this->options['multiline-glue'], (array)$entry['msgid']);
         } else {
-            $id = implode(',', (array)$entry['msgid']);
+            $id = implode($this->options['multiline-glue'], (array)$entry['msgid']);
         }
 
         return $id;

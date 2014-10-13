@@ -61,7 +61,7 @@ Tests are done using PHPUnit.
 To execute tests, from command line type: 
 
 ```
-php /vendor/bin/phpunit
+php vendor/bin/phpunit
 ```
 
 
@@ -69,8 +69,8 @@ Install via composer
 ====================
 Edit your composer.json file to include the following:
 
-{
-    "require": {
-        ""sepia/po-parser": "dev-master"
+    {
+        "require": {
+            "sepia/po-parser": "dev-master"
+        }
     }
-}

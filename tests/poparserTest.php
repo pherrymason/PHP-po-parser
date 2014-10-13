@@ -184,11 +184,14 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdateComments()
     {
-        $msgid = 'Background Attachment!Attachment';
+        $pofile = new PoParser();
+        $options = $pofile->getOptions();
+        $ctxtGlue = $options['ctxt-glue'];
+
+        $msgid = 'Background Attachment'.$ctxtGlue.'Attachment';
         $ccomment = 'Test write ccomment';
         $tcomment = 'Test write tcomment';
 
-        $pofile = new PoParser();
         $pofile->parseFile(__DIR__ . '/pofiles/context.po');
 
         $pofile->updateEntry($msgid, null, $tcomment, $ccomment);

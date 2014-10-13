@@ -1,7 +1,7 @@
 {
 	"name"        : "sepia/po-parser",
-	"description" : "PO file parser for PHP.",
-	"version"     : "3.1.1",
+	"description" : "Gettext *.PO file parser for PHP.",
+	"version"     : "4.1.0",
 	"type"        : "library",
 	"keywords"    : ["i18n","i10n","po","gettext"],
 	"homepage"    : "https://github.com/raulferras/PHP-po-parser",
