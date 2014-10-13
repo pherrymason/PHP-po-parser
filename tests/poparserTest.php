@@ -186,7 +186,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     {
         $pofile = new PoParser();
         $options = $pofile->getOptions();
-        $ctxtGlue = $options['ctxt-glue'];
+        $ctxtGlue = $options['context-glue'];
 
         $msgid = 'Background Attachment'.$ctxtGlue.'Attachment';
         $ccomment = 'Test write ccomment';
