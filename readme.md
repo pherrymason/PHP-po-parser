@@ -1,5 +1,6 @@
 Po Parser
 =========
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/raulferras/PHP-po-parser?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/raulferras/PHP-po-parser.png?branch=master)](https://travis-ci.org/raulferras/PHP-po-parser)
 [![Code Coverage](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/badges/coverage.png?s=a19ece2a8543b085ab1a5db319ded3bc4530b567)](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/badges/quality-score.png?s=6aaf3c31ce15cebd1d4bed718cd41fd2d921fd31)](https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/)
