@@ -52,7 +52,8 @@ class PoParser
     {
     	$defaultOptions = array(
     		'multiline-glue'=>'<##EOL##>',	// Token used to separate lines in msgid
-    		'context-glue'	=> '<##EOC##>'		// Token used to separate ctxt from msgid
+    		'context-glue'	=> '<##EOC##>',	// Token used to separate ctxt from msgid
+    		'flags-glue'	=> ', '		// Token used to separate flags on the same line
     	);
     	$this->options = array_merge($defaultOptions,$options);
     }
@@ -160,7 +161,7 @@ class PoParser
                 case '#,':
                     // @todo: remove $entry['fuzzy'] in favour of just use the `flags` key.
                     $entry['fuzzy'] = in_array('fuzzy', preg_split('/,\s*/', $data));
-                    $entry['flags'] = explode(',',$data);
+                    $entry['flags'] = explode($this->options['flags-glue'], $data);
                     break;
 
                 // # Translator comments
@@ -533,7 +534,7 @@ class PoParser
             }
 
             if (isset($entry['flags']) && !empty($entry['flags'])) {
-                $output.= "#, " . implode($this->options['multiline-glue'], $entry['flags']) . "\n";
+                $output.= "#, " . implode($this->options['flags-glue'], $entry['flags']) . "\n";
             }
 
             if (isset($entry['@'])) {

@@ -150,8 +150,15 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
         $pofile->parseFile( __DIR__ . '/pofiles/previous_unstranslated.po' );
         $pofile->writeFile(__DIR__ . '/pofiles/temp.po');
 
-
         $this->assertFileEquals(__DIR__ . '/pofiles/previous_unstranslated.po', __DIR__.'/pofiles/temp.po');
+
+        // Read & write a po file with multiple flags
+        $pofile = new PoParser();
+        $pofile->parseFile(__DIR__ . '/pofiles/multiflags.po');
+        $pofile->writeFile(__DIR__ . '/pofiles/temp.po');
+
+        $this->assertFileEquals(__DIR__ . '/pofiles/multiflags.po', __DIR__.'/pofiles/temp.po');
+
 
         unlink(__DIR__ . '/pofiles/temp.po');
     }
