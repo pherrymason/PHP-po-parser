@@ -295,12 +295,28 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     /**
      *  Test for entries with multiple flags
      */
-    /*
     public function testFlags()
     {
+
+        // Read po file with 'php-format' flag. Add 'fuzzy' flag. 
+	// Compare the result with the version that has 'php-format' and 'fuzzy' flags
+        $pofile = new PoParser();
+        $entries = $pofile->parseFile(__DIR__ . '/pofiles/flags-phpformat.po');
+
+	foreach($entries as $msgid => $entry){
+
+		$msgstr = $entry['msgstr'];
+		$flags = $entry['flags'];
+		$tcomment = isset($entry['tcomment']) ? $entry['tcomment'] : array();
+		$ccomment = isset($entry['ccomment']) ? $entry['ccomment'] : array();
+		$flags[] = 'fuzzy';
+		$pofile->updateEntry($msgid, $msgstr, $tcomment, $ccomment, $flags);
+	}
+
+        $pofile->writeFile(__DIR__ . '/pofiles/temp.po');
+        $this->assertFileEquals(__DIR__ . '/pofiles/flags-phpformat-fuzzy.po', __DIR__.'/pofiles/temp.po');
     
     }
-    */
 
 
     /**

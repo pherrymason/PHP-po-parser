@@ -421,11 +421,7 @@ class PoParser
             $this->entries[$msgid]['msgstr'] = !is_array($msgstr) ? array($msgstr) : $msgstr;
         }
 
-        if (count($flags)>0) {
-            $flags = $this->entries[$msgid]['flags'];
-            $this->entries[$msgid]['flags'] = str_replace('fuzzy', '', $flags);
-        }
-
+        $this->entries[$msgid]['flags'] = !is_array($flags) ? array($flags) : $flags;
         $this->entries[$msgid]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
         $this->entries[$msgid]['tcomment'] = !is_array($tcomment) ? array($tcomment) : $tcomment;
 
