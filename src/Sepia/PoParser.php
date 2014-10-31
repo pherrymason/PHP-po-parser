@@ -52,7 +52,7 @@ class PoParser
     {
     	$defaultOptions = array(
     		'multiline-glue'=>'<##EOL##>',	// Token used to separate lines in msgid
-    		'context-glue'	=> '<##EOC##>'		// Token used to separate ctxt from msgid
+    		'context-glue'	=> '<##EOC##>'	// Token used to separate ctxt from msgid
     	);
     	$this->options = array_merge($defaultOptions,$options);
     }
@@ -160,7 +160,7 @@ class PoParser
                 case '#,':
                     // @todo: remove $entry['fuzzy'] in favour of just use the `flags` key.
                     $entry['fuzzy'] = in_array('fuzzy', preg_split('/,\s*/', $data));
-                    $entry['flags'] = explode(',',$data);
+                    $entry['flags'] = preg_split('/,\s*/', $data);
                     break;
 
                 // # Translator comments
@@ -420,11 +420,7 @@ class PoParser
             $this->entries[$msgid]['msgstr'] = !is_array($msgstr) ? array($msgstr) : $msgstr;
         }
 
-        if (count($flags)>0) {
-            $flags = $this->entries[$msgid]['flags'];
-            $this->entries[$msgid]['flags'] = str_replace('fuzzy', '', $flags);
-        }
-
+        $this->entries[$msgid]['flags'] = !is_array($flags) ? array($flags) : $flags;
         $this->entries[$msgid]['ccomment'] = !is_array($ccomment) ? array($ccomment) : $ccomment;
         $this->entries[$msgid]['tcomment'] = !is_array($tcomment) ? array($tcomment) : $tcomment;
 
@@ -533,7 +529,7 @@ class PoParser
             }
 
             if (isset($entry['flags']) && !empty($entry['flags'])) {
-                $output.= "#, " . implode($this->options['multiline-glue'], $entry['flags']) . "\n";
+                $output.= "#, " . implode(', ', $entry['flags']) . "\n";
             }
 
             if (isset($entry['@'])) {
