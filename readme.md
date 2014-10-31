@@ -42,6 +42,9 @@ Usage
 
 Changelog
 =========
+v4.1.1
+* Fixes with multi-flags entries (thanx @gnouet)
+
 v4.1
 * Constructor now accepts options to define separator used in multiline msgid entries.
 * New method `getOptions()`.
