@@ -4,213 +4,132 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Php-po-parser by raulferras</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/raulferras/PHP-po-parser">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/raulferras/PHP-po-parser/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/raulferras/PHP-po-parser/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1>Php-po-parser</h1>
+        <p>PO files parser for PHP</p>
 
+        <p class="view"><a href="https://github.com/raulferras/PHP-po-parser">View the Project on GitHub <small>raulferras/PHP-po-parser</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/raulferras/PHP-po-parser/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/raulferras/PHP-po-parser/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/raulferras/PHP-po-parser">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
       <section>
-        <div id="title">
-          <h1>Php-po-parser</h1>
-          <p>PO files parser for PHP</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/raulferras">raulferras</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
         <h1>
-<a name="po-parser" class="anchor" href="#po-parser"><span class="octicon octicon-link"></span></a>Po Parser</h1>
+<a id="po-parser" class="anchor" href="#po-parser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Po Parser</h1>
 
-<p>Po Parser is a personal project to fulfill a need I got: parse po files and edit its content using PHP.</p>
+<p><a href="https://gitter.im/raulferras/PHP-po-parser?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
+<a href="https://travis-ci.org/raulferras/PHP-po-parser"><img src="https://travis-ci.org/raulferras/PHP-po-parser.png?branch=master" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/"><img src="https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/badges/coverage.png?s=a19ece2a8543b085ab1a5db319ded3bc4530b567" alt="Code Coverage"></a>
+<a href="https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/"><img src="https://scrutinizer-ci.com/g/raulferras/PHP-po-parser/badges/quality-score.png?s=6aaf3c31ce15cebd1d4bed718cd41fd2d921fd31" alt="Scrutinizer Quality Score"></a>
+<a href="https://packagist.org/packages/sepia/po-parser"><img src="https://poser.pugx.org/leaphly/cart-bundle/version.png" alt="Latest Stable Version"></a></p>
 
-<h1>
-<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>Methods</h1>
+<p>PoParser is a personal project to fulfill a need I got: parse Gettext Portable files (*.po files) and edit its content using PHP.  </p>
 
-<h2>
-<a name="read-file_path-" class="anchor" href="#read-file_path-"><span class="octicon octicon-link"></span></a>read( $file_path )</h2>
+<p>PoParser will allow you to read PO Data from any source (files and strings built-in), update it and store back to a file (or get the compiled string).</p>
 
-<p>This method parses a <code>po</code> file and returns an array with its entries.  </p>
-
-<h3>
-<a name="parameters" class="anchor" href="#parameters"><span class="octicon octicon-link"></span></a>Parameters</h3>
-
-<p><code>$file_path</code>: String. po filepath.</p>
-
-<h3>
-<a name="returns" class="anchor" href="#returns"><span class="octicon octicon-link"></span></a>Returns</h3>
-
-<p>An <code>Array</code> of <code>entries</code>.<br>
-Each <code>entry</code> has the following keys:</p>
+<p>It supports following parsing features:</p>
 
 <ul>
-<li>
-<code>msgid</code>: String Array. Entry identifier.</li>
-<li>
-<code>msgstr</code>: String Array. Translated string.</li>
-<li>
-<code>reference</code>: String Array. Source code filepaths where this message is found.</li>
-<li>
-<code>msgctxt</code>: String. Disambiguating context.</li>
-<li>
-<code>tcomment</code>: String Array. Translator comments.</li>
-<li>
-<code>ccomment</code>: String Array. Source code comments linked to the message.</li>
-<li>
-<code>obsolete</code>: Bool (1/0). Marks the entry as obsolete.</li>
-<li>
-<code>fuzzy</code>: Bool (1/0). Marks the entry as a fuzzy translation.</li>
-</ul><h3>
-<a name="throws" class="anchor" href="#throws"><span class="octicon octicon-link"></span></a>Throws</h3>
-
-<p>This method throws <code>Exception</code> if file cannot be opened and parse error or a logic error occurs.</p>
-
-<h2>
-<a name="headers" class="anchor" href="#headers"><span class="octicon octicon-link"></span></a>headers()</h2>
-
-<p>Called after <code>read()</code> method, returns the headers of the file, if present.</p>
-
-<h3>
-<a name="returns-1" class="anchor" href="#returns-1"><span class="octicon octicon-link"></span></a>Returns</h3>
-
-<p>An <code>Array</code> of strings containing all headers present in the file.</p>
-
-<h2>
-<a name="write-file_path-" class="anchor" href="#write-file_path-"><span class="octicon octicon-link"></span></a>write( $file_path )</h2>
-
-<p>This method writes a <code>po</code> file from the internal <code>$entries</code> property.  </p>
-
-<h3>
-<a name="throws-1" class="anchor" href="#throws-1"><span class="octicon octicon-link"></span></a>Throws</h3>
-
-<p>This method throws <code>Exception</code> if output file cannot be opened to write.</p>
-
-<h2>
-<a name="update_entry-msgid-msgstr-" class="anchor" href="#update_entry-msgid-msgstr-"><span class="octicon octicon-link"></span></a>update_entry( $msgid, $msgstr )</h2>
-
-<p>This method updates an entry parsed previously with <code>read</code> method.</p>
-
-<h3>
-<a name="parameters-1" class="anchor" href="#parameters-1"><span class="octicon octicon-link"></span></a>Parameters</h3>
-
-<p><code>$msgid</code>: Entry identifier.<br><code>$msgstr</code>: Translation to be stored.</p>
-
-<p>When updating an entry that makes use of a <strong>Disambiguating Context</strong>, use &lt;context&gt;!&lt;msgid&gt; as the first parameter.
-Example:</p>
-
-<pre><code>// Edit the message "Welcome user!"
-$poparser-&gt;update_entry( "Welcome user!", "Bienvenido usuario!" );
-
-// Edit the message "N" in the Dissambiguating Context "North"
-$poparser-&gt;update_entry( "N!Norte" );
-
-// Edit the message "N" in the Dissambiguating Context "No"
-$poparser-&gt;update_entry( "N!No" );
-</code></pre>
-
-<h1>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h1>
-
-<h2>
-<a name="reading-po-content" class="anchor" href="#reading-po-content"><span class="octicon octicon-link"></span></a>Reading Po Content</h2>
-
-<pre><code>$poparser = new PoParser();
-entries = $poparser-&gt;read( 'my-pofile.po' );
-// Now $entries contains every string information in your pofile
-
-echo '&lt;ul&gt;';
-foreach( $entries AS $entry )
-{
-   echo '&lt;li&gt;'.
-   '&lt;b&gt;msgid:&lt;/b&gt; '.implode('&lt;br&gt;',$entry['msgid']).'&lt;br&gt;'.         // Message ID
-   '&lt;b&gt;msgstr:&lt;/b&gt; '.implode('&lt;br&gt;',$entry['msgstr']).'&lt;br&gt;'.       // Translation
-   '&lt;b&gt;reference:&lt;/b&gt; '.implode('&lt;br&gt;',$entry['reference']).'&lt;br&gt;'. // Reference
-   '&lt;b&gt;msgctxt:&lt;/b&gt; ' . $entry['msgctxt'].'&lt;br&gt;'.   // Message Context
-   '&lt;b&gt;tcomment:&lt;/b&gt; ' . implode("&lt;br&gt;",$entry['tcomment']).'&lt;br&gt;'. // Translator comment
-   '&lt;b&gt;ccomment:&lt;/b&gt; ' . implode("&lt;br&gt;",$entry['ccomment']).'&lt;br&gt;'. // Code Comment
-   '&lt;b&gt;obsolete?:&lt;/b&gt; '.(string)$entry['obsolete'].'&lt;br&gt;'. // Is obsolete?
-    '&lt;b&gt;fuzzy?:&lt;/b&gt; ' .(string)$entry['fuzzy'].     // Is fuzzy?
-    '&lt;/li&gt;';
-}
-echo '&lt;/ul&gt;';
-</code></pre>
-
-<h2>
-<a name="modify-content" class="anchor" href="#modify-content"><span class="octicon octicon-link"></span></a>Modify Content</h2>
-
-<pre><code>$poparser = new PoParser();
-$poparser-&gt;read( 'my-pofile.po' );
-// Entries are stored in `$pofile` object, so you can modify them.
-
-// Use `update_entry( msgid, msgstr )` to change the messages you want.
-$poparser-&gt;update_entry( 'Write your email', 'Escribe tu email' );
-$poparser-&gt;write( 'my-pofile.po' );
-</code></pre>
-
-<h1>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h1>
-
-<ul>
-<li>Define as composer project.</li>
-<li>Unit tests.</li>
-<li>Improve interface to edit entries.</li>
-<li>Discover what's the meaning of the line "#@ ". It was just a comment <code># @</code>.</li>
-</ul><h1>
-<a name="changelog" class="anchor" href="#changelog"><span class="octicon octicon-link"></span></a>Changelog</h1>
-
-<h3>
-<a name="v21" class="anchor" href="#v21"><span class="octicon octicon-link"></span></a>v2.1</h3>
-
-<p>Version 2.1 has the following changes:</p>
-
-<ul>
-<li>fixes errors when saving msgid_plurals (thanks <a href="https://github.com/felixgilles" class="user-mention">@felixgilles</a>).</li>
-<li>Now it handles entries using msgctxt correctly by not merging them into a single entry.</li>
-<li>Headers of some file headers were being ignored because of a too strict check.</li>
-<li>A new method is introduced to read file headers: <code>headers()</code>.</li>
-</ul><h3>
-<a name="v20" class="anchor" href="#v20"><span class="octicon octicon-link"></span></a>v2.0</h3>
-
-<p>Version 2.0 introduces a lot of bug fixes, mainly related to multiline entries. I also decide to change class name to something more semantic (<code>PoParser</code>) as I felt old name was not well suited.<br>
-Check <code>read</code> documentation to look for changes in data returned.</p>
-
-<ul>
-<li>Class name changed to <code>PoParser</code>.</li>
-<li>Improve reading of multiline entries.</li>
-<li>Fix ending quotes being removed on multiline <code>msgid</code> and <code>msgstr</code>.</li>
-<li>Possible bug with <code>msg_id_plural</code>.</li>
-<li>
-<code>read</code> method throws <code>Exception</code> if an error occurs.</li>
-<li>Translator and source code <strong>Multiline comments</strong>  are properly parsed.</li>
-</ul><h3>
-<a name="v10" class="anchor" href="#v10"><span class="octicon octicon-link"></span></a>v1.0</h3>
-
-<ul>
-<li>First version.</li>
+<li>header section.</li>
+<li>msgid, both single and multiline.</li>
+<li>msgstr, both single and multiline.</li>
+<li>msgctxt (Message context).</li>
+<li>msgid_plural (plurals forms).</li>
+<li>#, keys (flags).</li>
+<li># keys (translator comments).</li>
+<li>#. keys (Comments extracted from source code).</li>
+<li>#: keys (references).</li>
+<li>#| keys (previously untranslated), both single and multiline.</li>
+<li>#~ keys (old entries), both single and multiline.</li>
 </ul>
-      </section>
 
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<pre><code>// Parse a po file
+$poParser = new Sepia\PoParser();
+$entries  = $poParser-&gt;parseFile( 'es.po' );
+// $entries contains every entry in es.po file.
+
+// Update entries
+$msgid = 'Press this button to save';
+$msgstr= 'Pulsa este botón para guardar';
+$poParser-&gt;updateEntry($msgid, $msgstr);
+// You can also change translator comments, code comments, flags...
+</code></pre>
+
+<h1>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h1>
+
+<p>v4.1.1</p>
+
+<ul>
+<li>Fixes with multi-flags entries (thanx <a href="https://github.com/gnouet" class="user-mention">@gnouet</a>)</li>
+</ul>
+
+<p>v4.1</p>
+
+<ul>
+<li>Constructor now accepts options to define separator used in multiline msgid entries.</li>
+<li>New method <code>getOptions()</code>.</li>
+</ul>
+
+<p>v4.0</p>
+
+<ul>
+<li>new methods parseString() and parseFile() replace the old parse()`</li>
+<li>new method writeFile() replaces the old write().</li>
+<li>new method compile() which takes all parsed entries and coverts back to a PO formatted string.</li>
+</ul>
+
+<p><a href="https://github.com/raulferras/PHP-po-parser/wiki/Changelog">See whole changelog</a></p>
+
+<h1>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documentation</h1>
+
+<p><a href="https://github.com/raulferras/PHP-po-parser/wiki/Documentation-4.0">See v4 documentation</a></p>
+
+<h1>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h1>
+
+<p>Tests are done using PHPUnit.
+To execute tests, from command line type: </p>
+
+<pre><code>php vendor/bin/phpunit
+</code></pre>
+
+<h1>
+<a id="install-via-composer" class="anchor" href="#install-via-composer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install via composer</h1>
+
+<p>Edit your composer.json file to include the following:</p>
+
+<pre><code>{
+    "require": {
+        "sepia/po-parser": "dev-master"
+    }
+}
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/raulferras">raulferras</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
