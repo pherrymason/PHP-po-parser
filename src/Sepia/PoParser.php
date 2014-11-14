@@ -422,7 +422,7 @@ class PoParser
         }
 
         if(!is_null($newMsgId)) {
-            $this->entries[$msgid]['msgid'] = $newMsgId;
+	    $this->entries[$msgid]['msgid'] = !is_array($newMsgId) ? array($newMsgId) : $newMsgId;
         }
 
         $this->entries[$msgid]['flags'] = !is_array($flags) ? array($flags) : $flags;
