@@ -398,12 +398,15 @@ class PoParser
      * Updates an entry.
      *
      * @param string $msgid Original string to translate.
-     * @param string|array $msgstr Translated string
+     * @param string|array $msgstr translated string
      * @param string|array $tcomment
      * @param string|array $ccomment
+     * @param array $flags
+     * @param bool $createNew
+     * @param string|null $newMsgId
      * @return null
      */
-    public function updateEntry($msgid, $msgstr = null, $tcomment = array(), $ccomment = array(), $flags = array(), $createNew = false)
+    public function updateEntry($msgid, $msgstr = null, $tcomment = array(), $ccomment = array(), $flags = array(), $createNew = false, $newMsgId = null)
     {
         // In case of new entry
         if (!isset($this->entries[$msgid])) {
@@ -418,6 +421,10 @@ class PoParser
         if (null !== $msgstr) {
             $this->entries[$msgid]['fuzzy']  = false;
             $this->entries[$msgid]['msgstr'] = !is_array($msgstr) ? array($msgstr) : $msgstr;
+        }
+
+        if(!is_null($newMsgId)) {
+	    $this->entries[$msgid]['msgid'] = !is_array($newMsgId) ? array($newMsgId) : $newMsgId;
         }
 
         $this->entries[$msgid]['flags'] = !is_array($flags) ? array($flags) : $flags;
