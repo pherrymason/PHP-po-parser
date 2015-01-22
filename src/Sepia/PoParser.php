@@ -434,27 +434,75 @@ class PoParser
         return;
     }
 
-    public function updateEntryPlural($original, $plural = false)
+
+
+    /**
+     * Updates an entry.
+     * If entry not found returns false. If $createNew is true, a new entry will be created.
+     * $entry is an array that can contain following indexes:
+     *  - msgid: String Array.
+     *  - msgstr: String Array.
+     *  - reference: String Array.
+     *  - msgctxt: String. Disambiguating context.
+     *  - tcomment: String Array. Translator comments.
+     *  - ccomment: String Array. Source comments.
+     *  - msgid_plural: String Array.
+     *  - flags: Array. List of entry flags. Example: array('fuzzy','php-format')
+     *  - previous: Array: Contains previous untranslated strings in a sub array with msgid and msgstr.
+     * 
+     * @param String  $msgid     Id of entry. Be aware that some entries have a multiline msgid. In that case \n must be replaced by the value of 'multiline-glue' option (by default "<##EOL##>").
+     * @param Array   $entry     Array with all entry data. Fields not setted will be removed.
+     * @param boolean $createNew If msgid not found, it will create a new entry. By default true. You want to set this to false if need to change the msgid of an entry.
+     */
+    public function setEntry($msgid, $entry, $createNew=true)
     {
-        if ($plural) {
-            $this->entries[$original]['msgid_plural'] = $plural;
-        } else {
-            unset($this->entries[$original]['msgid_plural']);
+    	// In case of new entry
+        if (!isset($this->entries[$msgid])) {
+
+            if ($createNew==false) {
+                return;
+            }
+
+            $this->entries[$msgid] = $entry;
+        }
+        else
+        {
+        	// Be able to change msgid.
+        	if( $msgid!==$entry['msgid'] )
+        	{
+        		unset($this->entries[$msgid]);
+        		$new_msgid = is_array($entry['msgid'])? implode($this->options['multiline-glue'], $entry['msgid']):$entry['msgid'];
+        		$this->entries[$new_msgid] = $entry;
+        	}
+        	else
+        	{
+        		$this->entries[$msgid] = $entry;
+        	}
         }
     }
 
-    public function updateEntryContext($original, $context = false)
+
+    public function setEntryPlural($msgid, $plural = false)
+    {
+        if ($plural) {
+            $this->entries[$msgid]['msgid_plural'] = $plural;
+        } else {
+            unset($this->entries[$msgid]['msgid_plural']);
+        }
+    }
+
+    public function setEntryContext($msgid, $context = false)
     {
         if ($context) {
-            $this->entries[$original]['msgctxt'] = $context;
+            $this->entries[$msgid]['msgctxt'] = $context;
         } else {
-            unset($this->entries[$original]['msgctxt']);
+            unset($this->entries[$msgid]['msgctxt']);
         }
     }
 
 
     /**
-    *   Gets entries
+    *   Gets entries.
     */
     public function entries()
     {
