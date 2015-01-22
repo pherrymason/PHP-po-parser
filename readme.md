@@ -42,8 +42,13 @@ Usage
 
 Changelog
 =========
+v4.2.0
+* Add function to add plural and context to existing entry (thanks @Ben-Ho)
+* Add ability to change msg id of entry (thanks @wildex)
+
+
 v4.1.1
-* Fixes with multi-flags entries (thanx @gnouet)
+* Fixes with multi-flags entries (thanks @gnouet)
 
 v4.1
 * Constructor now accepts options to define separator used in multiline msgid entries.

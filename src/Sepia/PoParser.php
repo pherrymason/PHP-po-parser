@@ -37,7 +37,7 @@ namespace Sepia;
  * @method array headers() deprecated
  * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
  * @method array read($filePath) deprecated
- * @version 4.1.0
+ * @version 4.2.0
  */
 class PoParser
 {
