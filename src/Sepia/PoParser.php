@@ -434,7 +434,23 @@ class PoParser
         return;
     }
 
+    public function updateEntryPlural($original, $plural = false)
+    {
+        if ($plural) {
+            $this->entries[$original]['msgid_plural'] = $plural;
+        } else {
+            unset($this->entries[$original]['msgid_plural']);
+        }
+    }
 
+    public function updateEntryContext($original, $context = false)
+    {
+        if ($context) {
+            $this->entries[$original]['msgctxt'] = $context;
+        } else {
+            unset($this->entries[$original]['msgctxt']);
+        }
+    }
 
 
     /**
