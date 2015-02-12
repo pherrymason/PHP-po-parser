@@ -5,7 +5,8 @@ namespace Sepia;
 class PoParserTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function tearDown() {
+    public function tearDown()
+    {
         parent::tearDown();
 
         if (file_exists(__DIR__ . '/pofiles/temp.po')) {
@@ -141,7 +142,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
 
 
         // Read & write a po file with previous unstranslated strings
-        $parser = PoParser::parseFile( __DIR__ . '/pofiles/previous_unstranslated.po' );
+        $parser = PoParser::parseFile(__DIR__ . '/pofiles/previous_unstranslated.po');
         $parser->writeFile(__DIR__ . '/pofiles/temp.po');
 
         $this->assertFileEquals(__DIR__ . '/pofiles/previous_unstranslated.po', __DIR__.'/pofiles/temp.po');
@@ -258,7 +259,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     public function testUpdateHeadersWrong()
     {
         $pofile = new PoParser(new StringHandler(''));
-        $result = $pofile->setHeaders('header');
+        $result = $pofile->setHeaders(array('header'));
         $this->assertFalse($result);
     }
 
@@ -266,23 +267,23 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      * Test for po files with no blank lines between entries
      */
     public function testNoBlankLines()
-	{
+    {
         $parser = PoParser::parseFile( __DIR__ . '/pofiles/noblankline.po' );
         $entries = $parser->getEntries();
 
-		$expected = array(
+        $expected = array(
             'one' => array(
-			    'msgid' => array(0 => 'one'),
-			    'msgstr' => array(0 => 'uno'),
-			 ),
-			'two' => array(
-			  'msgid' => array( 0 => 'two'),
-			  'msgstr' => array( 0 => 'dos')
-			  )
-		);
+                'msgid' => array(0 => 'one'),
+                'msgstr' => array(0 => 'uno'),
+            ),
+            'two' => array(
+              'msgid' => array( 0 => 'two'),
+              'msgstr' => array( 0 => 'dos')
+            )
+        );
 
-		$this->assertEquals( $entries, $expected );
-	}
+        $this->assertEquals( $entries, $expected );
+    }
 
 
 
@@ -292,12 +293,12 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFlags()
     {
-        // Read po file with 'php-format' flag. Add 'fuzzy' flag. 
+        // Read po file with 'php-format' flag. Add 'fuzzy' flag.
         // Compare the result with the version that has 'php-format' and 'fuzzy' flags
         $parser = PoParser::parseFile(__DIR__ . '/pofiles/flags-phpformat.po');
         $entries = $parser->getEntries();
 
-        foreach($entries as $msgid => $entry){
+        foreach ($entries as $msgid => $entry) {
             $entry['flags'][] = 'fuzzy';
             $parser->setEntry($msgid, $entry);
         }
@@ -312,7 +313,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testPreviousUnstranslated()
     {
-        $parser = PoParser::parseFile( __DIR__ . '/pofiles/previous_unstranslated.po' );
+        $parser = PoParser::parseFile(__DIR__ . '/pofiles/previous_unstranslated.po');
         $entries= $parser->getEntries();
 
         $expected = array(
@@ -326,6 +327,6 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
             )
         );
 
-        $this->assertEquals( $entries, $expected );
+        $this->assertEquals($entries, $expected);
     }
 }
