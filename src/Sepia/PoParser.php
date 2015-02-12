@@ -52,13 +52,13 @@ class PoParser
      * Reads and parses a string
      *
      * @param string po content
-     * @param array $options.
+     * @param array $options
      * @throws \Exception.
      * @return array. List of entries found in string po formatted
      */
-    static public function parseString($string,$options=array())
+    public static function parseString($string, $options=array())
     {
-        $parser = new PoParser(new StringHandler($string),$options);
+        $parser = new PoParser(new StringHandler($string), $options);
         $parser->parse();
         return $parser;
     }
@@ -69,13 +69,13 @@ class PoParser
      * Reads and parses a file
      *
      * @param string $filePath
-     * @param array $options.
+     * @param array $options
      * @throws \Exception.
      * @return array. List of entries found in string po formatted
      */
-    static public function parseFile($filepath,$options=array())
+    public static function parseFile($filepath, $options=array())
     {
-        $parser = new PoParser(new FileHandler($filepath),$options);
+        $parser = new PoParser(new FileHandler($filepath), $options);
         $parser->parse();
         return $parser;
     }
@@ -92,7 +92,7 @@ class PoParser
             'multiline-glue'=>'<##EOL##>',  // Token used to separate lines in msgid
             'context-glue'  => '<##EOC##>'  // Token used to separate ctxt from msgid
         );
-        $this->options = array_merge($defaultOptions,$options);
+        $this->options = array_merge($defaultOptions, $options);
     }
 
 
@@ -121,7 +121,7 @@ class PoParser
             if ($this->sourceHandle===null || ($this->sourceHandle instanceof InterfaceHandler)===false) {
                 throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
             }
-            else{
+            else {
                 $handle = $this->sourceHandle;
             }
         }
@@ -202,10 +202,13 @@ class PoParser
                 case '#~':      // #~ Old entry
                 case '#~|':     // #~| Previous-Old untranslated string. Reported by @Cellard
 
-                    switch ($key){
-                        case '#|':  $key = 'previous';  break;
-                        case '#~':  $key = 'obsolete';  break;
-                        case '#~|': $key = 'previous-obsolete'; break;
+                    switch ($key) {
+                        case '#|':  $key = 'previous';
+                                    break;
+                        case '#~':  $key = 'obsolete';
+                                    break;
+                        case '#~|': $key = 'previous-obsolete';
+                                    break;
                     }
 
                     $tmpParts = explode(' ', $data);
@@ -220,7 +223,7 @@ class PoParser
 
                     $entry[$key] = isset($entry[$key])? $entry[$key]:array('msgid'=>array(),'msgstr'=>array());
 
-                    if (strpos($key, 'obsolete')!==false){
+                    if (strpos($key, 'obsolete')!==false) {
                         $entry['obsolete'] = true;
                         switch ($tmpKey) {
                             case 'msgid':
@@ -242,7 +245,7 @@ class PoParser
                         }
                     }
 
-                    if ($key!=='obsolete'){
+                    if ($key!=='obsolete') {
                         switch ($tmpKey) {
                             case 'msgid':
                             case 'msgid_plural':

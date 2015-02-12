@@ -170,7 +170,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
         $parser = PoParser::parseFile(__DIR__ . '/pofiles/plurals.po');
 
         $parser->setEntry($msgid, array(
-            'msgid' => $msgid,   
+            'msgid' => $msgid,
             'msgstr' => $msgstr
         ));
 
@@ -215,10 +215,11 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     public function testUpdateWithFuzzy()
     {
         $msgid = '%1$s-%2$s';
-        $msgstr = 'translate';
 
         $parser = PoParser::parseFile(__DIR__ . '/pofiles/context.po');
         $entries = $parser->getEntries();
+
+        $entries[$msgid]['msgstr'] = array('translate');
         $parser->setEntry($msgid, $entries[$msgid]);
     }
 
@@ -298,7 +299,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
 
         foreach($entries as $msgid => $entry){
             $entry['flags'][] = 'fuzzy';
-            $parser->setEntry($msgid,$entry);
+            $parser->setEntry($msgid, $entry);
         }
 
         $parser->writeFile(__DIR__ . '/pofiles/temp.po');
