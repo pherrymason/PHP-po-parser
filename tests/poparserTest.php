@@ -259,7 +259,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     public function testUpdateHeadersWrong()
     {
         $pofile = new PoParser(new StringHandler(''));
-        $result = $pofile->setHeaders(array('header'));
+        $result = $pofile->setHeaders('header');
         $this->assertFalse($result);
     }
 
