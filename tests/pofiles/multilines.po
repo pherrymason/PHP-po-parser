@@ -32,7 +32,7 @@ msgstr "Has d'indicar un nom."
 #: ../../classes/ccccc.php:100 ../../classes/cccc.php:104
 #: ../../classes/controller/cccc/mmmmm.php:295
 #: ../../classes/controller/cccc/mmmmm.php:513
-msgid "Ya existe otro usuari con este mismo nombre."
+msgid "Ya existe otro usuario con este mismo nombre."
 msgstr "Ja existeix un altre usuari amb aquest nom."
 
 #: ../../classes/ccccc.php:108 ../../classes/controller/cccc/mmmmm.php:305

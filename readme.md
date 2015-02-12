@@ -42,6 +42,13 @@ Usage
 
 Changelog
 =========
+v5.0
+* Removed `fuzzy` index in favour of `flags`.
+* Display line number on parsing errors instead of line content.
+* Adds compatibility with `#~|` entries.
+* `parseString()` and `parseFile()` converted to factory methods.
+* Removed method `updateEntry()` in favour of `setEntry()`.
+
 v4.2.0
 * Add function to add plural and context to existing entry (thanks @Ben-Ho)
 * Add ability to change msg id of entry (thanks @wildex)
