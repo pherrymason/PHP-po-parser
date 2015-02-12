@@ -68,7 +68,7 @@ class PoParser
    /**
      * Reads and parses a file
      *
-     * @param string $filePath
+     * @param string $filepath
      * @param array $options
      * @throws \Exception.
      * @return array. List of entries found in string po formatted
@@ -492,9 +492,9 @@ class PoParser
      *        $pofile->updateEntry( $msgid, $msgstr );
      *        // Save Changes back into `ca.po`
      *        $pofile->write('ca.po');
-     * @param string $filePath
+     * @param string $filepath
      * @throws \Exception
-     * @return null
+     * @return boolean
     */
     public function writeFile($filepath)
     {
@@ -513,7 +513,7 @@ class PoParser
      * Compiles entries into a string
      *
      * @throws \Exception
-     * @return null
+     * @return string
      */
     public function compile()
     {
