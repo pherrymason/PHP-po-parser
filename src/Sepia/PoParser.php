@@ -1,6 +1,4 @@
-<?php
-
-namespace Sepia;
+<?php namespace Sepia\Poparser;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -81,12 +79,8 @@ class PoParser
     }
 
 
-    public function __construct($handler, $options=array())
+    public function __construct(InterfaceHandler $handler, $options=array())
     {
-        if (($handler instanceof InterfaceHandler)===false) {
-            echo "ERROR ACA\n";
-            throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
-        }
         $this->sourceHandle = $handler;
         $defaultOptions = array(
             'multiline-glue'=>'<##EOL##>',  // Token used to separate lines in msgid

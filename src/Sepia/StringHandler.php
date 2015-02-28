@@ -1,6 +1,4 @@
-<?php
-
-namespace Sepia;
+<?php namespace Sepia\Poparser;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
