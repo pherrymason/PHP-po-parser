@@ -1,4 +1,4 @@
-<?php namespace Sepia\Poparser;
+<?php namespace Sepia\PoParser;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com

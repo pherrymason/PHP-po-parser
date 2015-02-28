@@ -1,4 +1,4 @@
-<?php namespace Sepia\Poparser;
+<?php namespace Sepia\PoParser;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -37,7 +37,7 @@
  * @method array read($filePath) deprecated
  * @version 5.0.0
  */
-class PoParser
+class Parser
 {
     protected $entries = array();
     protected $headers = array();
@@ -56,7 +56,7 @@ class PoParser
      */
     public static function parseString($string, $options=array())
     {
-        $parser = new PoParser(new StringHandler($string), $options);
+        $parser = new Parser(new StringHandler($string), $options);
         $parser->parse();
         return $parser;
     }
@@ -73,7 +73,7 @@ class PoParser
      */
     public static function parseFile($filepath, $options=array())
     {
-        $parser = new PoParser(new FileHandler($filepath), $options);
+        $parser = new Parser(new FileHandler($filepath), $options);
         $parser->parse();
         return $parser;
     }

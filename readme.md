@@ -48,6 +48,7 @@ v5.0
 * Adds compatibility with `#~|` entries.
 * `parseString()` and `parseFile()` converted to factory methods.
 * Removed method `updateEntry()` in favour of `setEntry()`.
+* Namespaced under `Sepia\PoParser`.
 
 v4.2.0
 * Add function to add plural and context to existing entry (thanks @Ben-Ho)
