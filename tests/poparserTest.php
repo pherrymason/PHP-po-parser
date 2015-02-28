@@ -201,7 +201,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
 
         $parser->setEntry($msgid, $entry);
         $parser->writeFile(__DIR__ . '/pofiles/temp.po');
-die();
+
         $parser = PoParser::parseFile(__DIR__ . '/pofiles/temp.po');
         $entries = $parser->getEntries();
 
