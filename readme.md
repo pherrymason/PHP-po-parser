@@ -49,6 +49,7 @@ v5.0
 * `parseString()` and `parseFile()` converted to factory methods.
 * Removed method `updateEntry()` in favour of `setEntry()`.
 * Namespaced under `Sepia\PoParser`.
+* PSR-4.
 
 v4.2.0
 * Add function to add plural and context to existing entry (thanks @Ben-Ho)

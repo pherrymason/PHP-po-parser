@@ -54,7 +54,7 @@ class Parser
      * @throws \Exception.
      * @return array. List of entries found in string po formatted
      */
-    public static function parseString($string, $options=array())
+    public static function parseString($string, $options = array())
     {
         $parser = new Parser(new StringHandler($string), $options);
         $parser->parse();
@@ -71,7 +71,7 @@ class Parser
      * @throws \Exception.
      * @return array. List of entries found in string po formatted
      */
-    public static function parseFile($filepath, $options=array())
+    public static function parseFile($filepath, $options = array())
     {
         $parser = new Parser(new FileHandler($filepath), $options);
         $parser->parse();
@@ -79,7 +79,7 @@ class Parser
     }
 
 
-    public function __construct(InterfaceHandler $handler, $options=array())
+    public function __construct(InterfaceHandler $handler, $options = array())
     {
         $this->sourceHandle = $handler;
         $defaultOptions = array(
@@ -108,14 +108,12 @@ class Parser
      * @throws \Exception, \InvalidArgumentException
      * @return array. List of entries found in .po file.
      */
-    public function parse( $handle=null )
+    public function parse($handle = null)
     {
         if ($handle===null) {
-
             if ($this->sourceHandle===null || ($this->sourceHandle instanceof InterfaceHandler)===false) {
                 throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
-            }
-            else {
+            } else {
                 $handle = $this->sourceHandle;
             }
         }
@@ -197,19 +195,25 @@ class Parser
                 case '#~|':     // #~| Previous-Old untranslated string. Reported by @Cellard
 
                     switch ($key) {
-                        case '#|':  $key = 'previous';
-                                    break;
-                        case '#~':  $key = 'obsolete';
-                                    break;
-                        case '#~|': $key = 'previous-obsolete';
-                                    break;
+                        case '#|':
+                            $key = 'previous';
+                            break;
+
+                        case '#~':
+                            $key = 'obsolete';
+                            break;
+
+                        case '#~|':
+                            $key = 'previous-obsolete';
+                            break;
                     }
 
                     $tmpParts = explode(' ', $data);
                     $tmpKey   = $tmpParts[0];
 
                     if (!in_array($tmpKey, array('msgid','msgid_plural','msgstr','msgctxt'))) {
-                        $tmpKey = $lastPreviousKey; // If there is a multiline previous string we must remember what key was first line.
+                        // If there is a multiline previous string we must remember what key was first line.
+                        $tmpKey = $lastPreviousKey;
                         $str = $data;
                     } else {
                         $str = implode(' ', array_slice($tmpParts, 1));
@@ -331,7 +335,7 @@ class Parser
         // - Cleanup header data
         $this->headers = array();
         foreach ($headers as $header) {
-            $header = $this->clean( $header );
+            $header = $this->clean($header);
             $this->headers[] = "\"" . preg_replace("/\\n/", '\n', $header) . "\"";
         }
 
@@ -414,30 +418,30 @@ class Parser
      *  - msgid_plural: String Array.
      *  - flags: Array. List of entry flags. Example: array('fuzzy','php-format')
      *  - previous: Array: Contains previous untranslated strings in a sub array with msgid and msgstr.
-     * 
-     * @param String  $msgid     Id of entry. Be aware that some entries have a multiline msgid. In that case \n must be replaced by the value of 'multiline-glue' option (by default "<##EOL##>").
+     *
+     * @param String  $msgid    Id of entry. Be aware that some entries have a multiline msgid.
+     *                          In that case \n must be replaced by the value of 'multiline-glue'
+     *                          option (by default "<##EOL##>").
      * @param Array   $entry     Array with all entry data. Fields not setted will be removed.
-     * @param boolean $createNew If msgid not found, it will create a new entry. By default true. You want to set this to false if need to change the msgid of an entry.
+     * @param boolean $createNew If msgid not found, it will create a new entry. By default true.
+     *                           You want to set this to false if need to change the msgid of an entry.
      */
     public function setEntry($msgid, $entry, $createNew = true)
     {
         // In case of new entry
         if (!isset($this->entries[$msgid])) {
-
             if ($createNew==false) {
                 return;
             }
 
             $this->entries[$msgid] = $entry;
-        }
-        else {
+        } else {
             // Be able to change msgid.
-            if( $msgid!==$entry['msgid'] ) {
+            if ($msgid!==$entry['msgid']) {
                 unset($this->entries[$msgid]);
                 $new_msgid = is_array($entry['msgid'])? implode($this->options['multiline-glue'], $entry['msgid']):$entry['msgid'];
                 $this->entries[$new_msgid] = $entry;
-            }
-            else {
+            } else {
                 $this->entries[$msgid] = $entry;
             }
         }
@@ -531,7 +535,6 @@ class Parser
 
             if (isset($entry['previous'])) {
                 foreach ($entry['previous'] as $key => $data) {
-
                     if (is_string($data)) {
                         $output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
                     } elseif (is_array($data) && count($data)>0) {
@@ -539,7 +542,6 @@ class Parser
                             $output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
                         }
                     }
-
                 }
             }
 
