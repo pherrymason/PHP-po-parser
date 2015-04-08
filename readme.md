@@ -28,14 +28,16 @@ Usage
 =====
 
     // Parse a po file
-    $poParser = new Sepia\PoParser();
-    $entries  = $poParser->parseFile( 'es.po' );
+    $fileHandler = new Sepia\FileHandler('es.po');
+    
+    $poParser = new Sepia\PoParser($fileHandler);
+    $entries  = $poParser->parse();
     // $entries contains every entry in es.po file.
 
     // Update entries
     $msgid = 'Press this button to save';
-    $msgstr= 'Pulsa este botón para guardar';
-    $poParser->updateEntry($msgid, $msgstr);
+    $entries[$msgid]['msgstr'] = 'Pulsa este botón para guardar';
+    $poParser->setEntry($msgid, $entry);
     // You can also change translator comments, code comments, flags...
 
 
