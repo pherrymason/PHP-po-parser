@@ -37,7 +37,7 @@ Usage
     // Update entries
     $msgid = 'Press this button to save';
     $entries[$msgid]['msgstr'] = 'Pulsa este botón para guardar';
-    $poParser->setEntry($msgid, $entry);
+    $poParser->setEntry($msgid, $entries[$msgid]);
     // You can also change translator comments, code comments, flags...
 
 
