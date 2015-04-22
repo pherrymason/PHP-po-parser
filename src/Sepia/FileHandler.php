@@ -35,7 +35,6 @@ namespace Sepia;
 class FileHandler implements InterfaceHandler
 {
     protected $fileHandle;
-    protected $encoding;
 
     public function __construct($filepath)
     {
@@ -48,16 +47,6 @@ class FileHandler implements InterfaceHandler
         $this->fileHandle = @fopen($filepath, "r");
         if ($this->fileHandle===false) {
             throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
-        }
-
-
-        // Guess encoding
-        $wholefile = file_get_contents($filepath, false, null, 0, 1000);
-        $encoding  = mb_detect_encoding($wholefile);
-        if ($encoding===false) {
-
-        } else {
-            $this->encoding = $encoding;
         }
     }
 
