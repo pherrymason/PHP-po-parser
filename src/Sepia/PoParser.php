@@ -721,7 +721,7 @@ class PoParser
                 $x = substr($x, 1, -1);
             }
 
-            // Escapes C-style escape secuences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
+            // Escapes C-style escape sequences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
             $x = stripcslashes($x);
 
         }
