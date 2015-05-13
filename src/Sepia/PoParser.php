@@ -462,7 +462,7 @@ class PoParser
     public function setEntryContext($msgid, $context = false)
     {
         if ($context) {
-            $this->entries[$msgid]['msgctxt'] = $context;
+            $this->entries[$msgid]['msgctxt'][0] = $context;
         } else {
             unset($this->entries[$msgid]['msgctxt']);
         }
