@@ -428,7 +428,7 @@ class PoParser
     public function setEntry($msgid, $entry, $createNew = true)
     {
         // In case of new entry
-        if (!isset($this->entries[$msgid])) {
+        if ($msgid && !isset($this->entries[$msgid])) {
 
             if ($createNew==false) {
                 return;
