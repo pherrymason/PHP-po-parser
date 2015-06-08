@@ -1,0 +1,33 @@
+# Translation of Administration in Spanish (Spain)
+# This file is distributed under the same license as the Administration package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2013-10-23 09:51:48+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/0.1\n"
+"Project-Id-Version: Administration\n"
+
+
+#: wp-admin/edit.php:238
+msgid "%s post not updated,"
+"somebody is editing it."
+msgid_plural "%s posts not updated,"
+"somebody is editing them."
+msgstr[0] "%s entrada no actualizada,"
+"alguien la está editando."
+msgstr[1] "%s entradas no actualizadas,"
+"alguien las está editando."
+
+#: wp-admin/edit.php:239
+msgid ""
+"%s post permanently deleted."
+msgid_plural "%s posts permanently deleted."
+msgstr[0] ""
+"%s entrada borrada"
+"permanentemente."
+msgstr[1] ""
+"%s entradas borradas"
+"permanentemente."

@@ -292,7 +292,7 @@ class PoParser
                 default:
                     if (strpos($key, 'msgstr[') !== false) {
                         // translated-string-case-n
-                        $state = 'msgstr';
+                        $state = $key;
                         $entry[$state][] = $data;
                     } else {
                         // "multiline" lines
@@ -300,6 +300,7 @@ class PoParser
                             case 'msgctxt':
                             case 'msgid':
                             case 'msgid_plural':
+                            case (strpos($state, 'msgstr[') !== false):
                                 if (is_string($entry[$state])) {
                                     // Convert it to array
                                     $entry[$state] = array($entry[$state]);
@@ -358,7 +359,8 @@ class PoParser
                 }
             }
 
-            if (isset($entry['msgid']) && isset($entry['msgstr'])) {
+            // check if msgid and a key starting with msgstr exists
+            if (isset($entry['msgid']) && count(preg_grep('/^msgstr/', array_keys($entry)))) {
                 $id = $this->getEntryId($entry);
                 $this->entries[$id] = $entry;
             }
@@ -619,10 +621,14 @@ class PoParser
                 }
             }
 
-            if (isset($entry['msgstr'])) {
+            if (count(preg_grep('/^msgstr/', array_keys($entry)))) { // checks if there is a key starting with msgstr
                 if ($isPlural) {
-                    foreach ($entry['msgstr'] as $i => $t) {
-                        $output.= "msgstr[$i] " . $this->cleanExport($t) . "\n";
+                    foreach ($entry as $key => $value) {
+                        if (strpos($key, 'msgstr[') === false) continue;
+                        $output.= $key." ";
+                        foreach ($value as $i => $t) {
+                            $output.= $this->cleanExport($t) . "\n";
+                        }
                     }
                 } else {
                     foreach ((array)$entry['msgstr'] as $i => $t) {
