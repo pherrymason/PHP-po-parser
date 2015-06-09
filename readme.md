@@ -44,7 +44,7 @@ Usage
 
 Changelog
 =========
-v5.0
+v5.0 (WIP)
 * Removed `fuzzy` index in favour of `flags`.
 * Display line number on parsing errors instead of line content.
 * Adds compatibility with `#~|` entries.
