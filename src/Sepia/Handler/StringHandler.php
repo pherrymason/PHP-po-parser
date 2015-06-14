@@ -32,10 +32,24 @@
  */
 class StringHandler implements HandlerInterface
 {
+    /**
+     * @var string[]
+     */
     protected $strings;
+
+    /**
+     * @var int
+     */
     protected $total;
+
+    /**
+     * @var int
+     */
     protected $line;
 
+    /**
+     * @param string $string
+     */
     public function __construct($string)
     {
         $this->line = 0;
@@ -43,6 +57,9 @@ class StringHandler implements HandlerInterface
         $this->total = count($this->strings);
     }
 
+    /**
+     * @return bool|string
+     */
     public function getNextLine()
     {
         if (isset($this->strings[$this->line])) {
@@ -54,14 +71,22 @@ class StringHandler implements HandlerInterface
         return $result;
     }
 
+    /**
+     * @return bool
+     */
     public function ended()
     {
         return ($this->line>=$this->total);
     }
 
+    /**
+     * @return bool
+     */
     public function close()
     {
         $this->line = 0;
+
+        return true;
     }
 
 

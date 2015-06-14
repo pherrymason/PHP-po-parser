@@ -169,8 +169,6 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
             $parser = Parser::parseFile(__DIR__ . '/pofiles/pluralsMultiline.po');
             $this->assertCount(2, $parser->getEntries());
             $entries = $parser->getEntries();
-            $msgStringZero = "";
-            $msgStringOne = "";
             foreach ($entries as $id => $entry) {
                 $this->assertTrue(isset($entry['msgstr[0]']));
                 $this->assertTrue(isset($entry['msgstr[1]']));

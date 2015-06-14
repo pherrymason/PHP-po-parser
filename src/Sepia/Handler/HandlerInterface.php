@@ -45,7 +45,7 @@ interface HandlerInterface
     /**
      * Closes source handler.
      *
-     * @return mixed
+     * @return bool
      */
     public function close();
 

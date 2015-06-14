@@ -32,8 +32,16 @@
  */
 class FileHandler implements HandlerInterface
 {
+    /**
+     * @var resource
+     */
     protected $fileHandle;
 
+    /**
+     * @param string $filepath
+     *
+     * @throws \Exception
+     */
     public function __construct($filepath)
     {
         if (file_exists($filepath) === false) {
@@ -48,22 +56,29 @@ class FileHandler implements HandlerInterface
         }
     }
 
-
+    /**
+     * @return string
+     */
     public function getNextLine()
     {
         return fgets($this->fileHandle);
     }
 
+    /**
+     * @return bool
+     */
     public function ended()
     {
         return feof($this->fileHandle);
     }
 
+    /**
+     * @return bool
+     */
     public function close()
     {
         return @fclose($this->fileHandle);
     }
-
 
     /**
      * @inheritdoc
@@ -74,7 +89,6 @@ class FileHandler implements HandlerInterface
     public function save($output, $params)
     {
         $outputFilePath = isset($params['filepath']) ? $params['filepath'] : null;
-        $fileHandle = null;
 
         if ($outputFilePath) {
             $fileHandle = @fopen($params['filepath'], 'w');

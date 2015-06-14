@@ -203,7 +203,7 @@ class Parser
     /**
      * Reads and parses strings of a .po file.
      *
-     * @return array. List of entries found in .po file.
+     * @return arrays List of entries found in .po file.
      * @throws \Exception, \InvalidArgumentException
      */
     public function parse()
@@ -484,7 +484,7 @@ class Parser
     {
         // In case of new entry
         if (!isset($this->entries[$msgid])) {
-            if ($createNew==false) {
+            if ($createNew===false) {
                 return;
             }
 
@@ -740,7 +740,7 @@ class Parser
      *
      * @param string|array $x
      *
-     * @return string|array.
+     * @return string|array
      */
     protected function clean($x)
     {
@@ -760,7 +760,6 @@ class Parser
 
             // Escapes C-style escape sequences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
             $x = stripcslashes($x);
-
         }
 
         return $x;
@@ -791,7 +790,6 @@ class Parser
             'Content-Transfer-Encoding:' => false,
             'Plural-Forms:' => false
         );
-        $count = count($headerKeys);
         $keys = array_keys($headerKeys);
 
         $headerItems = 0;
