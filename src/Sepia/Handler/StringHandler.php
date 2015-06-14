@@ -1,4 +1,4 @@
-<?php namespace Sepia\PoParser;
+<?php namespace Sepia\PoParser\Handler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -30,54 +30,48 @@
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class FileHandler implements InterfaceHandler
+class StringHandler implements HandlerInterface
 {
-    protected $fileHandle;
-    protected $encoding;
+    protected $strings;
+    protected $total;
+    protected $line;
 
-    public function __construct($filepath)
+    public function __construct($string)
     {
-        if (file_exists($filepath) === false) {
-            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filepath) . '"');
-        } elseif (is_readable($filepath) === false) {
-            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filepath) . '"');
-        }
-
-        $this->fileHandle = @fopen($filepath, "r");
-        if ($this->fileHandle===false) {
-            throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
-        }
-
-
-        // Guess encoding
-        $wholefile = file_get_contents($filepath, false, null, 0, 1000);
-        $encoding  = mb_detect_encoding($wholefile);
-        if ($encoding===false) {
-
-        } else {
-            $this->encoding = $encoding;
-        }
+        $this->line = 0;
+        $this->strings = explode("\n", $string);
+        $this->total = count($this->strings);
     }
-
 
     public function getNextLine()
     {
-        return fgets($this->fileHandle);
+        if (isset($this->strings[$this->line])) {
+            $result = $this->strings[$this->line];
+            $this->line++;
+        } else {
+            $result = false;
+        }
+        return $result;
     }
 
     public function ended()
     {
-        return feof($this->fileHandle);
+        return ($this->line>=$this->total);
     }
 
     public function close()
     {
-        return @fclose($this->fileHandle);
+        $this->line = 0;
     }
 
 
-    public function save($outputFile)
+    /**
+     * @inheritdoc
+     *
+     * @param string $output
+     * @param array  $params
+     */
+    public function save($output, $params)
     {
-
     }
 }

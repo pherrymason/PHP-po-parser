@@ -1,4 +1,4 @@
-<?php namespace Sepia\PoParser;
+<?php namespace Sepia\PoParser\Handler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -30,43 +30,32 @@
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class StringHandler implements InterfaceHandler
+interface HandlerInterface
 {
-    protected $strings;
-    protected $total;
-    protected $line;
+    /**
+     * @return string
+     */
+    public function getNextLine();
 
-    public function __construct($string)
-    {
-        $this->line = 0;
-        $this->strings = explode("\n", $string);
-        $this->total = count($this->strings);
-    }
+    /**
+     * @return bool
+     */
+    public function ended();
 
-    public function getNextLine()
-    {
-        if (isset($this->strings[$this->line])) {
-            $result = $this->strings[$this->line];
-            $this->line++;
-        } else {
-            $result = false;
-        }
-        return $result;
-    }
+    /**
+     * Closes source handler.
+     *
+     * @return mixed
+     */
+    public function close();
 
-    public function ended()
-    {
-        return ($this->line>=$this->total);
-    }
-
-    public function close()
-    {
-        $this->line = 0;
-    }
-
-
-    public function save($ignore)
-    {
-
-    }
+    /**
+     * Saves translations into source.
+     *
+     * @param string $output  Compiled gettext data.
+     * @param array $params   Extra parameters.
+     *
+     * @return mixed
+     */
+    public function save($output, $params);
 }

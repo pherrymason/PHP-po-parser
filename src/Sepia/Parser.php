@@ -1,5 +1,9 @@
 <?php namespace Sepia\PoParser;
 
+use Sepia\PoParser\Handler\FileHandler;
+use Sepia\PoParser\Handler\HandlerInterface;
+use Sepia\PoParser\Handler\StringHandler;
+
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
  *    All rights reserved.
@@ -39,63 +43,158 @@
  */
 class Parser
 {
+    const OPTION_EOL_KEY = 'multiline-glue';
+    const OPTION_EOC_KEY = 'context-glue';
+
+    const OPTION_EOL_VALUE = '<##EOL##>';     // End of Line token.
+    const OPTION_EOC_VALUE = '<##EOC##>';     // End of Context token.
+
+    /**
+     * @var array
+     */
     protected $entries = array();
+
+    /**
+     * @var string[]
+     */
     protected $headers = array();
+
+    /**
+     * @var null|HandlerInterface
+     */
     protected $sourceHandle = null;
+
+    /**
+     * @var array
+     */
     protected $options = array();
-
-
 
     /**
      * Reads and parses a string
      *
-     * @param string po content
+     * @param string $string po content
      * @param array $options
+     *
      * @throws \Exception.
-     * @return array. List of entries found in string po formatted
+     * @return $this
      */
     public static function parseString($string, $options = array())
     {
         $parser = new Parser(new StringHandler($string), $options);
         $parser->parse();
+
         return $parser;
     }
 
 
 
-   /**
+    /**
      * Reads and parses a file
      *
      * @param string $filepath
      * @param array $options
+     *
+     * @return $this
      * @throws \Exception.
-     * @return array. List of entries found in string po formatted
      */
     public static function parseFile($filepath, $options = array())
     {
         $parser = new Parser(new FileHandler($filepath), $options);
         $parser->parse();
+
         return $parser;
     }
 
 
-    public function __construct(InterfaceHandler $handler, $options = array())
+    public function __construct(HandlerInterface $handler, $options = array())
     {
-        $this->sourceHandle = $handler;
-        $defaultOptions = array(
-            'multiline-glue'=>'<##EOL##>',  // Token used to separate lines in msgid
-            'context-glue'  => '<##EOC##>'  // Token used to separate ctxt from msgid
-        );
-        $this->options = array_merge($defaultOptions, $options);
+        $this->setSourceHandle($handler);
+        $this->setOptions($options);
     }
 
+    /**
+     * Sets options.
+     * Those options not set will the default value.
+     *
+     * @param $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $defaultOptions = array(
+            // Token used to separate lines in msgid
+            self::OPTION_EOL_KEY => self::OPTION_EOL_VALUE,
 
+            // Token used to separate ctxt from msgid
+            self::OPTION_EOC_KEY => self::OPTION_EOC_VALUE
+        );
+        $this->options = array_merge($defaultOptions, $options);
+
+        return $this;
+    }
+
+    /**
+     * Get parser options.
+     *
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * Gets source Handler.
+     *
+     * @return null|HandlerInterface
+     */
+    public function getSourceHandle()
+    {
+        return $this->sourceHandle;
+    }
 
+    /**
+     * @param null|HandlerInterface $sourceHandle
+     *
+     * @return $this
+     */
+    public function setSourceHandle(HandlerInterface $sourceHandle)
+    {
+        $this->sourceHandle = $sourceHandle;
+
+        return $this;
+    }
+
+    /**
+     * Get headers from .po file
+     *
+     * @return string[]
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Set new headers.
+     *
+     * @param array $newHeaders
+     *
+     * @return $this
+     */
+    public function setHeaders(array $newHeaders)
+    {
+        $this->headers = $newHeaders;
+
+        return $this;
+    }
+
+    /**
+     * Gets entries.
+     *
+     * @return array
+     */
     public function getEntries()
     {
         return $this->entries;
@@ -104,19 +203,12 @@ class Parser
     /**
      * Reads and parses strings of a .po file.
      *
-     * @param InterfaceHandler. Optional
-     * @throws \Exception, \InvalidArgumentException
      * @return array. List of entries found in .po file.
+     * @throws \Exception, \InvalidArgumentException
      */
-    public function parse($handle = null)
+    public function parse()
     {
-        if ($handle===null) {
-            if ($this->sourceHandle===null || ($this->sourceHandle instanceof InterfaceHandler)===false) {
-                throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
-            } else {
-                $handle = $this->sourceHandle;
-            }
-        }
+        $handle = $this->sourceHandle;
 
         $headers         = array();
         $hash            = array();
@@ -290,7 +382,7 @@ class Parser
                 default:
                     if (strpos($key, 'msgstr[') !== false) {
                         // translated-string-case-n
-                        $state = 'msgstr';
+                        $state = $key;
                         $entry[$state][] = $data;
                     } else {
                         // "multiline" lines
@@ -298,6 +390,7 @@ class Parser
                             case 'msgctxt':
                             case 'msgid':
                             case 'msgid_plural':
+                            case (strpos($state, 'msgstr[') !== false):
                                 if (is_string($entry[$state])) {
                                     // Convert it to array
                                     $entry[$state] = array($entry[$state]);
@@ -356,7 +449,8 @@ class Parser
                 }
             }
 
-            if (isset($entry['msgid']) && isset($entry['msgstr'])) {
+            // check if msgid and a key starting with msgstr exists
+            if (isset($entry['msgid']) && count(preg_grep('/^msgstr/', array_keys($entry)))) {
                 $id = $this->getEntryId($entry);
                 $this->entries[$id] = $entry;
             }
@@ -364,46 +458,6 @@ class Parser
 
         return $this->entries;
     }
-
-    /**
-     * Get headers from .po file
-     *
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * Set new headers
-     *
-     * {code}
-     *  array(
-     *   '"Project-Id-Version: \n"',
-     *   '"Report-Msgid-Bugs-To: \n"',
-     *   '"POT-Creation-Date: \n"',
-     *   '"PO-Revision-Date: \n"',
-     *   '"Last-Translator: none\n"',
-     *   '"Language-Team: \n"',
-     *   '"MIME-Version: 1.0\n"',
-     *   '"Content-Type: text/plain; charset=UTF-8\n"',
-     *  );
-     * {code}
-     *
-     * @param array $newHeaders
-     * @return bool
-     */
-    public function setHeaders($newHeaders)
-    {
-        if (!is_array($newHeaders)) {
-            return false;
-        } else {
-            $this->headers = $newHeaders;
-            return true;
-        }
-    }
-
 
     /**
      * Updates an entry.
@@ -439,7 +493,7 @@ class Parser
             // Be able to change msgid.
             if ($msgid!==$entry['msgid']) {
                 unset($this->entries[$msgid]);
-                $new_msgid = is_array($entry['msgid'])? implode($this->options['multiline-glue'], $entry['msgid']):$entry['msgid'];
+                $new_msgid = is_array($entry['msgid'])? implode($this->options[self::OPTION_EOL_KEY], $entry['msgid']):$entry['msgid'];
                 $this->entries[$new_msgid] = $entry;
             } else {
                 $this->entries[$msgid] = $entry;
@@ -447,7 +501,10 @@ class Parser
         }
     }
 
-
+    /**
+     * @param string $msgid Message Id.
+     * @param bool   $plural
+     */
     public function setEntryPlural($msgid, $plural = false)
     {
         if ($plural) {
@@ -457,51 +514,33 @@ class Parser
         }
     }
 
+    /**
+     * @param string $msgid Message Id.
+     * @param bool   $context
+     */
     public function setEntryContext($msgid, $context = false)
     {
         if ($context) {
-            $this->entries[$msgid]['msgctxt'] = $context;
+            $this->entries[$msgid]['msgctxt'][0] = $context;
         } else {
             unset($this->entries[$msgid]['msgctxt']);
         }
     }
 
-
     /**
-    *   Gets entries.
-    */
-    public function entries()
-    {
-        return $this->entries;
-    }
-
-
-
-
-
-    /**
-     *  Writes entries to a po file
+     * Saves current translation back into source.
      *
-     * @example
-     *        $pofile = new PoParser();
-     *        $pofile->parse('ca.po');
+     * @param mixed $params Parameters to pass to the source handler.
      *
-     *        // Modify an antry
-     *        $pofile->updateEntry( $msgid, $msgstr );
-     *        // Save Changes back into `ca.po`
-     *        $pofile->write('ca.po');
-     * @param string $filepath
+     * @return $this
      * @throws \Exception
-     * @return null
-    */
-    public function writeFile($filepath)
+     */
+    public function save($params)
     {
-        $output = $this->compile();
-        $result = file_put_contents($filepath, $output);
-        if ($result===false) {
-            throw new \Exception('Could not write into file '.htmlspecialchars($filepath));
-        }
-        return true;
+        $compiled = $this->compile();
+        call_user_func(array($this->sourceHandle, 'save'), $compiled, $params);
+
+        return $this;
     }
 
 
@@ -510,8 +549,8 @@ class Parser
     /**
      * Compiles entries into a string
      *
+     * @return string
      * @throws \Exception
-     * @return null
      */
     public function compile()
     {
@@ -611,10 +650,14 @@ class Parser
                 }
             }
 
-            if (isset($entry['msgstr'])) {
+            if (count(preg_grep('/^msgstr/', array_keys($entry)))) { // checks if there is a key starting with msgstr
                 if ($isPlural) {
-                    foreach ($entry['msgstr'] as $i => $t) {
-                        $output.= "msgstr[$i] " . $this->cleanExport($t) . "\n";
+                    foreach ($entry as $key => $value) {
+                        if (strpos($key, 'msgstr[') === false) continue;
+                        $output.= $key." ";
+                        foreach ($value as $i => $t) {
+                            $output.= $this->cleanExport($t) . "\n";
+                        }
                     }
                 } else {
                     foreach ((array)$entry['msgstr'] as $i => $t) {
@@ -647,7 +690,7 @@ class Parser
 
 
     /**
-     * Prepares a string to be outputed into a file.
+     * Prepares a string to be output into a file.
      *
      * @param string $string The string to be converted.
      * @return string
@@ -677,14 +720,15 @@ class Parser
      * Generates the internal key for a msgid.
      *
      * @param array $entry
+     *
      * @return string
      */
     protected function getEntryId(array $entry)
     {
         if (isset($entry['msgctxt'])) {
-            $id = implode($this->options['multiline-glue'], (array)$entry['msgctxt']) . $this->options['context-glue'] . implode($this->options['multiline-glue'], (array)$entry['msgid']);
+            $id = implode($this->options[self::OPTION_EOL_KEY], (array)$entry['msgctxt']) . $this->options[self::OPTION_EOC_KEY] . implode($this->options[self::OPTION_EOL_KEY], (array)$entry['msgid']);
         } else {
-            $id = implode($this->options['multiline-glue'], (array)$entry['msgid']);
+            $id = implode($this->options[self::OPTION_EOL_KEY], (array)$entry['msgid']);
         }
 
         return $id;
@@ -692,9 +736,10 @@ class Parser
 
 
     /**
-     * Undos `cleanExport` actions on a string.
+     * Undo `cleanExport` actions on a string.
      *
      * @param string|array $x
+     *
      * @return string|array.
      */
     protected function clean($x)
@@ -713,7 +758,7 @@ class Parser
                 $x = substr($x, 1, -1);
             }
 
-            // Escapes C-style escape secuences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
+            // Escapes C-style escape sequences (\a,\b,\f,\n,\r,\t,\v) and converts them to their actual meaning
             $x = stripcslashes($x);
 
         }
@@ -736,15 +781,15 @@ class Parser
 
         $headerKeys = array(
             'Project-Id-Version:' => false,
-            //  'Report-Msgid-Bugs-To:' => false,
-            //  'POT-Creation-Date:'    => false,
+            'Report-Msgid-Bugs-To:' => false,
+            'POT-Creation-Date:' => false,
             'PO-Revision-Date:' => false,
-            //  'Last-Translator:'      => false,
-            //  'Language-Team:'        => false,
+            'Last-Translator:' => false,
+            'Language-Team:' => false,
             'MIME-Version:' => false,
-            //  'Content-Type:'         => false,
-            //  'Content-Transfer-Encoding:' => false,
-            //  'Plural-Forms:'         => false
+            'Content-Type:' => false,
+            'Content-Transfer-Encoding:' => false,
+            'Plural-Forms:' => false
         );
         $count = count($headerKeys);
         $keys = array_keys($headerKeys);
@@ -760,6 +805,6 @@ class Parser
                 $keys = array_keys($headerKeys);
             }
         }
-        return ($headerItems == $count) ? true : false;
+        return ($headerItems>0) ? true : false;
     }
 }
