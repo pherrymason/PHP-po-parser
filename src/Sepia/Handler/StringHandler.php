@@ -58,7 +58,7 @@ class StringHandler implements HandlerInterface
     }
 
     /**
-     * @return bool|string
+     * @return string|false
      */
     public function getNextLine()
     {
@@ -68,6 +68,7 @@ class StringHandler implements HandlerInterface
         } else {
             $result = false;
         }
+        
         return $result;
     }
 
