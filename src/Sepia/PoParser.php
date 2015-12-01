@@ -81,12 +81,8 @@ class PoParser
     }
 
 
-    public function __construct($handler, $options=array())
+    public function __construct(InterfaceHandler $handler, $options=array())
     {
-        if (($handler instanceof InterfaceHandler)===false) {
-            echo "ERROR ACA\n";
-            throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
-        }
         $this->sourceHandle = $handler;
         $defaultOptions = array(
             'multiline-glue'=>'<##EOL##>',  // Token used to separate lines in msgid
@@ -114,11 +110,11 @@ class PoParser
      * @throws \Exception, \InvalidArgumentException
      * @return array. List of entries found in .po file.
      */
-    public function parse( $handle=null )
+    public function parse(InterfaceHandler $handle=null )
     {
         if ($handle===null) {
 
-            if ($this->sourceHandle===null || ($this->sourceHandle instanceof InterfaceHandler)===false) {
+            if ($this->sourceHandle===null) {
                 throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
             }
             else {
