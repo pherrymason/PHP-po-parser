@@ -619,12 +619,18 @@ class PoParser
 
             if (count(preg_grep('/^msgstr/', array_keys($entry)))) { // checks if there is a key starting with msgstr
                 if ($isPlural) {
+                    $noTranslation = true;
                     foreach ($entry as $key => $value) {
                         if (strpos($key, 'msgstr[') === false) continue;
                         $output.= $key." ";
+                        $noTranslation = false;
                         foreach ($value as $i => $t) {
                             $output.= $this->cleanExport($t) . "\n";
                         }
+                    }
+                    if ($noTranslation) {
+                        $output.= 'msgstr[0] '.$this->cleanExport('')."\n";
+                        $output.= 'msgstr[1] '.$this->cleanExport('')."\n";
                     }
                 } else {
                     foreach ((array)$entry['msgstr'] as $i => $t) {
