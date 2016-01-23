@@ -81,7 +81,7 @@ class PoParser
     }
 
 
-    public function __construct(InterfaceHandler $handler, $options=array())
+    public function __construct(InterfaceHandler $handler=null, $options=array())
     {
         $this->sourceHandle = $handler;
         $defaultOptions = array(
