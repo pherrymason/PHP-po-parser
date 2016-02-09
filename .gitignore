@@ -1,3 +1,6 @@
+.idea
 vendor
 composer.phar
-composer.lock
+build
+!build/.gitignore
+!build/logs/.gitignore
