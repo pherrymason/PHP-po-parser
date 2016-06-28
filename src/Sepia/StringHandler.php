@@ -34,8 +34,9 @@ namespace Sepia;
  */
 class StringHandler implements InterfaceHandler
 {
-    protected $string;
+    protected $strings;
     protected $line;
+    protected $total;
 
     public function __construct( $string )
     {
@@ -64,7 +65,6 @@ class StringHandler implements InterfaceHandler
     {
         $this->line = 0;
     }
-
 
     public function save($ignore)
     {
