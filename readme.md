@@ -60,7 +60,6 @@ v5.0 (WIP)
 v4.2.2
 * More PHPDocs fixes
 * Strict comparisons used where safe.
-* Drop support for PHP 5.3
 * Fix example for `writeFile`.
 * Support for EOL line formatting.
 
