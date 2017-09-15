@@ -62,6 +62,7 @@ v4.2.2
 * Strict comparisons used where safe.
 * Drop support for PHP 5.3
 * Fix example for `writeFile`.
+* Support for EOL line formatting.
 
 v4.2.1
 * Support multiline for plural entries (thanks @Ben-Ho)
