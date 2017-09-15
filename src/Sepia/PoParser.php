@@ -45,6 +45,7 @@ class PoParser
     protected $headers = array();
     protected $sourceHandle = null;
     protected $options = array();
+    protected $lineEndings = array( 'unix'=>"\n", 'win'=>"\r\n" );
 
 
 
@@ -86,7 +87,8 @@ class PoParser
         $this->sourceHandle = $handler;
         $defaultOptions = array(
             'multiline-glue'=>'<##EOL##>',  // Token used to separate lines in msgid
-            'context-glue'  => '<##EOC##>'  // Token used to separate ctxt from msgid
+            'context-glue'  => '<##EOC##>',  // Token used to separate ctxt from msgid
+            'line-ending'   => 'unix'
         );
         $this->options = array_merge($defaultOptions, $options);
     }
@@ -193,7 +195,7 @@ class PoParser
                     $entry['reference'][] = addslashes($data);
                     break;
 
-                
+
                 case '#|':      // #| Previous untranslated string
                 case '#~':      // #~ Old entry
                 case '#~|':     // #~| Previous-Old untranslated string. Reported by @Cellard
@@ -418,7 +420,7 @@ class PoParser
      *  - msgid_plural: String Array.
      *  - flags: Array. List of entry flags. Example: array('fuzzy','php-format')
      *  - previous: Array: Contains previous untranslated strings in a sub array with msgid and msgstr.
-     * 
+     *
      * @param String  $msgid     Id of entry. Be aware that some entries have a multiline msgid. In that case \n must be replaced by the value of 'multiline-glue' option (by default "<##EOL##>").
      * @param Array   $entry     Array with all entry data. Fields not setted will be removed.
      * @param boolean $createNew If msgid not found, it will create a new entry. By default true. You want to set this to false if need to change the msgid of an entry.
@@ -518,12 +520,12 @@ class PoParser
         $output = '';
 
         if (count($this->headers) > 0) {
-            $output.= "msgid \"\"\n";
-            $output.= "msgstr \"\"\n";
+            $output.= "msgid \"\"".$this->eol();
+            $output.= "msgstr \"\"".$this->eol();
             foreach ($this->headers as $header) {
-                $output.= $header . "\n";
+                $output.= $header . $this->eol();
             }
-            $output.= "\n";
+            $output.= $this->eol();
         }
 
 
@@ -537,10 +539,10 @@ class PoParser
                 foreach ($entry['previous'] as $key => $data) {
 
                     if (is_string($data)) {
-                        $output.= "#| " . $key . " " . $this->cleanExport($data) . "\n";
+                        $output.= "#| " . $key . " " . $this->cleanExport($data) . $this->eol();
                     } elseif (is_array($data) && count($data)>0) {
                         foreach ($data as $line) {
-                            $output.= "#| " . $key . " " . $this->cleanExport($line) . "\n";
+                            $output.= "#| " . $key . " " . $this->cleanExport($line) . $this->eol();
                         }
                     }
 
@@ -549,32 +551,32 @@ class PoParser
 
             if (isset($entry['tcomment'])) {
                 foreach ($entry['tcomment'] as $comment) {
-                    $output.= "# " . $comment . "\n";
+                    $output.= "# " . $comment . $this->eol();
                 }
             }
 
             if (isset($entry['ccomment'])) {
                 foreach ($entry['ccomment'] as $comment) {
-                    $output.= '#. ' . $comment . "\n";
+                    $output.= '#. ' . $comment . $this->eol();
                 }
             }
 
             if (isset($entry['reference'])) {
                 foreach ($entry['reference'] as $ref) {
-                    $output.= '#: ' . $ref . "\n";
+                    $output.= '#: ' . $ref . $this->eol();
                 }
             }
 
             if (isset($entry['flags']) && !empty($entry['flags'])) {
-                $output.= "#, " . implode(', ', $entry['flags']) . "\n";
+                $output.= "#, " . implode(', ', $entry['flags']) . $this->eol();
             }
 
             if (isset($entry['@'])) {
-                $output.= "#@ " . $entry['@'] . "\n";
+                $output.= "#@ " . $entry['@'] . $this->eol();
             }
 
             if (isset($entry['msgctxt'])) {
-                $output.= 'msgctxt ' . $this->cleanExport($entry['msgctxt'][0]) . "\n";
+                $output.= 'msgctxt ' . $this->cleanExport($entry['msgctxt'][0]) . $this->eol();
             }
 
 
@@ -585,7 +587,7 @@ class PoParser
             if (isset($entry['msgid'])) {
                 // Special clean for msgid
                 if (is_string($entry['msgid'])) {
-                    $msgid = explode("\n", $entry['msgid']);
+                    $msgid = explode($this->eol(), $entry['msgid']);
                 } elseif (is_array($entry['msgid'])) {
                     $msgid = $entry['msgid'];
                 } else {
@@ -597,14 +599,14 @@ class PoParser
                     if ($i > 0 && $isObsolete) {
                         $output.= "#~ ";
                     }
-                    $output.= $this->cleanExport($id) . "\n";
+                    $output.= $this->cleanExport($id) . $this->eol();
                 }
             }
 
             if (isset($entry['msgid_plural'])) {
                 // Special clean for msgid_plural
                 if (is_string($entry['msgid_plural'])) {
-                    $msgidPlural = explode("\n", $entry['msgid_plural']);
+                    $msgidPlural = explode($this->eol(), $entry['msgid_plural']);
                 } elseif (is_array($entry['msgid_plural'])) {
                     $msgidPlural = $entry['msgid_plural'];
                 } else {
@@ -613,7 +615,7 @@ class PoParser
 
                 $output.= 'msgid_plural ';
                 foreach ($msgidPlural as $plural) {
-                    $output.= $this->cleanExport($plural) . "\n";
+                    $output.= $this->cleanExport($plural) . $this->eol();
                 }
             }
 
@@ -625,12 +627,12 @@ class PoParser
                         $output.= $key." ";
                         $noTranslation = false;
                         foreach ($value as $i => $t) {
-                            $output.= $this->cleanExport($t) . "\n";
+                            $output.= $this->cleanExport($t) . $this->eol();
                         }
                     }
                     if ($noTranslation) {
-                        $output.= 'msgstr[0] '.$this->cleanExport('')."\n";
-                        $output.= 'msgstr[1] '.$this->cleanExport('')."\n";
+                        $output.= 'msgstr[0] '.$this->cleanExport('').$this->eol();
+                        $output.= 'msgstr[1] '.$this->cleanExport('').$this->eol();
                     }
                 } else {
                     foreach ((array)$entry['msgstr'] as $i => $t) {
@@ -639,13 +641,13 @@ class PoParser
                                 $output.= "#~ ";
                             }
 
-                            $output.= 'msgstr ' . $this->cleanExport($t) . "\n";
+                            $output.= 'msgstr ' . $this->cleanExport($t) . $this->eol();
                         } else {
                             if ($isObsolete) {
                                 $output.= "#~ ";
                             }
 
-                            $output.= $this->cleanExport($t) . "\n";
+                            $output.= $this->cleanExport($t) . $this->eol();
                         }
                     }
                 }
@@ -654,13 +656,23 @@ class PoParser
             $counter++;
             // Avoid inserting an extra newline at end of file
             if ($counter < $entriesCount) {
-                $output.= "\n";
+                $output.= $this->eol();
             }
         }
 
         return $output;
     }
 
+    /**
+     * Returns configured line ending (option 'line-ending' ['win', 'unix'])
+     *
+     *
+     * @return string
+     */
+    protected function eol()
+    {
+        return $this->lineEndings[$this->options['line-ending']]?:"\n";
+    }
 
     /**
      * Prepares a string to be outputed into a file.
