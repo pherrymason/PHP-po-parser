@@ -473,12 +473,12 @@ class Parser
      *  - flags: array. List of entry flags. Example: ['fuzzy', 'php-format']
      *  - previous: array. Contains previous untranslated strings in a sub array with msgid and msgstr.
      *
-     * @param string  $msgid     Id of entry. Be aware that some entries have a multiline msgid.
-     *                           In that case \n must be replaced by the value of 'multiline-glue'
-     *                           option (by default "<##EOL##>").
-     * @param array   $entry     Array with all entry data. Fields not setted will be removed.
-     * @param boolean $createNew If msgid not found, it will create a new entry. By default true.
-     *                           You want to set this to false if need to change the msgid of an entry.
+     * @param string $msgid     Id of entry. Be aware that some entries have a multiline msgid.
+     *                          In that case \n must be replaced by the value of 'multiline-glue'
+     *                          option (by default "<##EOL##>").
+     * @param array  $entry     Array with all entry data. Fields not setted will be removed.
+     * @param bool   $createNew If msgid not found, it will create a new entry. By default true.
+     *                          You want to set this to false if need to change the msgid of an entry.
      */
     public function setEntry($msgid, $entry, $createNew = true)
     {
