@@ -463,20 +463,20 @@ class Parser
      * Updates an entry.
      * If entry not found returns false. If $createNew is true, a new entry will be created.
      * $entry is an array that can contain following indexes:
-     *  - msgid: String Array. Required.
-     *  - msgstr: String Array. Required.
-     *  - reference: String Array.
-     *  - msgctxt: String. Disambiguating context.
-     *  - tcomment: String Array. Translator comments.
-     *  - ccomment: String Array. Source comments.
-     *  - msgid_plural: String Array.
-     *  - flags: Array. List of entry flags. Example: array('fuzzy','php-format')
-     *  - previous: Array: Contains previous untranslated strings in a sub array with msgid and msgstr.
+     *  - msgid: string[]. Required.
+     *  - msgstr: string[]. Required.
+     *  - reference: string[].
+     *  - msgctxt: string. Disambiguating context.
+     *  - tcomment: string[]. Translator comments.
+     *  - ccomment: string[]. Source comments.
+     *  - msgid_plural: string[].
+     *  - flags: array. List of entry flags. Example: ['fuzzy', 'php-format']
+     *  - previous: array. Contains previous untranslated strings in a sub array with msgid and msgstr.
      *
-     * @param String  $msgid    Id of entry. Be aware that some entries have a multiline msgid.
-     *                          In that case \n must be replaced by the value of 'multiline-glue'
-     *                          option (by default "<##EOL##>").
-     * @param Array   $entry     Array with all entry data. Fields not setted will be removed.
+     * @param string  $msgid     Id of entry. Be aware that some entries have a multiline msgid.
+     *                           In that case \n must be replaced by the value of 'multiline-glue'
+     *                           option (by default "<##EOL##>").
+     * @param array   $entry     Array with all entry data. Fields not setted will be removed.
      * @param boolean $createNew If msgid not found, it will create a new entry. By default true.
      *                           You want to set this to false if need to change the msgid of an entry.
      */
