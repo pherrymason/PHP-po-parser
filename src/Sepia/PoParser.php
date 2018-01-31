@@ -34,10 +34,7 @@ namespace Sepia;
  *
  * Class to parse .po file and extract its strings.
  *
- * @method array headers() deprecated
- * @method null update_entry($original, $translation = null, $tcomment = array(), $ccomment = array()) deprecated
- * @method array read($filePath) deprecated
- * @version 5.0.0
+ * @version 4.2.2
  */
 class PoParser
 {
@@ -47,15 +44,14 @@ class PoParser
     protected $options = array();
     protected $lineEndings = array('unix' => "\n", 'win' => "\r\n");
 
-
     /**
      * Reads and parses a string
      *
-     * @param       string po content
-     * @param array $options
+     * @param string $string po content
+     * @param array  $options
      *
      * @throws \Exception.
-     * @return array. List of entries found in string po formatted
+     * @return PoParser
      */
     public static function parseString($string, $options = array())
     {
@@ -73,7 +69,7 @@ class PoParser
      * @param array  $options
      *
      * @throws \Exception.
-     * @return array. List of entries found in string po formatted
+     * @return PoParser
      */
     public static function parseFile($filepath, $options = array())
     {
@@ -95,13 +91,17 @@ class PoParser
         $this->options = array_merge($defaultOptions, $options);
     }
 
-
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
-
+    /**
+     * @return array
+     */
     public function getEntries()
     {
         return $this->entries;
@@ -121,9 +121,9 @@ class PoParser
 
             if ($this->sourceHandle === null) {
                 throw new \InvalidArgumentException('Must provide a valid InterfaceHandler');
-            } else {
-                $handle = $this->sourceHandle;
             }
+
+            $handle = $this->sourceHandle;
         }
 
         $headers = array();
@@ -141,7 +141,7 @@ class PoParser
             $key = $split[0];
 
             // If a blank line is found, or a new msgid when already got one
-            if ($line === '' || ($key == 'msgid' && isset($entry['msgid']))) {
+            if ($line === '' || ($key === 'msgid' && isset($entry['msgid']))) {
                 // Two consecutive blank lines
                 if ($justNewEntry) {
                     $lineNumber++;
@@ -235,7 +235,7 @@ class PoParser
                                 break;
 
                             case 'msgstr':
-                                if ($str == "\"\"") {
+                                if ($str === "\"\"") {
                                     $entry['msgstr'][] = trim($str, '"');
                                 } else {
                                     $entry['msgstr'][] = $str;
@@ -313,7 +313,7 @@ class PoParser
 
                             case 'msgstr':
                                 // Special fix where msgid is ""
-                                if ($entry['msgid'] == "\"\"") {
+                                if ($entry['msgid'] === "\"\"") {
                                     $entry['msgstr'][] = trim($line, '"');
                                 } else {
                                     $entry['msgstr'][] = $line;
@@ -334,7 +334,7 @@ class PoParser
         $handle->close();
 
         // add final entry
-        if ($state == 'msgstr') {
+        if ($state === 'msgstr') {
             $hash[] = $entry;
         }
 
@@ -480,7 +480,7 @@ class PoParser
 
 
     /**
-     *   Gets entries.
+     * Gets entries.
      */
     public function entries()
     {
@@ -489,16 +489,16 @@ class PoParser
 
 
     /**
-     *  Writes entries to a po file
+     * Writes entries to a po file
      *
      * @example
      *        $pofile = new PoParser();
      *        $pofile->parse('ca.po');
      *
      *        // Modify an antry
-     *        $pofile->updateEntry( $msgid, $msgstr );
+     *        $pofile->setEntry( $msgid, $msgstr );
      *        // Save Changes back into `ca.po`
-     *        $pofile->write('ca.po');
+     *        $pofile->writeFile('ca.po');
      *
      * @param string $filepath
      *
@@ -675,7 +675,6 @@ class PoParser
 
     /**
      * Returns configured line ending (option 'line-ending' ['win', 'unix'])
-     *
      *
      * @return string
      */

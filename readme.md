@@ -57,6 +57,12 @@ v5.0 (WIP)
 * `parseString()` and `parseFile()` converted to factory methods.
 * Removed method `updateEntry()` in favour of `setEntry()`.
 
+v4.2.2
+* More PHPDocs fixes
+* Strict comparisons used where safe.
+* Fix example for `writeFile`.
+* Support for EOL line formatting.
+
 v4.2.1
 * Support multiline for plural entries (thanks @Ben-Ho)
 
