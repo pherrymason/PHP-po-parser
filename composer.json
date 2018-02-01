@@ -1,30 +1,37 @@
 {
-	"name"        : "sepia/po-parser",
-	"description" : "Gettext *.PO file parser for PHP.",
-	"type"        : "library",
-	"keywords"    : ["i18n","i10n","po","gettext"],
-	"homepage"    : "https://github.com/raulferras/PHP-po-parser",
-	"license"     : "MIT",
-	"authors"     : [
-				{
-					"name": "Raúl Ferràs",
-					"email": "raul.ferras@gmail.com",
-					"role" : "developer"
-				}
-				],
-	"support" : {
-		"issues" : "https://github.com/raulferras/PHP-po-parser/issues"
-	},
-	"require" : {
-		"php": ">=5.3"
-	},
-	"require-dev" : {
-		"phpunit/phpunit": "3.7.*",
-        "squizlabs/php_codesniffer": "1.5.*"
-	},
-	"autoload" : {
-		"psr-0" : {
-			"Sepia": "src/"
-		}
-	}
+  "name": "sepia/po-parser",
+  "description": "Gettext *.PO file parser for PHP.",
+  "type": "library",
+  "keywords": [
+    "i18n",
+    "i10n",
+    "po",
+    "gettext"
+  ],
+  "homepage": "https://github.com/raulferras/PHP-po-parser",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Raúl Ferràs",
+      "email": "raul.ferras@gmail.com",
+      "role": "developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/raulferras/PHP-po-parser/issues"
+  },
+  "require": {
+    "php": ">=5.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0",
+    "squizlabs/php_codesniffer": "1.5.*",
+    "fzaninotto/faker": "^1.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sepia\\PoParser\\": "src/",
+      "Sepia\\Test\\": "tests/"
+    }
+  }
 }

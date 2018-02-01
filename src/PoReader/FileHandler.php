@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\PoReader;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -34,41 +34,86 @@ namespace Sepia;
  */
 class FileHandler implements InterfaceHandler
 {
+    /** @var resource */
     protected $fileHandle;
 
-    public function __construct($filepath)
+    /** @var string */
+    protected $filePath;
+
+    public function __construct($filePath)
     {
-        if (file_exists($filepath) === false) {
-            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filepath) . '"');
-        } elseif (is_readable($filepath) === false) {
-            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filepath) . '"');
+        $this->filePath = $filePath;
+        $this->fileHandle = null;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected function openFile()
+    {
+        if ($this->fileHandle !== null) {
+            return;
         }
 
-        $this->fileHandle = @fopen($filepath, "r");
+        if (file_exists($this->filePath) === false) {
+            throw new \Exception('Parser: Input File does not exists: "' . htmlspecialchars($this->filePath) . '"');
+        }
+
+        if (is_readable($this->filePath) === false) {
+            throw new \Exception('Parser: File is not readable: "' . htmlspecialchars($this->filePath) . '"');
+        }
+
+        $this->fileHandle = @fopen($this->filePath, 'rb');
         if ($this->fileHandle===false) {
-            throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
+            throw new \Exception('Parser: Could not open file: "' . htmlspecialchars($this->filePath) . '"');
         }
     }
 
-
+    /**
+     * @return bool|string
+     * @throws \Exception
+     */
     public function getNextLine()
     {
+        $this->openFile();
+
         return fgets($this->fileHandle);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function ended()
     {
+        $this->openFile();
+
         return feof($this->fileHandle);
     }
 
     public function close()
     {
+        if ($this->fileHandle === null) {
+            return true;
+        }
+
         return @fclose($this->fileHandle);
     }
 
-
-    public function save($outputFile)
+    /**
+     * @param $output
+     * @param $filePath
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function save($output, $filePath)
     {
+        $result = file_put_contents($filePath, $output);
+        if ($result === false) {
+            throw new \Exception('Could not write into file '.htmlspecialchars($filePath));
+        }
 
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\PoReader;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -34,11 +34,16 @@ namespace Sepia;
  */
 class StringHandler implements InterfaceHandler
 {
+    /** @var array */
     protected $strings;
+
+    /** @var int */
     protected $line;
+
+    /** @var int */
     protected $total;
 
-    public function __construct( $string )
+    public function __construct($string )
     {
         $this->line = 0;
         $this->strings = explode("\n",$string);

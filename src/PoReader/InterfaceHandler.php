@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\PoReader;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -37,5 +37,5 @@ interface InterfaceHandler
     public function getNextLine();
     public function ended();
     public function close();
-    public function save($output);
+    public function save($poString, $filePath);
 }

@@ -20,10 +20,16 @@ msgstr ""
 "X-Poedit-SearchPath-2: ../../../modules\n"
 
 #: ../../classes/dddddd.php:33
-msgid "Lo sentimos, ha ocurrido un error..."
-msgstr "Ho sentim, s'ha produït un error"
+msgid "string.1"
+msgstr "translation.1"
 
 #: ../../classes/xxxxx.php:96 ../../classes/controller/iiiiiii.php:107
 #: ../../classes/controller/yyyyyyy/zzzzzz.php:288
-msgid "Debes indicar un nombre."
+msgid "string.2"
 msgstr "Has d'indicar un nom."
+
+
+#| msgid "%d php-файло"
+#| msgid_plural "%d php-файлины"
+msgid "%d php-файл"
+msgid_plural "%d php-файлов"
