@@ -120,7 +120,7 @@ class Parser
                 if ($firstLine) {
                     $firstLine = false;
                     if (self::isHeader($entry)) {
-                        $catalog->addHeaders(explode('\\n', $entry['msgstr']));
+                        $catalog->addHeaders(array_filter(explode('\\n', $entry['msgstr'])));
                     } else {
                         $catalog->addEntry(EntryFactory::createFromArray($entry));
                     }

@@ -19,21 +19,21 @@ class PoFeaturesTest extends AbstractFixtureTest
     public function testRead()
     {
         try {
-            $parser = Parser::parseFile($this->resourcesPath.'healthy.po');
-            $result = $parser->getEntries();
+            $catalog = Parser::parseFile($this->resourcesPath.'healthy.po');
+            $result = $catalog->getEntries();
         } catch (\Exception $e) {
             $result = array();
             $this->fail($e->getMessage());
         }
 
-        $this->assertCount(2, $result);
+        $this->assertCount(3, $result);
 
 
         // Read file without headers.
         // It should not skip first entry
         try {
-            $parser = Parser::parseFile($this->resourcesPath.'noheader.po');
-            $result = $parser->getEntries();
+            $catalog = Parser::parseFile($this->resourcesPath.'noheader.po');
+            $result = $catalog->getEntries();
         } catch (\Exception $e) {
             $result = array();
             $this->fail($e->getMessage());
@@ -54,24 +54,24 @@ class PoFeaturesTest extends AbstractFixtureTest
             $headers = $catalog->getHeaders();
 
             $this->assertCount(18, $headers);
-            $this->assertEquals("\"Project-Id-Version: \\n\"", $headers[0]);
-            $this->assertEquals("\"Report-Msgid-Bugs-To: \\n\"", $headers[1]);
-            $this->assertEquals("\"POT-Creation-Date: 2013-09-25 15:55+0100\\n\"", $headers[2]);
-            $this->assertEquals("\"PO-Revision-Date: \\n\"", $headers[3]);
-            $this->assertEquals("\"Last-Translator: Raúl Ferràs <xxxxxxxxxx@xxxxxxx.xxxxx>\\n\"", $headers[4]);
-            $this->assertEquals("\"Language-Team: \\n\"", $headers[5]);
-            $this->assertEquals("\"MIME-Version: 1.0\\n\"", $headers[6]);
-            $this->assertEquals("\"Content-Type: text/plain; charset=UTF-8\\n\"", $headers[7]);
-            $this->assertEquals("\"Content-Transfer-Encoding: 8bit\\n\"", $headers[8]);
-            $this->assertEquals("\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"", $headers[9]);
-            $this->assertEquals("\"X-Poedit-SourceCharset: UTF-8\\n\"", $headers[10]);
-            $this->assertEquals("\"X-Poedit-KeywordsList: __;_e;_n;_t\\n\"", $headers[11]);
-            $this->assertEquals("\"X-Textdomain-Support: yes\\n\"", $headers[12]);
-            $this->assertEquals("\"X-Poedit-Basepath: .\\n\"", $headers[13]);
-            $this->assertEquals("\"X-Generator: Poedit 1.5.7\\n\"", $headers[14]);
-            $this->assertEquals("\"X-Poedit-SearchPath-0: .\\n\"", $headers[15]);
-            $this->assertEquals("\"X-Poedit-SearchPath-1: ../..\\n\"", $headers[16]);
-            $this->assertEquals("\"X-Poedit-SearchPath-2: ../../../modules\\n\"", $headers[17]);
+            $this->assertEquals("Project-Id-Version: ", $headers[0]);
+            $this->assertEquals("Report-Msgid-Bugs-To: ", $headers[1]);
+            $this->assertEquals("POT-Creation-Date: 2013-09-25 15:55+0100", $headers[2]);
+            $this->assertEquals("PO-Revision-Date: ", $headers[3]);
+            $this->assertEquals("Last-Translator: Raúl Ferràs <xxxxxxxxxx@xxxxxxx.xxxxx>", $headers[4]);
+            $this->assertEquals("Language-Team: ", $headers[5]);
+            $this->assertEquals("MIME-Version: 1.0", $headers[6]);
+            $this->assertEquals("Content-Type: text/plain; charset=UTF-8", $headers[7]);
+            $this->assertEquals("Content-Transfer-Encoding: 8bit", $headers[8]);
+            $this->assertEquals("Plural-Forms: nplurals=2; plural=n != 1;", $headers[9]);
+            $this->assertEquals("X-Poedit-SourceCharset: UTF-8", $headers[10]);
+            $this->assertEquals("X-Poedit-KeywordsList: __;_e;_n;_t", $headers[11]);
+            $this->assertEquals("X-Textdomain-Support: yes", $headers[12]);
+            $this->assertEquals("X-Poedit-Basepath: .", $headers[13]);
+            $this->assertEquals("X-Generator: Poedit 1.5.7", $headers[14]);
+            $this->assertEquals("X-Poedit-SearchPath-0: .", $headers[15]);
+            $this->assertEquals("X-Poedit-SearchPath-1: ../..", $headers[16]);
+            $this->assertEquals("X-Poedit-SearchPath-2: ../../../modules", $headers[17]);
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
 //			$this->assertTrue( false, $e->getMessage() );
@@ -118,9 +118,8 @@ class PoFeaturesTest extends AbstractFixtureTest
             $catalog = Parser::parseFile($this->resourcesPath.'pluralsMultiline.po');
             $this->assertCount(2, $catalog->getEntries());
             $entries = $catalog->getEntries();
-            foreach ($entries as $id => $entry) {
-                $this->assertTrue(isset($entry['msgstr[0]']));
-                $this->assertTrue(isset($entry['msgstr[1]']));
+            foreach ($entries as $entry) {
+                $this->assertNotEmpty($entry->getMsgStrPlurals());
             }
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
