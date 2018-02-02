@@ -169,7 +169,6 @@ class Parser
                 case '#|':      // #| Previous untranslated string
                 case '#~':      // #~ Old entry
                 case '#~|':     // #~| Previous-Old untranslated string. Reported by @Cellard
-                    $modifier = '';
                     switch ($key) {
                         case '#|':
                             $key = 'previous';

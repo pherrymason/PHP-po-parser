@@ -254,43 +254,6 @@ class PoCompiler
         }
 
         return $output;
-        /*
-        if (count(preg_grep('/^msgstr/', array_keys($entry)))) { // checks if there is a key starting with msgstr
-            if ($isPlural) {
-                $noTranslation = true;
-                foreach ($entry as $key => $value) {
-                    if (strpos($key, 'msgstr[') === false) {
-                        continue;
-                    }
-                    $output .= $key." ";
-                    $noTranslation = false;
-                    foreach ($value as $i => $t) {
-                        $output .= $this->cleanExport($t).$this->eol();
-                    }
-                }
-                if ($noTranslation) {
-                    $output .= 'msgstr[0] '.$this->cleanExport('').$this->eol();
-                    $output .= 'msgstr[1] '.$this->cleanExport('').$this->eol();
-                }
-            } else {
-                foreach ((array)$entry['msgstr'] as $i => $t) {
-                    if ($i == 0) {
-                        if ($entry->isObsolete()) {
-                            $output .= "#~ ";
-                        }
-
-                        $output .= 'msgstr '.$this->cleanExport($t).$this->eol();
-                    } else {
-                        if ($entry->isObsolete()) {
-                            $output .= "#~ ";
-                        }
-
-                        $output .= $this->cleanExport($t).$this->eol();
-                    }
-                }
-            }
-        }
-        */
     }
 
     /**
