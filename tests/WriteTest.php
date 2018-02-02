@@ -39,7 +39,6 @@ class WriteTest extends AbstractFixtureTest
         ));
         $catalogSource->addEntry($entry);
 
-
         $this->saveCatalog($catalogSource);
 
         $catalog = $this->parseFile('temp.po');
