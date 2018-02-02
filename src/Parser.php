@@ -287,7 +287,7 @@ class Parser
                             case 'msgid':
                             case 'msgid_plural':
                             case (strpos($state, 'msgstr[') !== false):
-                                if (!isset($entry[$state]) === false) {
+                                if (!isset($entry[$state])) {
                                     $entry[$state] = '';
                                 }
 

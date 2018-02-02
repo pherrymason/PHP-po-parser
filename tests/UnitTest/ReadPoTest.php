@@ -7,7 +7,7 @@ use Sepia\Test\AbstractFixtureTest;
 
 class ReadPoTest extends AbstractFixtureTest
 {
-    public function test_flags()
+    public function testFlags()
     {
         $catalog = $this->parseFile('multiflags.po');
 
@@ -19,17 +19,17 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals(array('php-format', 'fuzzy'), $entry->getFlags());
     }
 
-    public function test_translator_comment()
+    public function testTranslatorComment()
     {
         $this->markTestSkipped();
     }
 
-    public function test_developer_comment()
+    public function testDeveloperComment()
     {
         $this->markTestSkipped();
     }
 
-    public function test_entries_with_context()
+    public function testEntriesWithContext()
     {
         $catalog = $this->parseFile('context.po');
 
@@ -41,7 +41,7 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertNotEquals($withContext, $withoutContext);
     }
 
-    public function test_previous_untranslated()
+    public function testPreviousUntranslated()
     {
         $catalog = $this->parseFile('previous_unstranslated.po');
 
@@ -55,13 +55,13 @@ class ReadPoTest extends AbstractFixtureTest
         );
     }
 
-    public function test_previous_untranslated_multiline()
+    public function testPreviousUntranslatedMultiline()
     {
         $this->markTestIncomplete('TODO');
         $catalog = $this->parseFile('previous_unstranslated.po');
     }
 
-    public function test_plurals()
+    public function testPlurals()
     {
         $catalog = $this->parseFile('plurals.po');
 
@@ -77,7 +77,7 @@ class ReadPoTest extends AbstractFixtureTest
         );
     }
 
-    public function test_plurals_multiline()
+    public function testPluralsMultiline()
     {
         $catalog = $this->parseFile('pluralsMultiline.po');
         $entry = $catalog->getEntry('%s post not updated,somebody is editing it.');

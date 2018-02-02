@@ -308,7 +308,7 @@ class PoFeaturesTest extends AbstractFixtureTest
     public function testPreviousUnstranslated()
     {
         $catalog = Parser::parseFile($this->resourcesPath.'previous_unstranslated.po');
-        
+
         $entry = $catalog->getEntry('this is a string');
         $this->assertNotNull($entry);
         $this->assertEquals('this is a string', $entry->getMsgId());

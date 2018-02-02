@@ -8,7 +8,7 @@ use Sepia\PoParser\PoReader\FileHandler;
 
 class WriteTest extends AbstractFixtureTest
 {
-    public function test_write()
+    public function testWrite()
     {
         $faker = \Faker\Factory::create();
         $catalogSource = new Catalog();

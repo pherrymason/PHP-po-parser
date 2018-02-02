@@ -5,7 +5,7 @@ namespace Sepia\PoParser\Catalog;
 class EntryFactory
 {
     /**
-     * @param array $entry
+     * @param array $entryArray
      * @return Entry
      */
     public static function createFromArray(array $entryArray)
