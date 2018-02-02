@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\SourceHandler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -32,10 +32,10 @@ namespace Sepia;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-interface InterfaceHandler
+interface SourceHandler
 {
     public function getNextLine();
     public function ended();
     public function close();
-    public function save($output);
+    public function save($poString);
 }

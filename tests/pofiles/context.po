@@ -26,6 +26,9 @@ msgctxt "start of week"
 msgid "1"
 msgstr "1"
 
+msgid "1"
+msgstr "1"
+
 #: wp-admin/includes/screen.php:956
 msgctxt "Welcome panel"
 msgid "Welcome"

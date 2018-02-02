@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\SourceHandler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -32,42 +32,88 @@ namespace Sepia;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class StringHandler implements InterfaceHandler
+class FileSystem implements SourceHandler
 {
-    protected $strings;
-    protected $line;
-    protected $total;
+    /** @var resource */
+    protected $fileHandle;
 
-    public function __construct( $string )
+    /** @var string */
+    protected $filePath;
+
+    public function __construct($filePath)
     {
-        $this->line = 0;
-        $this->strings = explode("\n",$string);
-        $this->total = count($this->strings);
+        $this->filePath = $filePath;
+        $this->fileHandle = null;
     }
 
+    /**
+     * @throws \Exception
+     */
+    protected function openFile()
+    {
+        if ($this->fileHandle !== null) {
+            return;
+        }
+
+        if (file_exists($this->filePath) === false) {
+            throw new \Exception('Parser: Input File does not exists: "' . htmlspecialchars($this->filePath) . '"');
+        }
+
+        if (is_readable($this->filePath) === false) {
+            throw new \Exception('Parser: File is not readable: "' . htmlspecialchars($this->filePath) . '"');
+        }
+
+        $this->fileHandle = @fopen($this->filePath, 'rb');
+        if ($this->fileHandle===false) {
+            throw new \Exception('Parser: Could not open file: "' . htmlspecialchars($this->filePath) . '"');
+        }
+    }
+
+    /**
+     * @return bool|string
+     * @throws \Exception
+     */
     public function getNextLine()
     {
-        if (isset($this->strings[$this->line])) {
-            $result = $this->strings[$this->line];
-            $this->line++;
-        } else {
-            $result = false;
-        }
-        return $result;
+        $this->openFile();
+
+        return fgets($this->fileHandle);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
     public function ended()
     {
-        return ($this->line>=$this->total);
+        $this->openFile();
+
+        return feof($this->fileHandle);
     }
 
     public function close()
     {
-        $this->line = 0;
+        if ($this->fileHandle === null) {
+            return true;
+        }
+
+        return @fclose($this->fileHandle);
     }
 
-    public function save($ignore)
+    /**
+     * @param $output
+     * @param $filePath
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function save($output)
     {
+        $result = file_put_contents($this->filePath, $output);
+        if ($result === false) {
+            throw new \Exception('Could not write into file '.htmlspecialchars($this->filePath));
+        }
 
+        return true;
     }
 }

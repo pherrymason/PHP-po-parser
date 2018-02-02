@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia;
+namespace Sepia\PoParser\SourceHandler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -32,43 +32,46 @@ namespace Sepia;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class FileHandler implements InterfaceHandler
+class StringSource implements SourceHandler
 {
-    protected $fileHandle;
+    /** @var string[] */
+    protected $strings;
 
-    public function __construct($filepath)
+    /** @var int */
+    protected $line;
+
+    /** @var int */
+    protected $total;
+
+    public function __construct($string)
     {
-        if (file_exists($filepath) === false) {
-            throw new \Exception('PoParser: Input File does not exists: "' . htmlspecialchars($filepath) . '"');
-        } elseif (is_readable($filepath) === false) {
-            throw new \Exception('PoParser: File is not readable: "' . htmlspecialchars($filepath) . '"');
-        }
-
-        $this->fileHandle = @fopen($filepath, "r");
-        if ($this->fileHandle===false) {
-            throw new \Exception('PoParser: Could not open file: "' . htmlspecialchars($filepath) . '"');
-        }
+        $this->line = 0;
+        $this->strings = explode("\n",$string);
+        $this->total = count($this->strings);
     }
-
 
     public function getNextLine()
     {
-        return fgets($this->fileHandle);
+        if (isset($this->strings[$this->line])) {
+            $result = $this->strings[$this->line];
+            $this->line++;
+        } else {
+            $result = false;
+        }
+        return $result;
     }
 
     public function ended()
     {
-        return feof($this->fileHandle);
+        return ($this->line>=$this->total);
     }
 
     public function close()
     {
-        return @fclose($this->fileHandle);
+        $this->line = 0;
     }
 
-
-    public function save($outputFile)
+    public function save($ignore)
     {
-
     }
 }

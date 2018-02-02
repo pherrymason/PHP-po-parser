@@ -62,7 +62,7 @@ msgstr[1] "%s páginas movidas a la Papelera."
 #: wp-admin/edit.php:248
 msgid "%s page restored from the Trash."
 msgid_plural "%s pages restored from the Trash."
-msgstr[0] "%s página restaurada desde la Papelera."
+msgstr[0] "%s página restaurapada desde la Papelera."
 msgstr[1] "%s páginas restauradas desde la Papelera."
 
 #: wp-admin/revision.php:107
