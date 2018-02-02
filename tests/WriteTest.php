@@ -4,7 +4,7 @@ namespace Sepia\Test;
 
 use Sepia\PoParser\Catalog;
 use Sepia\PoParser\PoCompiler;
-use Sepia\PoParser\PoReader\FileHandler;
+use Sepia\PoParser\SourceHandler\FileSystem;
 
 class WriteTest extends AbstractFixtureTest
 {
@@ -50,7 +50,7 @@ class WriteTest extends AbstractFixtureTest
      */
     protected function saveCatalog(Catalog $catalog)
     {
-        $fileHandler = new FileHandler($this->resourcesPath.'temp.po');
+        $fileHandler = new FileSystem($this->resourcesPath.'temp.po');
         $compiler = new PoCompiler();
         $fileHandler->save(
             $compiler->compile($catalog),

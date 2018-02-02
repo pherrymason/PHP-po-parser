@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia\PoParser\PoReader;
+namespace Sepia\PoParser\SourceHandler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com

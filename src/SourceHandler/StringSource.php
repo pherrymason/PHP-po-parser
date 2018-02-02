@@ -1,6 +1,6 @@
 <?php
 
-namespace Sepia\PoParser\PoReader;
+namespace Sepia\PoParser\SourceHandler;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -32,7 +32,7 @@ namespace Sepia\PoParser\PoReader;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class StringHandler implements SourceHandler
+class StringSource implements SourceHandler
 {
     /** @var string[] */
     protected $strings;

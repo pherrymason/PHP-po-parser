@@ -3,9 +3,9 @@
 namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\EntryFactory;
-use Sepia\PoParser\PoReader\FileHandler;
-use Sepia\PoParser\PoReader\SourceHandler;
-use Sepia\PoParser\PoReader\StringHandler;
+use Sepia\PoParser\SourceHandler\FileSystem;
+use Sepia\PoParser\SourceHandler\SourceHandler;
+use Sepia\PoParser\SourceHandler\StringSource;
 
 /**
  *    Copyright (c) 2012 Raúl Ferràs raul.ferras@gmail.com
@@ -56,7 +56,7 @@ class Parser
      */
     public static function parseString($string)
     {
-        $parser = new Parser(new StringHandler($string));
+        $parser = new Parser(new StringSource($string));
         $parser->parse();
 
         return $parser;
@@ -72,7 +72,7 @@ class Parser
      */
     public static function parseFile($filePath)
     {
-        $parser = new Parser(new FileHandler($filePath));
+        $parser = new Parser(new FileSystem($filePath));
 
         return $parser->parse();
     }
