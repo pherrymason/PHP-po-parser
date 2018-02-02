@@ -2,7 +2,7 @@ PoParser
 =======
 PoParser is a personal project to fulfill a need I got: parse Gettext Portable files (*.po files) and edit its content using PHP.  
 
-PoParser requires PHP >= 5.4, but may work in 5.3 too.
+PoParser requires PHP >= 5.4, but may work in 5.3 too.  
 [Changelog](changelog.md)
 
 [![Latest Stable Version](https://poser.pugx.org/sepia/po-parser/v/stable)](https://packagist.org/packages/sepia/po-parser) 
