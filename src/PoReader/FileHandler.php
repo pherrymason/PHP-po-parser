@@ -32,7 +32,7 @@ namespace Sepia\PoParser\PoReader;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-class FileHandler implements InterfaceHandler
+class FileHandler implements SourceHandler
 {
     /** @var resource */
     protected $fileHandle;

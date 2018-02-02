@@ -32,7 +32,7 @@ namespace Sepia\PoParser\PoReader;
  *
  * https://github.com/raulferras/PHP-po-parser
  */
-interface InterfaceHandler
+interface SourceHandler
 {
     public function getNextLine();
     public function ended();

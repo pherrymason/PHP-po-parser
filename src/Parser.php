@@ -4,7 +4,7 @@ namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\EntryFactory;
 use Sepia\PoParser\PoReader\FileHandler;
-use Sepia\PoParser\PoReader\InterfaceHandler;
+use Sepia\PoParser\PoReader\SourceHandler;
 use Sepia\PoParser\PoReader\StringHandler;
 
 /**
@@ -43,7 +43,7 @@ use Sepia\PoParser\PoReader\StringHandler;
  */
 class Parser
 {
-    /** @var InterfaceHandler */
+    /** @var SourceHandler */
     protected $sourceHandler;
 
     /**
@@ -77,7 +77,7 @@ class Parser
         return $parser->parse();
     }
 
-    public function __construct(InterfaceHandler $sourceHandler)
+    public function __construct(SourceHandler $sourceHandler)
     {
         $this->sourceHandler = $sourceHandler;
     }
@@ -85,7 +85,7 @@ class Parser
     /**
      * Reads and parses strings of a .po file.
      *
-     * @param InterfaceHandler . Optional
+     * @param SourceHandler . Optional
      *
      * @throws \Exception, \InvalidArgumentException
      * @return Catalog
