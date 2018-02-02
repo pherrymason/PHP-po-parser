@@ -28,7 +28,7 @@ It supports following parsing features:
 - <span># keys (translator comments).</span>
 - #. keys (Comments extracted from source code).
 - #: keys (references).
-- #| keys (previously strings), both single and multiline.
+- #| keys (previous strings), both single and multiline.
 - #~ keys (old entries), both single and multiline.
 
 Installation
