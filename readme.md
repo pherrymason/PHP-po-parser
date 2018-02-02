@@ -61,7 +61,7 @@ $entry->setFlags(array('fuzzy', 'php-code'));
 ```
 
 ## Save Changes back to a file
-Use `PoCompiler` to together with `FileSystem` to save a catalog back to a file:
+Use `PoCompiler` together with `FileSystem` to save a catalog back to a file:
  
 ```
 $fileHandler = new FileSystem('en.po');
@@ -74,10 +74,9 @@ $fileHandler->save(
 
 Documentation
 =============
-[v5 Documentation](https://github.com/raulferras/PHP-po-parser/wiki/Documentation-5.0)
-[v4 documentation](https://github.com/raulferras/PHP-po-parser/wiki/Documentation-4.0)
-
-[Migration guide from v4 to v5](https://github.com/raulferras/PHP-po-parser/wiki/Migration-v4-to-v5)
+- [v5 Documentation](https://github.com/raulferras/PHP-po-parser/wiki/Documentation-5.0)
+- [Migration guide from v4 to v5](https://github.com/raulferras/PHP-po-parser/wiki/Migration-v4-to-v5)
+- [v4 documentation](https://github.com/raulferras/PHP-po-parser/wiki/Documentation-4.0)
 
 
 Testing
