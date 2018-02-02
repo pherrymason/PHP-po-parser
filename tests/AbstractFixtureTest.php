@@ -15,10 +15,14 @@ abstract class AbstractFixtureTest extends TestCase
         $this->resourcesPath = __DIR__.'/pofiles/';
     }
 
+    /**
+     * @param string $file
+     *
+     * @return \Sepia\PoParser\Catalog
+     * @throws \Exception
+     */
     protected function parseFile($file)
     {
-        $parser = Parser::parseFile($this->resourcesPath.$file);
-
-        return $parser;
+        return Parser::parseFile($this->resourcesPath.$file);
     }
 }

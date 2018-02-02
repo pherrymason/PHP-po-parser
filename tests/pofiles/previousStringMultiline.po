@@ -1,0 +1,10 @@
+
+
+
+#| msgid "this is a previous string"
+#| msgstr ""
+#| "Doloribus nulla odit et aut est. Rerum molestiae pariatur suscipit unde in quide"
+#| "m alias alias. Ut ea omnis placeat rerum quae asperiores. Et recusandae praesent"
+#| "ium ea."
+msgid "this is a string"
+msgstr "this is a translation"

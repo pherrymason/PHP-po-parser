@@ -65,7 +65,15 @@ class ReadPoTest extends AbstractFixtureTest
 
     public function testPreviousUntranslatedMultiline()
     {
-        $catalog = $this->parseFile('previous_unstranslated.po');
+        $catalog = $this->parseFile('previousStringMultiline.po');
+
+        $entry = $catalog->getEntry('this is a string');
+        $this->assertNotNull($entry);
+
+        $previous = $entry->getPreviousEntry();
+        $this->assertNotNull($previous);
+        $this->assertEquals('this is a previous string', $previous->getMsgId());
+        $this->assertEquals('Doloribus nulla odit et aut est. Rerum molestiae pariatur suscipit unde in quidem alias alias. Ut ea omnis placeat rerum quae asperiores. Et recusandae praesentium ea.', $previous->getMsgStr());
     }
 
     public function testPlurals()

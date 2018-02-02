@@ -109,6 +109,11 @@ class Parser
             $split = preg_split('/\s+/ ', $line, 2);
             $key = $split[0];
 
+            if (empty($line) && count($entry) === 0) {
+                $lineNumber++;
+                continue;
+            }
+
             // If a blank line is found, or a new msgid when already got one
             if ($line === '' || ($key === 'msgid' && isset($entry['msgid']))) {
                 // Two consecutive blank lines
@@ -231,7 +236,10 @@ class Parser
                             case 'msgid':
                             case 'msgid_plural':
                             case 'msgstr':
-                                $entry[$key][$tmpKey] = trim($str, '"');
+                                if (!isset($entry[$key][$tmpKey])) {
+                                    $entry[$key][$tmpKey] = '';
+                                }
+                                $entry[$key][$tmpKey].= trim($str, '"');
                                 $lastPreviousKey = $tmpKey;
                                 break;
 
