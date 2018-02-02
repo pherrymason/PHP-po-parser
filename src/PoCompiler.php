@@ -182,7 +182,7 @@ class PoCompiler
         }
 
         return
-            ($entry->isObsolete() ? '#~ ' : '' ).
+            ($entry->isObsolete() ? '#~ ' : '').
             'msgctxt '.$this->cleanExport($entry->getMsgCtxt()).$this->eol();
     }
 
@@ -192,28 +192,7 @@ class PoCompiler
             return '';
         }
 
-        $msgId = $entry->getMsgId();
-
-        $output = '';
-        $tokens = $this->wrapString($msgId);
-
-        if (count($tokens) > 1) {
-            array_unshift($tokens, '');
-        }
-
-        foreach ($tokens as $i => $token) {
-            if ($entry->isObsolete()) {
-                $output .= self::TOKEN_OBSOLETE;
-            }
-
-            if ($i === 0) {
-                $output.= 'msgid ';
-            }
-
-            $output .= $this->cleanExport($token).$this->eol();
-        }
-
-        return $output;
+        return $this->buildProperty('msgid', $entry->getMsgId(), $entry->isObsolete());
     }
 
     protected function buildMsgStr(Entry $entry)
@@ -234,26 +213,7 @@ class PoCompiler
             return $output;
         }
 
-        $tokens = $this->wrapString($value);
-
-        $output = '';
-        if (count($tokens) > 1) {
-            array_unshift($tokens, '');
-        }
-
-        foreach ($tokens as $i => $token) {
-            if ($entry->isObsolete()) {
-                $output .= self::TOKEN_OBSOLETE;
-            }
-
-            if ($i === 0) {
-                $output.= 'msgstr ';
-            }
-
-            $output .= $this->cleanExport($token).$this->eol();
-        }
-
-        return $output;
+        return $this->buildProperty('msgstr', $value, $entry->isObsolete());
     }
 
     /**
@@ -269,6 +229,24 @@ class PoCompiler
         }
 
         return 'msgid_plural '.$this->cleanExport($value).$this->eol();
+    }
+
+    protected function buildProperty($property, $value, $obsolete = false)
+    {
+        $tokens = $this->wrapString($value);
+
+        $output = '';
+        if (count($tokens) > 1) {
+            array_unshift($tokens, '');
+        }
+
+        foreach ($tokens as $i => $token) {
+            $output .= $obsolete ? self::TOKEN_OBSOLETE : '';
+            $output .= ($i === 0) ? $property.' ' : '';
+            $output .= $this->cleanExport($token).$this->eol();
+        }
+
+        return $output;
     }
 
     /**
