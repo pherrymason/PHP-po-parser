@@ -23,6 +23,8 @@ msgstr ""
 msgid "string.1"
 msgstr "translation.1"
 
+# Translator comment
+#. Code comment
 #: ../../classes/xxxxx.php:96 ../../classes/controller/iiiiiii.php:107
 #: ../../classes/controller/yyyyyyy/zzzzzz.php:288
 msgid "string.2"
@@ -33,3 +35,4 @@ msgstr "Has d'indicar un nom."
 #| msgid_plural "%d php-файлины"
 msgid "%d php-файл"
 msgid_plural "%d php-файлов"
+msgstr "translation"

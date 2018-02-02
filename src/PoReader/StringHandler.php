@@ -34,7 +34,7 @@ namespace Sepia\PoParser\PoReader;
  */
 class StringHandler implements SourceHandler
 {
-    /** @var array */
+    /** @var string[] */
     protected $strings;
 
     /** @var int */
@@ -43,7 +43,7 @@ class StringHandler implements SourceHandler
     /** @var int */
     protected $total;
 
-    public function __construct($string )
+    public function __construct($string)
     {
         $this->line = 0;
         $this->strings = explode("\n",$string);

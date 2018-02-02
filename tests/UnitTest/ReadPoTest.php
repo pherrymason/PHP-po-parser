@@ -21,12 +21,20 @@ class ReadPoTest extends AbstractFixtureTest
 
     public function testTranslatorComment()
     {
-        $this->markTestSkipped();
+        $catalog = $this->parseFile('healthy.po');
+        $entry = $catalog->getEntry('string.2');
+
+        $this->assertNotNull($entry);
+        $this->assertEquals(array('Translator comment'), $entry->getTranslatorComments());
     }
 
     public function testDeveloperComment()
     {
-        $this->markTestSkipped();
+        $catalog = $this->parseFile('healthy.po');
+        $entry = $catalog->getEntry('string.2');
+
+        $this->assertNotNull($entry);
+        $this->assertEquals(array('Code comment'), $entry->getDeveloperComments());
     }
 
     public function testEntriesWithContext()
