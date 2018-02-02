@@ -73,6 +73,5 @@ class StringSource implements SourceHandler
 
     public function save($ignore)
     {
-
     }
 }

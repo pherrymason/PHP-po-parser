@@ -107,11 +107,11 @@ class FileSystem implements SourceHandler
      * @return bool
      * @throws \Exception
      */
-    public function save($output, $filePath)
+    public function save($output)
     {
-        $result = file_put_contents($filePath, $output);
+        $result = file_put_contents($this->filePath, $output);
         if ($result === false) {
-            throw new \Exception('Could not write into file '.htmlspecialchars($filePath));
+            throw new \Exception('Could not write into file '.htmlspecialchars($this->filePath));
         }
 
         return true;

@@ -66,10 +66,7 @@ Use `PoCompiler` together with `FileSystem` to save a catalog back to a file:
 ```
 $fileHandler = new FileSystem('en.po');
 $compiler = new PoCompiler();
-$fileHandler->save(
-    $compiler->compile($catalog),
-    $this->resourcesPath.'temp.po'
-);
+$fileHandler->save($compiler->compile($catalog));
 ```
 
 Documentation

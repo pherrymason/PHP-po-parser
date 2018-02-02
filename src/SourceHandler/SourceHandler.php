@@ -37,5 +37,5 @@ interface SourceHandler
     public function getNextLine();
     public function ended();
     public function close();
-    public function save($poString, $filePath);
+    public function save($poString);
 }
