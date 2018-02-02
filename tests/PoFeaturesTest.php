@@ -268,20 +268,16 @@ class PoFeaturesTest extends AbstractFixtureTest
     public function testNoBlankLines()
     {
         $catalog = Parser::parseFile($this->resourcesPath.'noblankline.po');
-        $entries = $catalog->getEntries();
 
-        $expected = array(
-            'one' => array(
-                'msgid' => array(0 => 'one'),
-                'msgstr' => array(0 => 'uno'),
-            ),
-            'two' => array(
-                'msgid' => array(0 => 'two'),
-                'msgstr' => array(0 => 'dos'),
-            ),
-        );
+        $entry = $catalog->getEntry('one');
+        $this->assertNotNull($entry);
+        $this->assertEquals('one', $entry->getMsgId());
+        $this->assertEquals('uno', $entry->getMsgstr());
 
-        $this->assertEquals($entries, $expected);
+        $entry = $catalog->getEntry('two');
+        $this->assertNotNull($entry);
+        $this->assertEquals('two', $entry->getMsgId());
+        $this->assertEquals('dos', $entry->getMsgstr());
     }
 
 
@@ -312,19 +308,15 @@ class PoFeaturesTest extends AbstractFixtureTest
     public function testPreviousUnstranslated()
     {
         $catalog = Parser::parseFile($this->resourcesPath.'previous_unstranslated.po');
-        $entries = $catalog->getEntries();
+        
+        $entry = $catalog->getEntry('this is a string');
+        $this->assertNotNull($entry);
+        $this->assertEquals('this is a string', $entry->getMsgId());
+        $this->assertEquals('this is a translation', $entry->getMsgStr());
 
-        $expected = array(
-            'this is a string' => array(
-                'msgid' => array('this is a string'),
-                'msgstr' => array('this is a translation'),
-                'previous' => array(
-                    'msgid' => array('this is a previous string'),
-                    'msgstr' => array('this is a previous translation string'),
-                ),
-            ),
-        );
-
-        $this->assertEquals($entries, $expected);
+        $prev = $entry->getPreviousEntry();
+        $this->assertNotNull($prev);
+        $this->assertEquals('this is a previous string', $prev->getMsgId());
+        $this->assertEquals('this is a previous translation string', $prev->getMsgStr());
     }
 }
