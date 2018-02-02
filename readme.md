@@ -43,9 +43,9 @@ Usage
 ```
 <?php 
 // Parse a po file
-$fileHandler = new Sepia\FileSystem('es.po');
+$fileHandler = new Sepia\PoParser\SourceHandler\FileSystem('es.po');
 
-$poParser = new Sepia\Parser($fileHandler);
+$poParser = new Sepia\PoParser\Parser($fileHandler);
 $catalog  = $poParser->parse();
 
 // Get an entry
@@ -64,8 +64,8 @@ $entry->setFlags(array('fuzzy', 'php-code'));
 Use `PoCompiler` together with `FileSystem` to save a catalog back to a file:
  
 ```
-$fileHandler = new FileSystem('en.po');
-$compiler = new PoCompiler();
+$fileHandler = new Sepia\PoParser\SourceHandler\FileSystem('en.po');
+$compiler = new Sepia\PoParser\PoCompiler();
 $fileHandler->save($compiler->compile($catalog));
 ```
 

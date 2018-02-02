@@ -37,6 +37,18 @@ class Catalog
     }
 
     /**
+     * @param string      $msgid
+     * @param string|null $msgctxt
+     */
+    public function removeEntry($msgid, $msgctxt = null)
+    {
+        $key = $this->getEntryHash($msgid, $msgctxt);
+        if (isset($this->entries[$key])) {
+            unset($this->entries[$key]);
+        }
+    }
+
+    /**
      * @return array
      */
     public function getHeaders()
