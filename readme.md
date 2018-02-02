@@ -25,7 +25,7 @@ It supports following parsing features:
 - msgctxt (Message context).
 - msgid_plural (plurals forms).
 - #, keys (flags).
-- # keys (translator comments).
+- <span># keys (translator comments).</span>
 - #. keys (Comments extracted from source code).
 - #: keys (references).
 - #| keys (previously strings), both single and multiline.
