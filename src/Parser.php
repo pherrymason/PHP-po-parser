@@ -143,7 +143,13 @@ class Parser
 
         // add final entry
         if (count($entry)) {
-            $catalog->addEntry(EntryFactory::createFromArray($entry));
+            if ($this->isHeader($entry)) {
+                $catalog->addHeaders(
+                    $this->parseHeaders($entry['msgstr'])
+                );
+            } else {
+                $catalog->addEntry(EntryFactory::createFromArray($entry));
+            }
         }
 
         return $catalog;

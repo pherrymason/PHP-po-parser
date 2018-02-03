@@ -17,6 +17,7 @@ class Catalog
      */
     public function __construct(array $entries = array())
     {
+        $this->entries = [];
         foreach ($entries as $entry) {
             $this->addEntry($entry);
         }
