@@ -1,0 +1,5 @@
+msgid ""
+"string.1"
+msgstr ""
+"translation line 1 "
+"translation line 2"

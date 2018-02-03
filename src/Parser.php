@@ -50,6 +50,9 @@ class Parser
     /** @var int */
     protected $lineNumber;
 
+    /** @var string */
+    protected $property;
+
     /**
      * Reads and parses a string
      *
@@ -471,6 +474,7 @@ class Parser
      * @param string $line
      * @param array  $entry
      *
+     * @return array
      * @throws ParseException
      */
     private function parseProperty($line, array $entry)
@@ -487,6 +491,7 @@ class Parser
             case $key === 'msgid_plural':
             case $key === 'msgstr':
                 $entry[$key].= trim($value, '"');
+                $this->property = $key;
                 break;
 
             case strpos($key, 'msgstr[') !== false:
@@ -494,6 +499,32 @@ class Parser
 
             default:
                 throw new ParseException(sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     * @throws ParseException
+     */
+    private function parseMultiline($line, $entry)
+    {
+        switch ($this->property) {
+            case 'msgctxt':
+            case 'msgid':
+            case 'msgid_plural':
+            case 'msgstr':
+                $entry[$this->property].= trim($line, '"');
+                break;
+
+            default:
+                throw new ParseException(
+                    sprintf('Error parsing property %s as multiline.', $this->property)
+                );
         }
 
         return $entry;

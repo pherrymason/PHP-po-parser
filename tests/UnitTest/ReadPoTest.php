@@ -18,6 +18,17 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals('translation.1', $entry->getMsgStr());
     }
 
+    public function testBasicMultiline()
+    {
+        $catalog = $this->parseFile('basicMultiline.po');
+
+        $entry = $catalog->getEntry('string.1');
+
+        $this->assertNotNull($entry);
+        $this->assertEquals('string.1', $entry->getMsgId());
+        $this->assertEquals('translation line 1 translation line 2', $entry->getMsgStr());
+    }
+
     public function testBasicCollection()
     {
         $catalog = $this->parseFile('basicCollection.po');
