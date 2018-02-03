@@ -12,17 +12,20 @@ abstract class AbstractFixtureTest extends TestCase
 
     public function setUp()
     {
-        $this->resourcesPath = __DIR__.'/pofiles/';
+        $this->resourcesPath = dirname(__DIR__).'/fixtures/';
     }
 
     /**
      * @param string $file
      *
      * @return \Sepia\PoParser\Catalog
-     * @throws \Exception
      */
     protected function parseFile($file)
     {
-        return Parser::parseFile($this->resourcesPath.$file);
+        try {
+            return Parser::parseFile($this->resourcesPath.$file);
+        } catch (\Exception $e) {
+            $this->fail('Could not open file '.$file);
+        }
     }
 }

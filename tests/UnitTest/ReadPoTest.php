@@ -7,6 +7,34 @@ use Sepia\Test\AbstractFixtureTest;
 
 class ReadPoTest extends AbstractFixtureTest
 {
+    public function testBasic()
+    {
+        $catalog = $this->parseFile('basic.po');
+
+        $entry = $catalog->getEntry('string.1');
+
+        $this->assertNotNull($entry);
+        $this->assertEquals('string.1', $entry->getMsgId());
+        $this->assertEquals('translation.1', $entry->getMsgStr());
+    }
+
+    public function testBasicCollection()
+    {
+        $catalog = $this->parseFile('basicCollection.po');
+
+        $this->assertCount(2, $catalog->getEntries());
+
+        $entry = $catalog->getEntry('string.1');
+        $this->assertNotNull($entry);
+        $this->assertEquals('string.1', $entry->getMsgId());
+        $this->assertEquals('translation.1', $entry->getMsgStr());
+
+        $entry = $catalog->getEntry('string.2');
+        $this->assertNotNull($entry);
+        $this->assertEquals('string.2', $entry->getMsgId());
+        $this->assertEquals('translation.2', $entry->getMsgStr());
+    }
+    
     public function testFlags()
     {
         $catalog = $this->parseFile('multiflags.po');
@@ -26,6 +54,15 @@ class ReadPoTest extends AbstractFixtureTest
 
         $this->assertNotNull($entry);
         $this->assertEquals(array('Translator comment'), $entry->getTranslatorComments());
+    }
+
+    public function testTranslatorWithNoPreSpace()
+    {
+        $catalog = $this->parseFile('commentWithNoSpace.po');
+        $entry = $catalog->getEntry('test');
+
+        $this->assertNotNull($entry);
+        $this->assertEquals(array('index.ctp:101'), $entry->getTranslatorComments());
     }
 
     public function testDeveloperComment()

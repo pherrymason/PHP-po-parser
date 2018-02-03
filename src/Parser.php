@@ -3,6 +3,7 @@
 namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\EntryFactory;
+use Sepia\PoParser\Exception\ParseException;
 use Sepia\PoParser\SourceHandler\FileSystem;
 use Sepia\PoParser\SourceHandler\SourceHandler;
 use Sepia\PoParser\SourceHandler\StringSource;
@@ -46,6 +47,9 @@ class Parser
     /** @var SourceHandler */
     protected $sourceHandler;
 
+    /** @var int */
+    protected $lineNumber;
+
     /**
      * Reads and parses a string
      *
@@ -87,13 +91,19 @@ class Parser
      *
      * @param SourceHandler . Optional
      *
-     * @throws \Exception, \InvalidArgumentException
+     * @throws \Exception, \InvalidArgumentException, ParseException
      * @return Catalog
      */
     public function parse()
     {
         $catalog = new Catalog();
+        $this->lineNumber = 0;
         $entry = array();
+        $this->mode = null;     // current mode
+        $this->property = null; // current property
+
+        // Flags
+        $headersFound = false;
 
         // A new entry has been just inserted.
         $justNewEntry = false;
@@ -105,17 +115,63 @@ class Parser
         $lineNumber = 0;
 
         while (!$this->sourceHandler->ended()) {
+
             $line = trim($this->sourceHandler->getNextLine());
+
+            if ($this->shouldIgnoreLine($line, $entry)) {
+                $this->lineNumber++;
+                continue;
+            }
+
+            if ($this->shouldCloseEntry($line, $entry)) {
+                if (!$headersFound && $this->isHeader($entry)) {
+                    $headersFound = true;
+                    $catalog->addHeaders(array_filter(explode('\\n', $entry['msgstr'])));
+                } else {
+                    $catalog->addEntry(EntryFactory::createFromArray($entry));
+                }
+
+                $entry = array();
+                $this->mode = null;
+                $this->property = null;
+
+                if (empty($line)) {
+                    $this->lineNumber++;
+                    continue;
+                }
+            }
+
+            $firstChar = strlen($line) > 0 ? $line[0] : '';
+
+            switch ($firstChar) {
+                case '#':
+                    $entry = $this->parseComment($line, $entry);
+                    break;
+
+                case 'm':
+                    $entry = $this->parseProperty($line, $entry);
+                    break;
+
+                case '"':
+                    $entry = $this->parseMultiline($line, $entry);
+                    break;
+            }
+
+            $this->lineNumber++;
+            continue;
+
+
             $split = preg_split('/\s+/ ', $line, 2);
-            $key = $split[0];
+            $lineKey = $split[0];
 
             if (empty($line) && count($entry) === 0) {
                 $lineNumber++;
                 continue;
             }
 
+
             // If a blank line is found, or a new msgid when already got one
-            if ($line === '' || ($key === 'msgid' && isset($entry['msgid']))) {
+            if ($line === '' || ($lineKey === 'msgid' && isset($entry['msgid']))) {
                 // Two consecutive blank lines
                 if ($justNewEntry) {
                     $lineNumber++;
@@ -147,7 +203,7 @@ class Parser
             $justNewEntry = false; // ?
             $data = isset($split[1]) ? $split[1] : null;
 
-            switch ($key) {
+            switch ($lineKey) {
                 // Flagged translation
                 case '#,':
                     $entry['flags'] = preg_split('/,\s*/', $data);
@@ -174,15 +230,15 @@ class Parser
                 case '#|':      // #| Previous untranslated string
                 case '#~':      // #~ Old entry
                 case '#~|':     // #~| Previous-Old untranslated string. Reported by @Cellard
-                    switch ($key) {
+                    switch ($lineKey) {
                         case '#|':
-                            $key = 'previous';
+                            $lineKey = 'previous';
                             break;
                         case '#~':
-                            $key = 'obsolete';
+                            $lineKey = 'obsolete';
                             break;
                         case '#~|':
-                            $key = 'previous-obsolete';
+                            $lineKey = 'previous-obsolete';
                             break;
                     }
 
@@ -200,14 +256,14 @@ class Parser
 
                     //array('obsolete' => true, 'msgid' => '', 'msgstr' => '');
 
-                    if (strpos($key, 'obsolete') !== false) {
+                    if (strpos($lineKey, 'obsolete') !== false) {
                         $entry['obsolete'] = true;
                         switch ($tmpKey) {
                             case 'msgid':
                                 if (!isset($entry['msgid'])) {
                                     $entry['msgid'] = '';
                                 }
-                                $entry['msgid'].= trim($str, '"');
+                                $entry['msgid'] .= trim($str, '"');
                                 $lastPreviousKey = $tmpKey;
                                 break;
 
@@ -215,7 +271,7 @@ class Parser
                                 if (!isset($entry['msgstr'])) {
                                     $entry['msgstr'] = '';
                                 }
-                                $entry['msgstr'].= trim($str, '"');
+                                $entry['msgstr'] .= trim($str, '"');
                                 $lastPreviousKey = $tmpKey;
                                 break;
 
@@ -228,23 +284,26 @@ class Parser
                                 break;
                         }
                     } else {
-                        $entry[$key] = isset($entry[$key]) ? $entry[$key] : array('msgid' => '', 'msgstr' => '');
+                        $entry[$lineKey] = isset($entry[$lineKey]) ? $entry[$lineKey] : array(
+                            'msgid' => '',
+                            'msgstr' => '',
+                        );
                     }
 
-                    if ($key !== 'obsolete') {
+                    if ($lineKey !== 'obsolete') {
                         switch ($tmpKey) {
                             case 'msgid':
                             case 'msgid_plural':
                             case 'msgstr':
-                                if (!isset($entry[$key][$tmpKey])) {
-                                    $entry[$key][$tmpKey] = '';
+                                if (!isset($entry[$lineKey][$tmpKey])) {
+                                    $entry[$lineKey][$tmpKey] = '';
                                 }
-                                $entry[$key][$tmpKey].= trim($str, '"');
+                                $entry[$lineKey][$tmpKey] .= trim($str, '"');
                                 $lastPreviousKey = $tmpKey;
                                 break;
 
                             default:
-                                $entry[$key][$tmpKey] = $str;
+                                $entry[$lineKey][$tmpKey] = $str;
                                 break;
                         }
                     }
@@ -269,7 +328,7 @@ class Parser
                 case 'msgid':
                     // untranslated-string-plural
                 case 'msgid_plural':
-                    $state = $key;
+                    $state = $lineKey;
                     if (!isset($entry[$state])) {
                         $entry[$state] = '';
                     }
@@ -283,9 +342,9 @@ class Parser
                     break;
 
                 default:
-                    if (strpos($key, 'msgstr[') !== false) {
+                    if (strpos($lineKey, 'msgstr[') !== false) {
                         // translated-string-case-n
-                        $state = $key;
+                        $state = $lineKey;
                         $entry[$state] = trim($data, '"');
                     } else {
                         // "multiline" lines
@@ -318,7 +377,7 @@ class Parser
 
                             default:
                                 throw new \Exception(
-                                    'Parser: Parse error! Unknown key "'.$key.'" on line '.($lineNumber + 1)
+                                    'Parser: Parse error! Unknown key "'.$lineKey.'" on line '.($lineNumber + 1)
                                 );
                         }
                     }
@@ -337,6 +396,18 @@ class Parser
         return $catalog;
     }
 
+    protected function shouldIgnoreLine($line, array $entry)
+    {
+        return empty($line) && count($entry) === 0;
+    }
+
+
+    protected function shouldCloseEntry($line, array $entry)
+    {
+        $lineKey = '';
+
+        return ($line === '' || ($lineKey === 'msgid' && isset($entry['msgid'])));
+    }
 
     /**
      * Checks if entry is a header by
@@ -345,23 +416,27 @@ class Parser
      *
      * @return bool
      */
-    protected static function isHeader(array $entry)
+    protected function isHeader(array $entry)
     {
         if (empty($entry) || !isset($entry['msgstr'])) {
             return false;
         }
 
+        if (!isset($entry['msgid']) || !empty($entry['msgid'])) {
+            return false;
+        }
+
         $headerKeys = array(
             'Project-Id-Version:' => false,
-            //  'Report-Msgid-Bugs-To:' => false,
-            //  'POT-Creation-Date:'    => false,
+            'Report-Msgid-Bugs-To:' => false,
+            'POT-Creation-Date:' => false,
             'PO-Revision-Date:' => false,
-            //  'Last-Translator:'      => false,
-            //  'Language-Team:'        => false,
+            'Last-Translator:' => false,
+            'Language-Team:' => false,
             'MIME-Version:' => false,
-            //  'Content-Type:'         => false,
-            //  'Content-Transfer-Encoding:' => false,
-            //  'Plural-Forms:'         => false
+            'Content-Type:' => false,
+            'Content-Transfer-Encoding:' => false,
+            'Plural-Forms:' => false,
         );
         $count = count($headerKeys);
         $keys = array_keys($headerKeys);
@@ -381,5 +456,49 @@ class Parser
         }
 
         return $headerItems === $count;
+    }
+
+    /**
+     * @param string $line
+     *
+     * @return array
+     */
+    protected function getProperty($line)
+    {
+        $tokens = preg_split('/\s+/ ', $line, 2);
+
+        return $tokens;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @throws ParseException
+     */
+    private function parseProperty($line, array $entry)
+    {
+        list($key, $value) = $this->getProperty($line);
+
+        if (!isset($entry[$key])) {
+            $entry[$key] = '';
+        }
+
+        switch (true) {
+            case $key === 'msgctxt':
+            case $key === 'msgid':
+            case $key === 'msgid_plural':
+            case $key === 'msgstr':
+                $entry[$key].= trim($value, '"');
+                break;
+
+            case strpos($key, 'msgstr[') !== false:
+                break;
+
+            default:
+                throw new ParseException(sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
+        }
+
+        return $entry;
     }
 }
