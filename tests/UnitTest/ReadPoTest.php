@@ -106,11 +106,14 @@ class ReadPoTest extends AbstractFixtureTest
 
     public function testTranslatorComment()
     {
-        $catalog = $this->parseFile('healthy.po');
-        $entry = $catalog->getEntry('string.2');
+        $catalog = $this->parseFile('translatorComments.po');
+        $entry = $catalog->getEntry('string.1');
 
         $this->assertNotNull($entry);
-        $this->assertEquals(array('Translator comment'), $entry->getTranslatorComments());
+        $this->assertEquals(
+            array('translator comment', 'second translator comment'),
+            $entry->getTranslatorComments()
+        );
     }
 
     public function testTranslatorWithNoPreSpace()
@@ -124,11 +127,11 @@ class ReadPoTest extends AbstractFixtureTest
 
     public function testDeveloperComment()
     {
-        $catalog = $this->parseFile('healthy.po');
-        $entry = $catalog->getEntry('string.2');
+        $catalog = $this->parseFile('codeComments.po');
+        $entry = $catalog->getEntry('string.1');
 
         $this->assertNotNull($entry);
-        $this->assertEquals(array('Code comment'), $entry->getDeveloperComments());
+        $this->assertEquals(array('code comment', 'code translator comment'), $entry->getDeveloperComments());
     }
 
 

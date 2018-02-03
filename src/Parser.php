@@ -309,6 +309,21 @@ class Parser
      */
     private function parseComment($line, $entry)
     {
+        $comment = trim(substr($line, 0, 2));
+
+        switch ($comment) {
+            case '#.':
+                $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
+                $entry['ccomment'][] = trim(substr($line, 2));
+                break;
+
+            case '#':
+            default:
+                $entry['tcomment'] = !isset($entry['tcomment']) ? array() : $entry['tcomment'];
+                $entry['tcomment'][] = trim(substr($line, 1));
+                break;
+        }
+
         return $entry;
     }
 }
