@@ -145,7 +145,7 @@ class ReadPoTest extends AbstractFixtureTest
         );
     }
 
-    public function testPreviousUntranslatedMultiline()
+    public function testPreviousStringMultiline()
     {
         $catalog = $this->parseFile('previousStringMultiline.po');
 

@@ -22,10 +22,10 @@ abstract class AbstractFixtureTest extends TestCase
      */
     protected function parseFile($file)
     {
-        try {
+        //try {
             return Parser::parseFile($this->resourcesPath.$file);
-        } catch (\Exception $e) {
-            $this->fail($e->getMessage());
-        }
+        //} catch (\Exception $e) {
+        //    $this->fail($e->getMessage());
+        //}
     }
 }

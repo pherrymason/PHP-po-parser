@@ -137,21 +137,7 @@ class Parser
                 }
             }
 
-            $firstChar = strlen($line) > 0 ? $line[0] : '';
-
-            switch ($firstChar) {
-                case '#':
-                    $entry = $this->parseComment($line, $entry);
-                    break;
-
-                case 'm':
-                    $entry = $this->parseProperty($line, $entry);
-                    break;
-
-                case '"':
-                    $entry = $this->parseMultiline($line, $entry);
-                    break;
-            }
+            $entry = $this->parseLine($line, $entry);
 
             $this->lineNumber++;
             continue;
@@ -164,6 +150,165 @@ class Parser
         }
 
         return $catalog;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     * @throws ParseException
+     */
+    protected function parseLine($line, $entry)
+    {
+        $firstChar = strlen($line) > 0 ? $line[0] : '';
+
+        switch ($firstChar) {
+            case '#':
+                $entry = $this->parseComment($line, $entry);
+                break;
+
+            case 'm':
+                $entry = $this->parseProperty($line, $entry);
+                break;
+
+            case '"':
+                $entry = $this->parseMultiline($line, $entry);
+                break;
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     * @throws ParseException
+     */
+    protected function parseProperty($line, array $entry)
+    {
+        list($key, $value) = $this->getProperty($line);
+
+        if (!isset($entry[$key])) {
+            $entry[$key] = '';
+        }
+
+        switch (true) {
+            case $key === 'msgctxt':
+            case $key === 'msgid':
+            case $key === 'msgid_plural':
+            case $key === 'msgstr':
+                $entry[$key] .= $this->unquote($value);
+                $this->property = $key;
+                break;
+
+            case strpos($key, 'msgstr[') !== false:
+                $entry[$key] .= $this->unquote($value);
+                $this->property = $key;
+                break;
+
+            default:
+                throw new ParseException(sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     * @throws ParseException
+     */
+    protected function parseMultiline($line, $entry)
+    {
+        switch (true) {
+            case $this->property === 'msgctxt':
+            case $this->property === 'msgid':
+            case $this->property === 'msgid_plural':
+            case $this->property === 'msgstr':
+            case strpos($this->property, 'msgstr[') !== false:
+                $entry[$this->property] .= $this->unquote($line);
+                break;
+
+            default:
+                throw new ParseException(
+                    sprintf('Error parsing property %s as multiline.', $this->property)
+                );
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     * @throws ParseException
+     */
+    protected function parseComment($line, $entry)
+    {
+        $comment = trim(substr($line, 0, 2));
+
+        switch ($comment) {
+            case '#,':
+                $line = trim(substr($line, 2));
+                $entry['flags'] = preg_split('/,\s*/', $line);
+                break;
+
+            case '#.':
+                $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
+                $entry['ccomment'][] = trim(substr($line, 2));
+                break;
+
+
+            case '#|':  // Previous string
+            case '#~':  // Old entry
+            case '#~|': // Previous string old
+                $mode = array(
+                    '#|' => 'previous',
+                    '#~' => 'obsolete',
+                    '#~|' => 'previous-obsolete'
+                );
+
+                $line = trim(substr($line, 2));
+                $property = $mode[$comment];
+                if (!isset($entry[$property])) {
+                    $subEntry = array();
+                } else {
+                    $subEntry = $entry[$property];
+                }
+
+                $subEntry = $this->parseLine($line, $subEntry);
+                //$subEntry = $this->parseProperty($line, $subEntry);
+                $entry[$property] = $subEntry;
+                break;
+
+
+            case '#':
+            default:
+                $entry['tcomment'] = !isset($entry['tcomment']) ? array() : $entry['tcomment'];
+                $entry['tcomment'][] = trim(substr($line, 1));
+                break;
+        }
+
+        return $entry;
+    }
+
+    /**
+     * @param string $msgstr
+     *
+     * @return array
+     */
+    protected function parseHeaders($msgstr)
+    {
+        $headers = array_filter(explode('\\n', $msgstr));
+
+        return $headers;
     }
 
     /**
@@ -188,6 +333,15 @@ class Parser
         $lineKey = '';
 
         return ($line === '' || ($lineKey === 'msgid' && isset($entry['msgid'])));
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    protected function unquote($value)
+    {
+        return preg_replace('/^\"|\"$/', '', $value);
     }
 
     /**
@@ -257,141 +411,5 @@ class Parser
         $tokens = preg_split('/\s+/ ', $line, 2);
 
         return $tokens;
-    }
-
-    /**
-     * @param string $line
-     * @param array  $entry
-     *
-     * @return array
-     * @throws ParseException
-     */
-    private function parseProperty($line, array $entry)
-    {
-        list($key, $value) = $this->getProperty($line);
-
-        if (!isset($entry[$key])) {
-            $entry[$key] = '';
-        }
-
-        switch (true) {
-            case $key === 'msgctxt':
-            case $key === 'msgid':
-            case $key === 'msgid_plural':
-            case $key === 'msgstr':
-                $entry[$key] .= $this->unquote($value);
-                $this->property = $key;
-                break;
-
-            case strpos($key, 'msgstr[') !== false:
-                $entry[$key] .= $this->unquote($value);
-                $this->property = $key;
-                break;
-
-            default:
-                throw new ParseException(sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
-        }
-
-        return $entry;
-    }
-
-    /**
-     * @param string $line
-     * @param array  $entry
-     *
-     * @return array
-     * @throws ParseException
-     */
-    private function parseMultiline($line, $entry)
-    {
-        switch (true) {
-            case $this->property === 'msgctxt':
-            case $this->property === 'msgid':
-            case $this->property === 'msgid_plural':
-            case $this->property === 'msgstr':
-            case strpos($this->property, 'msgstr[') !== false:
-                $entry[$this->property] .= $this->unquote($line);
-                break;
-
-            default:
-                throw new ParseException(
-                    sprintf('Error parsing property %s as multiline.', $this->property)
-                );
-        }
-
-        return $entry;
-    }
-
-    /**
-     * @param string $line
-     * @param array  $entry
-     *
-     * @return array
-     * @throws ParseException
-     */
-    private function parseComment($line, $entry)
-    {
-        $comment = trim(substr($line, 0, 2));
-
-        switch ($comment) {
-            case '#,':
-                $line = trim(substr($line, 2));
-                $entry['flags'] = preg_split('/,\s*/', $line);
-                break;
-
-            case '#.':
-                $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
-                $entry['ccomment'][] = trim(substr($line, 2));
-                break;
-
-
-            case '#|':  // Previous string
-            case '#~':  // Old entry
-            case '#~|': // Previous string old
-                $mode = array(
-                    '#|' => 'previous',
-                    '#~' => 'obsolete',
-                    '#~|' => 'previous-obsolete'
-                );
-
-                $line = trim(substr($line, 2));
-                $property = $mode[$comment];
-                if (!isset($entry[$property])) {
-                    $subEntry = array();
-                } else {
-                    $subEntry = $entry[$property];
-                }
-
-                $subEntry = $this->parseProperty($line, $subEntry);
-                $entry[$property] = $subEntry;
-                break;
-
-
-            case '#':
-            default:
-                $entry['tcomment'] = !isset($entry['tcomment']) ? array() : $entry['tcomment'];
-                $entry['tcomment'][] = trim(substr($line, 1));
-                break;
-        }
-
-        return $entry;
-    }
-
-    private function parseHeaders($msgstr)
-    {
-        $headers = array_filter(explode('\\n', $msgstr));
-
-
-
-        return $headers;
-    }
-
-    /**
-     * @param string $value
-     * @return string
-     */
-    private function unquote($value)
-    {
-        return preg_replace('/^\"|\"$/', '', $value);
     }
 }
