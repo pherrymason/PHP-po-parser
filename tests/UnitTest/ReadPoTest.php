@@ -34,6 +34,20 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals('string.2', $entry->getMsgId());
         $this->assertEquals('translation.2', $entry->getMsgStr());
     }
+
+    public function testEntriesWithContext()
+    {
+        $catalog = $this->parseFile('context.po');
+
+        $withContext = $catalog->getEntry('string.1', 'register');
+        $this->assertNotNull($withContext);
+        $this->assertEquals('register', $withContext->getMsgCtxt());
+
+        $withoutContext = $catalog->getEntry('string.1');
+        $this->assertNotNull($withoutContext);
+        $this->assertEmpty($withoutContext->getMsgCtxt());
+        $this->assertNotEquals($withContext, $withoutContext);
+    }
     
     public function testFlags()
     {
@@ -74,17 +88,6 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals(array('Code comment'), $entry->getDeveloperComments());
     }
 
-    public function testEntriesWithContext()
-    {
-        $catalog = $this->parseFile('context.po');
-
-        $withContext = $catalog->getEntry('1', 'start of week');
-        $withoutContext = $catalog->getEntry('1');
-
-        $this->assertNotNull($withContext);
-        $this->assertNotNull($withoutContext);
-        $this->assertNotEquals($withContext, $withoutContext);
-    }
 
     public function testPreviousUntranslated()
     {

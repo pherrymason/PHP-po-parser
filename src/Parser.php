@@ -106,13 +106,10 @@ class Parser
         $headersFound = false;
 
         // A new entry has been just inserted.
-        $justNewEntry = false;
-        $firstLine = true;
 
         // Used to remember last key in a multiline previous entry.
         $lastPreviousKey = null;
         $state = null;
-        $lineNumber = 0;
 
         while (!$this->sourceHandler->ended()) {
 
@@ -389,7 +386,7 @@ class Parser
         $this->sourceHandler->close();
 
         // add final entry
-        if ($state === 'msgstr') {
+        if (count($entry)) {
             $catalog->addEntry(EntryFactory::createFromArray($entry));
         }
 
