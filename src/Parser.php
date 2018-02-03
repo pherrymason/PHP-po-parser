@@ -120,7 +120,9 @@ class Parser
             if ($this->shouldCloseEntry($line, $entry)) {
                 if (!$headersFound && $this->isHeader($entry)) {
                     $headersFound = true;
-                    $catalog->addHeaders(array_filter(explode('\\n', $entry['msgstr'])));
+                    $catalog->addHeaders(
+                        $this->parseHeaders($entry['msgstr'])
+                    );
                 } else {
                     $catalog->addEntry(EntryFactory::createFromArray($entry));
                 }
@@ -164,12 +166,23 @@ class Parser
         return $catalog;
     }
 
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return bool
+     */
     protected function shouldIgnoreLine($line, array $entry)
     {
         return empty($line) && count($entry) === 0;
     }
 
-
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return bool
+     */
     protected function shouldCloseEntry($line, array $entry)
     {
         $lineKey = '';
@@ -224,7 +237,14 @@ class Parser
 
         // If it does not contain any of the standard headers
         // Let's see if it contains any custom header.
+        $customHeaders = array_filter(
+            $headers,
+            function ($header) {
+                return preg_match('/^X\-(.*):/i', $header) === 1;
+            }
+        );
 
+        return count($customHeaders) > 0;
     }
 
     /**
@@ -331,6 +351,15 @@ class Parser
         }
 
         return $entry;
+    }
+
+    private function parseHeaders($msgstr)
+    {
+        $headers = array_filter(explode('\\n', $msgstr));
+
+
+
+        return $headers;
     }
 
     /**

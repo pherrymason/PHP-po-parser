@@ -3,7 +3,6 @@
 namespace Sepia\Test;
 
 use PHPUnit\Framework\TestCase;
-use Sepia\PoParser\Exception\ParseException;
 use Sepia\PoParser\Parser;
 
 abstract class AbstractFixtureTest extends TestCase
