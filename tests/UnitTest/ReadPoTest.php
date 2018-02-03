@@ -16,6 +16,11 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertNotNull($entry);
         $this->assertEquals('string.1', $entry->getMsgId());
         $this->assertEquals('translation.1', $entry->getMsgStr());
+
+        $entry = $catalog->getEntry('string.2');
+        $this->assertNotNull($entry);
+        $this->assertEquals('string.2', $entry->getMsgId());
+        $this->assertEquals('translation \"quoted\"', $entry->getMsgStr());
     }
 
     public function testBasicMultiline()
