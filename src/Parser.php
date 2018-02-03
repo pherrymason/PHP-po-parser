@@ -276,17 +276,26 @@ class Parser
 
                 $line = trim(substr($line, 2));
                 $property = $mode[$comment];
-                if (!isset($entry[$property])) {
-                    $subEntry = array();
-                } else {
-                    $subEntry = $entry[$property];
-                }
+                if ($property === 'previous') {
+                    if (!isset($entry[$property])) {
+                        $subEntry = array();
+                    } else {
+                        $subEntry = $entry[$property];
+                    }
 
-                $subEntry = $this->parseLine($line, $subEntry);
-                //$subEntry = $this->parseProperty($line, $subEntry);
-                $entry[$property] = $subEntry;
+                    $subEntry = $this->parseLine($line, $subEntry);
+                    //$subEntry = $this->parseProperty($line, $subEntry);
+                    $entry[$property] = $subEntry;
+                } else {
+                    $entry = $this->parseLine($line, $entry);
+                    $entry['obsolete'] = true;
+                }
                 break;
 
+            // Reference
+            case '#:':
+                $entry['reference'][] = trim(substr($line, 2));
+                break;
 
             case '#':
             default:

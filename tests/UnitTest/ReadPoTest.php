@@ -130,6 +130,14 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals(array('code comment', 'code translator comment'), $entry->getDeveloperComments());
     }
 
+    public function testReferences()
+    {
+        $catalog = $this->parseFile('basicReference.po');
+
+        $entry = $catalog->getEntry('string.1');
+        $this->assertNotNull($entry);
+        $this->assertEquals(array('src/views/forms.php:44'), $entry->getReference());
+    }
 
     public function testPreviousString()
     {
@@ -177,25 +185,6 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertCount(1, $catalog->getEntries());
         $this->assertCount(3,$catalog->getHeaders());
     }
-/*
-    public function testMultilineEntries()
-    {
-        $catalog = $this->parseFile('multilines.po');
-
-        $longMsgId = '%user% acaba de responder tu comentario.<br>Consulta que te ha dicho %link%aquí</a>.';
-
-        $entryExpected = new Entry(
-            $longMsgId,
-            '%user% acaba de respondre el teu comentari.<br>Consulta que t\'ha dit %link%aquí</a>.'
-        );
-        $entryExpected->setReference(
-            array('../../classes/controller/ccccc.php:361')
-        );
-
-        $entry = $catalog->getEntry($longMsgId);
-        $this->assertNotNull($entry);
-        $this->assertEquals($entryExpected, $entry);
-    }*/
 
     public function testNoBlankLinesSeparatingEntries()
     {

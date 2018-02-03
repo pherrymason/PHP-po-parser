@@ -1,0 +1,3 @@
+#: src/views/forms.php:44
+msgid "string.1"
+msgstr "translation.1"
