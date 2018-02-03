@@ -1,0 +1,6 @@
+msgid "string.1"
+msgctxt "register"
+msgstr "translation.1"
+
+msgid "string.1"
+msgstr "translation.2"

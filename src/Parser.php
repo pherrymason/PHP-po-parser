@@ -495,6 +495,7 @@ class Parser
                 break;
 
             case strpos($key, 'msgstr[') !== false:
+                $entry[$key].= trim($value, '"');
                 break;
 
             default:
@@ -527,6 +528,17 @@ class Parser
                 );
         }
 
+        return $entry;
+    }
+
+    /**
+     * @param string $line
+     * @param array  $entry
+     *
+     * @return array
+     */
+    private function parseComment($line, $entry)
+    {
         return $entry;
     }
 }
