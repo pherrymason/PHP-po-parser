@@ -1,4 +1,0 @@
-msgid "one"
-msgstr "uno"
-msgid "two"
-msgstr "dos"

@@ -177,7 +177,7 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertCount(1, $catalog->getEntries());
         $this->assertCount(3,$catalog->getHeaders());
     }
-
+/*
     public function testMultilineEntries()
     {
         $catalog = $this->parseFile('multilines.po');
@@ -195,7 +195,7 @@ class ReadPoTest extends AbstractFixtureTest
         $entry = $catalog->getEntry($longMsgId);
         $this->assertNotNull($entry);
         $this->assertEquals($entryExpected, $entry);
-    }
+    }*/
 
     public function testNoBlankLinesSeparatingEntries()
     {

@@ -128,7 +128,6 @@ class Parser
                 }
 
                 $entry = array();
-                $this->mode = null;
                 $this->property = null;
 
                 if (empty($line)) {
@@ -330,9 +329,10 @@ class Parser
      */
     protected function shouldCloseEntry($line, array $entry)
     {
-        $lineKey = '';
+        $tokens = $this->getProperty($line);
+        $property = $tokens[0];
 
-        return ($line === '' || ($lineKey === 'msgid' && isset($entry['msgid'])));
+        return ($line === '' || ($property === 'msgid' && isset($entry['msgid'])));
     }
 
     /**
