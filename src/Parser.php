@@ -312,6 +312,11 @@ class Parser
         $comment = trim(substr($line, 0, 2));
 
         switch ($comment) {
+            case '#,':
+                $line = trim(substr($line, 2));
+                $entry['flags'] = preg_split('/,\s*/', $line);
+                break;
+
             case '#.':
                 $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
                 $entry['ccomment'][] = trim(substr($line, 2));
