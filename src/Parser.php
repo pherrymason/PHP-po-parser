@@ -327,6 +327,7 @@ class Parser
      * @param array  $entry
      *
      * @return array
+     * @throws ParseException
      */
     private function parseComment($line, $entry)
     {
@@ -342,6 +343,29 @@ class Parser
                 $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
                 $entry['ccomment'][] = trim(substr($line, 2));
                 break;
+
+
+            case '#|':  // Previous string
+            case '#~':  // Old entry
+            case '#~|': // Previous string old
+                $mode = array(
+                    '#|' => 'previous',
+                    '#~' => 'obsolete',
+                    '#~|' => 'previous-obsolete'
+                );
+
+                $line = trim(substr($line, 2));
+                $property = $mode[$comment];
+                if (!isset($entry[$property])) {
+                    $subEntry = array();
+                } else {
+                    $subEntry = $entry[$property];
+                }
+
+                $subEntry = $this->parseProperty($line, $subEntry);
+                $entry[$property] = $subEntry;
+                break;
+
 
             case '#':
             default:
