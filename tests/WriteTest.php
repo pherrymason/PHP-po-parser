@@ -52,10 +52,7 @@ class WriteTest extends AbstractFixtureTest
     {
         $fileHandler = new FileSystem($this->resourcesPath.'temp.po');
         $compiler = new PoCompiler();
-        $fileHandler->save(
-            $compiler->compile($catalog),
-            $this->resourcesPath.'temp.po'
-        );
+        $fileHandler->save($compiler->compile($catalog));
     }
 
     private function assertPoFile(Catalog $catalogSource, Catalog $catalogNew)

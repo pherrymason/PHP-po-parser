@@ -102,14 +102,12 @@ class Parser
         $catalog = new Catalog();
         $this->lineNumber = 0;
         $entry = array();
-        $this->mode = null;     // current mode
         $this->property = null; // current property
 
         // Flags
         $headersFound = false;
 
         while (!$this->sourceHandler->ended()) {
-
             $line = trim($this->sourceHandler->getNextLine());
 
             if ($this->shouldIgnoreLine($line, $entry)) {
