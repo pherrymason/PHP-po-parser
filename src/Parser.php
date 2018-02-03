@@ -214,7 +214,7 @@ class Parser
 
         foreach ($lines as $str) {
             $tokens = explode(':', $str);
-            $tokens[0] = trim($tokens[0], '"').':';
+            $tokens[0] = $this->unquote($tokens[0]).':';
 
             if (in_array($tokens[0], $keys, true)) {
                 $headerItems++;
@@ -258,12 +258,12 @@ class Parser
             case $key === 'msgid':
             case $key === 'msgid_plural':
             case $key === 'msgstr':
-                $entry[$key] .= trim($value, '"');
+                $entry[$key] .= $this->unquote($value);
                 $this->property = $key;
                 break;
 
             case strpos($key, 'msgstr[') !== false:
-                $entry[$key] .= trim($value, '"');
+                $entry[$key] .= $this->unquote($value);
                 $this->property = $key;
                 break;
 
@@ -289,7 +289,7 @@ class Parser
             case $this->property === 'msgid_plural':
             case $this->property === 'msgstr':
             case strpos($this->property, 'msgstr[') !== false:
-                $entry[$this->property] .= trim($line, '"');
+                $entry[$this->property] .= $this->unquote($line);
                 break;
 
             default:
@@ -330,5 +330,14 @@ class Parser
         }
 
         return $entry;
+    }
+
+    /**
+     * @param string $value
+     * @return string
+     */
+    private function unquote($value)
+    {
+        return preg_replace('/^\"|\"$/', '', $value);
     }
 }
