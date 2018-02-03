@@ -194,36 +194,37 @@ class Parser
             return false;
         }
 
-        $headerKeys = array(
-            'Project-Id-Version:' => false,
-            'Report-Msgid-Bugs-To:' => false,
-            'POT-Creation-Date:' => false,
-            'PO-Revision-Date:' => false,
-            'Last-Translator:' => false,
-            'Language-Team:' => false,
-            'MIME-Version:' => false,
-            'Content-Type:' => false,
-            'Content-Transfer-Encoding:' => false,
-            'Plural-Forms:' => false,
+        $standardHeaders = array(
+            'Project-Id-Version:',
+            'Report-Msgid-Bugs-To:',
+            'POT-Creation-Date:',
+            'PO-Revision-Date:',
+            'Last-Translator:',
+            'Language-Team:',
+            'MIME-Version:',
+            'Content-Type:',
+            'Content-Transfer-Encoding:',
+            'Plural-Forms:',
         );
-        $count = count($headerKeys);
-        $keys = array_keys($headerKeys);
 
-        $headerItems = 0;
-        $lines = explode("\\n", $entry['msgstr']);
+        $headers = explode('\n', $entry['msgstr']);
+        // Remove text after double colon
+        $headers = array_map(
+            function ($header) {
+                $pattern = '/(.*?:)(.*)/i';
+                $replace = '${1}';
+                return preg_replace($pattern, $replace, $header);
+            },
+            $headers
+        );
 
-        foreach ($lines as $str) {
-            $tokens = explode(':', $str);
-            $tokens[0] = $this->unquote($tokens[0]).':';
-
-            if (in_array($tokens[0], $keys, true)) {
-                $headerItems++;
-                unset($headerKeys[$tokens[0]]);
-                $keys = array_keys($headerKeys);
-            }
+        if (count(array_intersect($standardHeaders, $headers)) > 0) {
+            return true;
         }
 
-        return $headerItems === $count;
+        // If it does not contain any of the standard headers
+        // Let's see if it contains any custom header.
+
     }
 
     /**

@@ -121,15 +121,6 @@ class ReadPoTest extends AbstractFixtureTest
         );
     }
 
-    public function testTranslatorWithNoPreSpace()
-    {
-        $catalog = $this->parseFile('commentWithNoSpace.po');
-        $entry = $catalog->getEntry('test');
-
-        $this->assertNotNull($entry);
-        $this->assertEquals(array('index.ctp:101'), $entry->getTranslatorComments());
-    }
-
     public function testDeveloperComment()
     {
         $catalog = $this->parseFile('codeComments.po');
@@ -142,7 +133,7 @@ class ReadPoTest extends AbstractFixtureTest
 
     public function testPreviousUntranslated()
     {
-        $catalog = $this->parseFile('previous_unstranslated.po');
+        $catalog = $this->parseFile('previousString.po');
 
         $this->assertCount(1, $catalog->getEntries());
 
@@ -167,7 +158,12 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals('Doloribus nulla odit et aut est. Rerum molestiae pariatur suscipit unde in quidem alias alias. Ut ea omnis placeat rerum quae asperiores. Et recusandae praesentium ea.', $previous->getMsgStr());
     }
 
+    public function testHeaders()
+    {
+        $catalog = $this->parseFile('basicHeader.po');
 
+        $this->assertCount(1, $catalog->getEntries());
+    }
 
 
     public function testMultilineEntries()
@@ -195,7 +191,7 @@ class ReadPoTest extends AbstractFixtureTest
 
         $this->assertCount(2, $catalog->getEntries());
     }
-
+/*
     public function testHeaders()
     {
         try {
@@ -224,7 +220,7 @@ class ReadPoTest extends AbstractFixtureTest
         } catch (\Exception $e) {
             $this->fail($e->getMessage());
         }
-    }
+    }*/
 
     public function testNoBlankLinesSeparatingEntries()
     {
