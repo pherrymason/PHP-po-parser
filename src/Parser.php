@@ -108,12 +108,6 @@ class Parser
         // Flags
         $headersFound = false;
 
-        // A new entry has been just inserted.
-
-        // Used to remember last key in a multiline previous entry.
-        $lastPreviousKey = null;
-        $state = null;
-
         while (!$this->sourceHandler->ended()) {
 
             $line = trim($this->sourceHandler->getNextLine());
