@@ -3,6 +3,7 @@
 namespace Sepia\Test;
 
 use PHPUnit\Framework\TestCase;
+use Sepia\PoParser\Exception\ParseException;
 use Sepia\PoParser\Parser;
 
 abstract class AbstractFixtureTest extends TestCase
@@ -25,7 +26,7 @@ abstract class AbstractFixtureTest extends TestCase
         try {
             return Parser::parseFile($this->resourcesPath.$file);
         } catch (\Exception $e) {
-            $this->fail('Could not open file '.$file);
+            $this->fail($e->getMessage());
         }
     }
 }

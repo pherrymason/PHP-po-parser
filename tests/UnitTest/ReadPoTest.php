@@ -75,6 +75,22 @@ class ReadPoTest extends AbstractFixtureTest
             $entry->getMsgStrPlurals()
         );
     }
+
+    public function testPluralsMultiline()
+    {
+        $catalog = $this->parseFile('pluralsMultiline.po');
+        $entry = $catalog->getEntry('%s post not updated,somebody is editing it.');
+
+        $this->assertNotNull($entry);
+        $this->assertNotEmpty($entry->getMsgStrPlurals());
+        $this->assertEquals(
+            array(
+                '%s entrada no actualizada,alguien la está editando.',
+                '%s entradas no actualizadas,alguien las está editando.',
+            ),
+            $entry->getMsgStrPlurals()
+        );
+    }
     
     public function testFlags()
     {
@@ -143,21 +159,7 @@ class ReadPoTest extends AbstractFixtureTest
         $this->assertEquals('Doloribus nulla odit et aut est. Rerum molestiae pariatur suscipit unde in quidem alias alias. Ut ea omnis placeat rerum quae asperiores. Et recusandae praesentium ea.', $previous->getMsgStr());
     }
 
-    public function testPluralsMultiline()
-    {
-        $catalog = $this->parseFile('pluralsMultiline.po');
-        $entry = $catalog->getEntry('%s post not updated,somebody is editing it.');
 
-        $this->assertNotNull($entry);
-        $this->assertNotEmpty($entry->getMsgStrPlurals());
-        $this->assertEquals(
-            array(
-                '%s entrada no actualizada,alguien la está editando.',
-                '%s entradas no actualizadas,alguien las está editando.',
-            ),
-            $entry->getMsgStrPlurals()
-        );
-    }
 
 
     public function testMultilineEntries()

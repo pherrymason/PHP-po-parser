@@ -490,12 +490,13 @@ class Parser
             case $key === 'msgid':
             case $key === 'msgid_plural':
             case $key === 'msgstr':
-                $entry[$key].= trim($value, '"');
+                $entry[$key] .= trim($value, '"');
                 $this->property = $key;
                 break;
 
             case strpos($key, 'msgstr[') !== false:
-                $entry[$key].= trim($value, '"');
+                $entry[$key] .= trim($value, '"');
+                $this->property = $key;
                 break;
 
             default:
@@ -514,12 +515,13 @@ class Parser
      */
     private function parseMultiline($line, $entry)
     {
-        switch ($this->property) {
-            case 'msgctxt':
-            case 'msgid':
-            case 'msgid_plural':
-            case 'msgstr':
-                $entry[$this->property].= trim($line, '"');
+        switch (true) {
+            case $this->property === 'msgctxt':
+            case $this->property === 'msgid':
+            case $this->property === 'msgid_plural':
+            case $this->property === 'msgstr':
+            case strpos($this->property, 'msgstr[') !== false:
+                $entry[$this->property] .= trim($line, '"');
                 break;
 
             default:
