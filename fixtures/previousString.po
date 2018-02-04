@@ -1,0 +1,5 @@
+#| msgid "this is a previous string"
+#| msgstr "this is a previous translation string"
+msgid "this is a string"
+msgstr "this is a translation"
+

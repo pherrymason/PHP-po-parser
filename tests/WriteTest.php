@@ -45,6 +45,30 @@ class WriteTest extends AbstractFixtureTest
         $this->assertPoFile($catalogSource, $catalog);
     }
 
+    public function testWritePlurals()
+    {
+        $catalogSource = new Catalog();
+        // Normal Entry
+        $entry = Catalog\EntryFactory::createFromArray(array(
+            'msgid' => 'string.1',
+            'msgstr' => 'translation.1',
+            'msgstr[0]' => 'translation.plural.0',
+            'msgstr[1]' => 'translation.plural.1',
+            'msgstr[2]' => 'translation.plural.2',
+            'reference' => array('src/views/forms.php:44'),
+            'tcomment' => array('translator comment'),
+            'ccomment' => array('code comment'),
+            'flags' => array('1', '2', '3')
+        ));
+
+        $catalogSource->addEntry($entry);
+
+        $this->saveCatalog($catalogSource);
+        $catalog = $this->parseFile('temp.po');
+        $entry = $catalog->getEntry('string.1');
+        $this->assertCount(3, $entry->getMsgStrPlurals());
+    }
+
     /**
      * @throws \Exception
      */
@@ -52,10 +76,7 @@ class WriteTest extends AbstractFixtureTest
     {
         $fileHandler = new FileSystem($this->resourcesPath.'temp.po');
         $compiler = new PoCompiler();
-        $fileHandler->save(
-            $compiler->compile($catalog),
-            $this->resourcesPath.'temp.po'
-        );
+        $fileHandler->save($compiler->compile($catalog));
     }
 
     private function assertPoFile(Catalog $catalogSource, Catalog $catalogNew)

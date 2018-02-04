@@ -1,0 +1,5 @@
+msgid "string.1"
+msgstr "translation.1"
+
+msgid "string.2"
+msgstr "translation \"quoted\""

@@ -3,6 +3,7 @@
 namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\Entry;
+use Sepia\PoParser\Catalog\Header;
 
 class PoCompiler
 {
@@ -67,7 +68,7 @@ class PoCompiler
             $output .= $this->buildContext($entry);
             $output .= $this->buildMsgId($entry);
             $output .= $this->buildMsgIdPlural($entry);
-            $output .= $this->buildMsgStr($entry);
+            $output .= $this->buildMsgStr($entry, $catalog->getHeader());
 
 
             $counter++;
@@ -100,21 +101,7 @@ class PoCompiler
             return '';
         }
 
-        $output = '#| msgid '.$this->cleanExport($previous->getMsgId()).$this->eol();
-
-        /*
-        foreach ($entry['previous'] as $key => $data) {
-
-            if (is_string($data)) {
-                $output .= '#| '.$key.' '.$this->cleanExport($data).$this->eol();
-            } elseif (is_array($data) && count($data) > 0) {
-                foreach ($data as $line) {
-                    $output .= '#| '.$key.' '.$this->cleanExport($line).$this->eol();
-                }
-            }
-        }*/
-
-        return $output;
+        return '#| msgid '.$this->cleanExport($previous->getMsgId()).$this->eol();
     }
 
     /**
@@ -195,7 +182,7 @@ class PoCompiler
         return $this->buildProperty('msgid', $entry->getMsgId(), $entry->isObsolete());
     }
 
-    protected function buildMsgStr(Entry $entry)
+    protected function buildMsgStr(Entry $entry, Header $headers)
     {
         $value = $entry->getMsgStr();
         $plurals = $entry->getMsgStrPlurals();
@@ -206,8 +193,12 @@ class PoCompiler
 
         if ($entry->isPlural()) {
             $output = '';
-            foreach ($plurals as $i => $line) {
-                $output .= 'msgstr['.$i.'] '.$this->cleanExport($line).$this->eol();
+            $nPlurals = $headers->getPluralFormsCount();
+            $pluralsFound = count($plurals);
+            $maxIterations = max($nPlurals, $pluralsFound);
+            for ($i = 0; $i < $maxIterations; $i++) {
+                $value = isset($plurals[$i]) ? $plurals[$i] : '';
+                $output .= 'msgstr['.$i.'] '.$this->cleanExport($value).$this->eol();
             }
 
             return $output;

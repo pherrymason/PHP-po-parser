@@ -1,0 +1,13 @@
+msgid ""
+msgstr ""
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n;_t\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ../..\n"
+"X-Poedit-SearchPath-2: ../../../modules\n"
+
+msgid "string.1"
+msgstr "translation.1"
