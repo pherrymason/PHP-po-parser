@@ -46,6 +46,11 @@ class Catalog
     public function removeEntry($msgid, $msgctxt = null)
     {
         $key = $this->getEntryHash($msgid, $msgctxt);
+        $this->removeEntryByKey($key);
+    }
+
+    public function removeEntryByKey($key)
+    {
         if (isset($this->entries[$key])) {
             unset($this->entries[$key]);
         }
@@ -84,10 +89,15 @@ class Catalog
     public function getEntry($msgId, $context = null)
     {
         $key = $this->getEntryHash($msgId, $context);
+        return $this->getEntryByKey($key);
+    }
+
+    public function getEntryByKey($key)
+    {
         if (!isset($this->entries[$key])) {
             return null;
         }
-
+        
         return $this->entries[$key];
     }
 
