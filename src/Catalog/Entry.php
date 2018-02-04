@@ -244,7 +244,7 @@ class Entry
      */
     public function isPlural()
     {
-        return $this->getMsgIdPlural() !== null;
+        return $this->getMsgIdPlural() !== null || $this->getMsgStrPlurals() !== null;
     }
 
     /**

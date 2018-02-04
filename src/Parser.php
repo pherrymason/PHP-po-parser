@@ -3,6 +3,7 @@
 namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\EntryFactory;
+use Sepia\PoParser\Catalog\Header;
 use Sepia\PoParser\Exception\ParseException;
 use Sepia\PoParser\SourceHandler\FileSystem;
 use Sepia\PoParser\SourceHandler\SourceHandler;
@@ -314,13 +315,13 @@ class Parser
     /**
      * @param string $msgstr
      *
-     * @return array
+     * @return Header
      */
     protected function parseHeaders($msgstr)
     {
         $headers = array_filter(explode('\\n', $msgstr));
 
-        return $headers;
+        return new Header($headers);
     }
 
     /**

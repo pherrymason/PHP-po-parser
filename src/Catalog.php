@@ -3,10 +3,11 @@
 namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\Entry;
+use Sepia\PoParser\Catalog\Header;
 
 class Catalog
 {
-    /** @var array */
+    /** @var Header */
     protected $headers;
 
     /** @var array */
@@ -17,7 +18,8 @@ class Catalog
      */
     public function __construct(array $entries = array())
     {
-        $this->entries = [];
+        $this->entries = array();
+        $this->headers = new Header();
         foreach ($entries as $entry) {
             $this->addEntry($entry);
         }
@@ -32,7 +34,7 @@ class Catalog
         $this->entries[$key] = $entry;
     }
 
-    public function addHeaders(array $headers)
+    public function addHeaders(Header $headers)
     {
         $this->headers = $headers;
     }
@@ -53,6 +55,14 @@ class Catalog
      * @return array
      */
     public function getHeaders()
+    {
+        return $this->headers->asArray();
+    }
+
+    /**
+     * @return Header
+     */
+    public function getHeader()
     {
         return $this->headers;
     }
