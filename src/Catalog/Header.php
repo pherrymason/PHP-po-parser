@@ -33,7 +33,7 @@ class Header
             return $this->nPlurals;
         }
 
-        $this->nPlurals = isset($matches[1]) ? $matches[1] : 0;
+        $this->nPlurals = isset($matches[1]) ? (int)$matches[1] : 0;
 
         return $this->nPlurals;
     }
