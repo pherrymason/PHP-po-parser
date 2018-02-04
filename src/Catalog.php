@@ -97,6 +97,7 @@ class Catalog
         if (!isset($this->entries[$key])) {
             return null;
         }
+        
         return $this->entries[$key];
     }
 
