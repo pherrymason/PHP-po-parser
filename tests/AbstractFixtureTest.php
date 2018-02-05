@@ -18,7 +18,7 @@ abstract class AbstractFixtureTest extends TestCase
     /**
      * @param string $file
      *
-     * @return \Sepia\PoParser\Catalog
+     * @return \Sepia\PoParser\CatalogArray
      */
     protected function parseFile($file)
     {

@@ -2,7 +2,9 @@
 
 namespace Sepia\Test;
 
-use Sepia\PoParser\Catalog;
+use Sepia\PoParser\Catalog\Catalog;
+use Sepia\PoParser\Catalog\CatalogArray;
+use Sepia\PoParser\Catalog\EntryFactory;
 use Sepia\PoParser\PoCompiler;
 use Sepia\PoParser\SourceHandler\FileSystem;
 
@@ -11,10 +13,10 @@ class WriteTest extends AbstractFixtureTest
     public function testWrite()
     {
         $faker = \Faker\Factory::create();
-        $catalogSource = new Catalog();
+        $catalogSource = new CatalogArray();
 
         // Normal Entry
-        $entry = Catalog\EntryFactory::createFromArray(array(
+        $entry = EntryFactory::createFromArray(array(
             'msgid' => 'string.1',
             'msgstr' => 'translation.1',
             'msgctxt' => 'context.1',
@@ -23,7 +25,7 @@ class WriteTest extends AbstractFixtureTest
             'ccomment' => array('code comment'),
             'flags' => array('1', '2', '3')
         ));
-        $previousEntry = Catalog\EntryFactory::createFromArray(array(
+        $previousEntry = EntryFactory::createFromArray(array(
            'msgid' => 'previous.string.1',
            'msgctxt' => 'previous.context.1'
         ));
@@ -31,7 +33,7 @@ class WriteTest extends AbstractFixtureTest
         $catalogSource->addEntry($entry);
 
         // Obsolete entry
-        $entry = Catalog\EntryFactory::createFromArray(array(
+        $entry = EntryFactory::createFromArray(array(
             'msgid' => 'obsolete.1',
             'msgstr' => $faker->paragraph(5),
             'msgctxt' => 'obsolete.context',
@@ -47,9 +49,9 @@ class WriteTest extends AbstractFixtureTest
 
     public function testWritePlurals()
     {
-        $catalogSource = new Catalog();
+        $catalogSource = new CatalogArray();
         // Normal Entry
-        $entry = Catalog\EntryFactory::createFromArray(array(
+        $entry = EntryFactory::createFromArray(array(
             'msgid' => 'string.1',
             'msgstr' => 'translation.1',
             'msgstr[0]' => 'translation.plural.0',
@@ -79,7 +81,7 @@ class WriteTest extends AbstractFixtureTest
         $fileHandler->save($compiler->compile($catalog));
     }
 
-    private function assertPoFile(Catalog $catalogSource, Catalog $catalogNew)
+    private function assertPoFile(CatalogArray $catalogSource, Catalog $catalogNew)
     {
         foreach ($catalogSource->getEntries() as $entry) {
             $entryWritten = $catalogNew->getEntry($entry->getMsgId(), $entry->getMsgCtxt());

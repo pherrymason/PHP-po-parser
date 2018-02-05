@@ -1,11 +1,8 @@
 <?php
 
-namespace Sepia\PoParser;
+namespace Sepia\PoParser\Catalog;
 
-use Sepia\PoParser\Catalog\Entry;
-use Sepia\PoParser\Catalog\Header;
-
-class Catalog
+class CatalogArray implements Catalog
 {
     /** @var Header */
     protected $headers;
@@ -25,6 +22,9 @@ class Catalog
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addEntry(Entry $entry)
     {
         $key = $this->getEntryHash(
@@ -34,14 +34,16 @@ class Catalog
         $this->entries[$key] = $entry;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function addHeaders(Header $headers)
     {
         $this->headers = $headers;
     }
 
     /**
-     * @param string      $msgid
-     * @param string|null $msgctxt
+     * {@inheritdoc}
      */
     public function removeEntry($msgid, $msgctxt = null)
     {
@@ -52,7 +54,7 @@ class Catalog
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getHeaders()
     {
@@ -60,7 +62,7 @@ class Catalog
     }
 
     /**
-     * @return Header
+     * {@inheritdoc}
      */
     public function getHeader()
     {
@@ -68,7 +70,7 @@ class Catalog
     }
 
     /**
-     * @return Entry[]
+     * {@inheritdoc}
      */
     public function getEntries()
     {
@@ -76,10 +78,7 @@ class Catalog
     }
 
     /**
-     * @param string      $msgId
-     * @param string|null $context
-     *
-     * @return Entry|null
+     * {@inheritdoc}
      */
     public function getEntry($msgId, $context = null)
     {
