@@ -2,6 +2,7 @@
 
 namespace Sepia\PoParser;
 
+use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Catalog\Entry;
 use Sepia\PoParser\Catalog\Header;
 

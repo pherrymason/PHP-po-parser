@@ -2,6 +2,8 @@
 
 namespace Sepia\PoParser;
 
+use Sepia\PoParser\Catalog\Catalog;
+use Sepia\PoParser\Catalog\CatalogArray;
 use Sepia\PoParser\Catalog\EntryFactory;
 use Sepia\PoParser\Catalog\Header;
 use Sepia\PoParser\Exception\ParseException;
@@ -98,9 +100,9 @@ class Parser
      * @throws \Exception, \InvalidArgumentException, ParseException
      * @return Catalog
      */
-    public function parse()
+    public function parse(Catalog $catalog = null)
     {
-        $catalog = new Catalog();
+        $catalog = $catalog === null ? new CatalogArray() : $catalog;
         $this->lineNumber = 0;
         $entry = array();
         $this->property = null; // current property

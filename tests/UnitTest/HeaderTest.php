@@ -14,9 +14,8 @@ class HeaderTest extends TestCase
         $this->assertEquals(3, $catalog->getHeader()->getPluralFormsCount());
     }
 
-
     /**
-     * @return \Sepia\PoParser\Catalog
+     * @return \Sepia\PoParser\Catalog\Catalog
      */
     protected function parseFile()
     {
