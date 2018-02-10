@@ -1,3 +1,13 @@
+v5.1.1 (2018-02-04)
+* Parser::parser() optionally accepts a Catalog interface implementation. 
+
+v5.1 (2018-02-03)
+* Parser refactor for easier maintenance.
+* Fix parsing comments without space between `#` and text.
+* Fix parsing multiline Headers. 
+* Improve Compiler by creating an empty `msgstr[n]` for every plural form defined.
+* Improve parsing headers by offering a base for more granular interpretation.
+
 v5.0 (2018-02-02)
 * Backwards incompatible version! Check [v5 Documentation]() and [Migration guide]() for more information.
 * Refactored to avoid usage issues like [this](https://github.com/raulferras/PHP-po-parser/issues/67), [this](https://github.com/raulferras/PHP-po-parser/issues/62), [this](https://github.com/raulferras/PHP-po-parser/issues/52), [this](https://github.com/raulferras/PHP-po-parser/issues/50)
@@ -12,7 +22,7 @@ v5.0 (2018-02-02)
 * Main deprecations (check [Migration guide]() for more information.):
   - Namespace changed to `Sepia\PoParser`
   - `PoParser` renamed to `Parser`
-  - `parser` method does not return an array anymore, instead a `Catalog` object.
+  - `parser` method does not return an array anymore, instead a `CatalogArray` object.
   - No need for options anymore.
 
 v4.2.2
