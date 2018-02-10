@@ -4,7 +4,7 @@ namespace Sepia\PoParser\Catalog;
 
 class CatalogArray implements Catalog
 {
-    /** @var Header */
+    /** @var Headers */
     protected $headers;
 
     /** @var array */
@@ -16,7 +16,7 @@ class CatalogArray implements Catalog
     public function __construct(array $entries = array())
     {
         $this->entries = array();
-        $this->headers = new Header();
+        $this->headers = new Headers();
         foreach ($entries as $entry) {
             $this->addEntry($entry);
         }
@@ -37,7 +37,7 @@ class CatalogArray implements Catalog
     /**
      * {@inheritdoc}
      */
-    public function addHeaders(Header $headers)
+    public function setHeaders(Headers $headers)
     {
         $this->headers = $headers;
     }
@@ -57,14 +57,6 @@ class CatalogArray implements Catalog
      * {@inheritdoc}
      */
     public function getHeaders()
-    {
-        return $this->headers->asArray();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeader()
     {
         return $this->headers;
     }

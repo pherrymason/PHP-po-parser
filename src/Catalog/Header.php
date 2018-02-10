@@ -4,38 +4,20 @@ namespace Sepia\PoParser\Catalog;
 
 class Header
 {
-    /** @var array */
-    protected $headers;
+    /** @var string */
+    protected $id;
 
-    /** @var int|null */
-    protected $nPlurals;
+    /** @var string */
+    protected $value;
 
-    public function __construct(array $headers = array())
+    /**
+     * @param string $id
+     * @param string $value
+     */
+    public function __construct($id, $value)
     {
-        $this->setHeaders($headers);
-    }
-
-    public function getPluralFormsCount()
-    {
-        if ($this->nPlurals !== null) {
-            return $this->nPlurals;
-        }
-
-        $header = $this->getHeaderValue('Plural-Forms');
-        if ($header === null) {
-            $this->nPlurals = 0;
-            return $this->nPlurals;
-        }
-
-        $matches = array();
-        if (preg_match('/nplurals=([0-9]+)/', $header, $matches) !== 1) {
-            $this->nPlurals = 0;
-            return $this->nPlurals;
-        }
-
-        $this->nPlurals = isset($matches[1]) ? (int)$matches[1] : 0;
-
-        return $this->nPlurals;
+        $this->id = $id;
+        $this->value = $value;
     }
 
     public function setHeaders(array $headers)
@@ -44,27 +26,18 @@ class Header
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function asArray()
+    public function getId()
     {
-        return $this->headers;
+        return $this->id;
     }
 
     /**
-     * @param string $headerName
-     *
-     * @return string|null
+     * @return string
      */
-    protected function getHeaderValue($headerName)
+    public function getValue()
     {
-        $header = array_values(array_filter(
-            $this->headers,
-            function ($string) use ($headerName) {
-                return preg_match('/'.$headerName.':(.*)/i', $string) == 1;
-            }
-        ));
-
-        return count($header) ? $header[0] : null;
+        return $this->value;
     }
 }

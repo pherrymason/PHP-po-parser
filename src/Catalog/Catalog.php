@@ -6,7 +6,7 @@ interface Catalog
 {
     public function addEntry(Entry $entry);
 
-    public function addHeaders(Header $headers);
+    public function setHeaders(Headers $headers);
 
     /**
      * @param string      $msgid
@@ -15,14 +15,9 @@ interface Catalog
     public function removeEntry($msgid, $msgctxt = null);
 
     /**
-     * @return array
+     * @return Headers
      */
     public function getHeaders();
-
-    /**
-     * @return Header
-     */
-    public function getHeader();
 
     /**
      * @return Entry[]

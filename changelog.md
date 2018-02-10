@@ -1,4 +1,13 @@
+v6 (2018-02-10)
+* Improvements on Headers API to allow better manipulation:
+** `Catalog` methods `addHeaders` and `getHeader` removed.
+** `Headers` object is the old `Header`.
+** A new class `Header` represeting a single header is created.
+** `Catalog` method `getHeaders` returns a `Headers` object instead of an array of strings.
+** You can retrieve a specific header by its key.
+
 v5.1.1 (2018-02-10)
+* Parser::parser() optionally accepts a Catalog interface implementation. 
 * Header::setHeaders() to allow modifying PO headers.
 
 v5.1 (2018-02-04)

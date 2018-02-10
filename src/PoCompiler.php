@@ -4,7 +4,7 @@ namespace Sepia\PoParser;
 
 use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Catalog\Entry;
-use Sepia\PoParser\Catalog\Header;
+use Sepia\PoParser\Catalog\Headers;
 
 class PoCompiler
 {
@@ -40,11 +40,11 @@ class PoCompiler
     {
         $output = '';
 
-        if (count($catalog->getHeaders()) > 0) {
+        if (count($catalog->getHeaders()->all()) > 0) {
             $output .= 'msgid ""'.$this->eol();
             $output .= 'msgstr ""'.$this->eol();
-            foreach ($catalog->getHeaders() as $header) {
-                $output .= $header.$this->eol();
+            foreach ($catalog->getHeaders()->all() as $header) {
+                $output .= $header->getId().': '.$header->getValue().$this->eol();
             }
             $output .= $this->eol();
         }
@@ -69,7 +69,7 @@ class PoCompiler
             $output .= $this->buildContext($entry);
             $output .= $this->buildMsgId($entry);
             $output .= $this->buildMsgIdPlural($entry);
-            $output .= $this->buildMsgStr($entry, $catalog->getHeader());
+            $output .= $this->buildMsgStr($entry, $catalog->getHeaders());
 
 
             $counter++;
@@ -183,7 +183,7 @@ class PoCompiler
         return $this->buildProperty('msgid', $entry->getMsgId(), $entry->isObsolete());
     }
 
-    protected function buildMsgStr(Entry $entry, Header $headers)
+    protected function buildMsgStr(Entry $entry, Headers $headers)
     {
         $value = $entry->getMsgStr();
         $plurals = $entry->getMsgStrPlurals();

@@ -183,14 +183,14 @@ class ReadPoTest extends AbstractFixtureTest
     {
         $catalog = $this->parseFile('basicHeadersMultiline.po');
         $this->assertCount(1, $catalog->getEntries());
-        $this->assertCount(3,$catalog->getHeaders());
+        $this->assertCount(3, $catalog->getHeaders()->all());
     }
 
     public function testFileWithOnlyHeaders()
     {
         $catalog = $this->parseFile('basicOnlyHeader.po');
         $this->assertCount(0, $catalog->getEntries());
-        $this->assertGreaterThanOrEqual(1, count($catalog->getHeaders()));
+        $this->assertGreaterThanOrEqual(1, count($catalog->getHeaders()->all()));
     }
 
     public function testNoBlankLinesSeparatingEntries()
