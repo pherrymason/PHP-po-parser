@@ -63,6 +63,20 @@ class Headers
     }
 
     /**
+     * Remove a Header.
+     *
+     * @param string $headerKey
+     */
+    public function remove($headerKey)
+    {
+        if (!$this->has($headerKey)) {
+            return;
+        }
+
+        unset($this->headers[$headerKey]);
+    }
+
+    /**
      * @return int
      */
     public function getPluralFormsCount()
