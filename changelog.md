@@ -1,7 +1,8 @@
-v5.1.1 (2018-02-04)
-* Parser::parser() optionally accepts a Catalog interface implementation. 
+v5.1.1 (2018-02-10)
+* Header::setHeaders() to allow modifying PO headers.
 
-v5.1 (2018-02-03)
+v5.1 (2018-02-04)
+* Parser::parser() optionally accepts a Catalog interface implementation. 
 * Parser refactor for easier maintenance.
 * Fix parsing comments without space between `#` and text.
 * Fix parsing multiline Headers. 
