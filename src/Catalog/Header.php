@@ -8,11 +8,11 @@ class Header
     protected $headers;
 
     /** @var int|null */
-    protected $nPlurals = null;
+    protected $nPlurals;
 
     public function __construct(array $headers = array())
     {
-        $this->headers = $headers;
+        $this->setHeaders($headers);
     }
 
     public function getPluralFormsCount()
@@ -36,6 +36,11 @@ class Header
         $this->nPlurals = isset($matches[1]) ? (int)$matches[1] : 0;
 
         return $this->nPlurals;
+    }
+
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
     }
 
     /**
