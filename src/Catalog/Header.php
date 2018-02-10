@@ -20,6 +20,11 @@ class Header
         $this->value = $value;
     }
 
+    public function setHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
     /**
      * @return string
      */
