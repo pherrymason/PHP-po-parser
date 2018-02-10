@@ -11,7 +11,7 @@ class HeaderTest extends TestCase
     {
         $catalog = $this->parseFile();
 
-        $this->assertEquals(3, $catalog->getHeader()->getPluralFormsCount());
+        $this->assertEquals(3, $catalog->getHeaders()->getPluralFormsCount());
     }
 
     /**

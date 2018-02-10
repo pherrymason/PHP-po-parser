@@ -6,6 +6,8 @@ use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Catalog\CatalogArray;
 use Sepia\PoParser\Catalog\EntryFactory;
 use Sepia\PoParser\Catalog\Header;
+use Sepia\PoParser\Catalog\HeaderFactory;
+use Sepia\PoParser\Catalog\Headers;
 use Sepia\PoParser\Exception\ParseException;
 use Sepia\PoParser\SourceHandler\FileSystem;
 use Sepia\PoParser\SourceHandler\SourceHandler;
@@ -121,7 +123,7 @@ class Parser
             if ($this->shouldCloseEntry($line, $entry)) {
                 if (!$headersFound && $this->isHeader($entry)) {
                     $headersFound = true;
-                    $catalog->addHeaders(
+                    $catalog->setHeaders(
                         $this->parseHeaders($entry['msgstr'])
                     );
                 } else {
@@ -317,13 +319,24 @@ class Parser
     /**
      * @param string $msgstr
      *
-     * @return Header
+     * @return Headers
      */
     protected function parseHeaders($msgstr)
     {
-        $headers = array_filter(explode('\\n', $msgstr));
+        $rawHeaders = array_filter(explode('\\n', $msgstr));
+        $headers = array();
 
-        return new Header($headers);
+        foreach ($rawHeaders as $rawHeader) {
+            $tokens = explode(':', $rawHeader, 2);
+            if (count($tokens) !== 2) {
+                continue;
+            }
+
+            list($id, $value) = $tokens;
+            $headers[] = new Header($id, trim($value));
+        }
+
+        return new Headers($headers);
     }
 
     /**
