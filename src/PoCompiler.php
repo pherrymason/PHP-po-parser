@@ -44,7 +44,7 @@ class PoCompiler
             $output .= 'msgid ""'.$this->eol();
             $output .= 'msgstr ""'.$this->eol();
             foreach ($catalog->getHeaders() as $header) {
-                $output .= $header.$this->eol();
+                $output .= '"'.$header.'"'.$this->eol();
             }
             $output .= $this->eol();
         }
