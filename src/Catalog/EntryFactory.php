@@ -54,6 +54,9 @@ class EntryFactory
 
         if (count($plurals) > 0) {
             $entry->setMsgStrPlurals($plurals);
+            if(!empty($entryArray['msgid_plural'])){
+                $entry->setMsgIdPlural($entryArray['msgid_plural']);
+            }
         }
 
         return $entry;
