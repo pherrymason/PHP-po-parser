@@ -1,3 +1,10 @@
+v5.1.3 (2018-03-28)
+* Fix #83, double escaped special characters.
+* Add support for `msgid_plural` in `EntryFactory::createFromArray`
+
+v5.1.2 (2018-02-26)
+* Fix PoCompiler by adding missing quotes and \n in headers. 
+
 v5.1.1 (2018-02-10)
 * Header::setHeaders() to allow modifying PO headers.
 
