@@ -71,7 +71,7 @@ class WriteTest extends AbstractFixtureTest
         $this->assertCount(3, $entry->getMsgStrPlurals());
     }
 
-    public function testQuotes()
+    public function testDoubleEscaped()
     {
         $catalogSource = new CatalogArray();
         // Normal Entry
@@ -79,13 +79,20 @@ class WriteTest extends AbstractFixtureTest
             'msgid' => 'a\"b\"c',
             'msgstr' => 'quotes'
         ));
-
         $catalogSource->addEntry($entry);
+
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'a\nb\nc',
+            'msgstr' => "linebreaks"
+        ));
+        $catalogSource->addEntry($entry);
+
         $this->saveCatalog($catalogSource);
 
         $catalog = $this->parseFile('temp.po');
-        $this->assertCount(1, $catalog->getEntries());
+        $this->assertCount(2, $catalog->getEntries());
         $this->assertNotNull($catalog->getEntry('a\"b\"c'));
+        $this->assertNotNull($catalog->getEntry('a\nb\nc'));
     }
 
     /**
