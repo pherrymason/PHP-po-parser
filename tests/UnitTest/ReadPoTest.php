@@ -199,4 +199,13 @@ class ReadPoTest extends AbstractFixtureTest
 
         $this->assertCount(2, $catalog->getEntries());
     }
+
+    public function testProperQuotesEscaping()
+    {
+        $catalog = $this->parseFile('quotes.po');
+
+        $this->assertCount(2, $catalog->getEntries());
+        $this->assertNotNull($catalog->getEntry('a\"b\"c'));
+        $this->assertNotNull($catalog->getEntry('a\nb\nc'));
+    }
 }

@@ -71,6 +71,23 @@ class WriteTest extends AbstractFixtureTest
         $this->assertCount(3, $entry->getMsgStrPlurals());
     }
 
+    public function testQuotes()
+    {
+        $catalogSource = new CatalogArray();
+        // Normal Entry
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'a\"b\"c',
+            'msgstr' => 'quotes'
+        ));
+
+        $catalogSource->addEntry($entry);
+        $this->saveCatalog($catalogSource);
+
+        $catalog = $this->parseFile('temp.po');
+        $this->assertCount(1, $catalog->getEntries());
+        $this->assertNotNull($catalog->getEntry('a\"b\"c'));
+    }
+
     /**
      * @throws \Exception
      */
