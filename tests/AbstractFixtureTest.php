@@ -3,6 +3,7 @@
 namespace Sepia\Test;
 
 use PHPUnit\Framework\TestCase;
+use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Parser;
 
 abstract class AbstractFixtureTest extends TestCase
@@ -18,7 +19,7 @@ abstract class AbstractFixtureTest extends TestCase
     /**
      * @param string $file
      *
-     * @return \Sepia\PoParser\CatalogArray
+     * @return Catalog
      */
     protected function parseFile($file)
     {

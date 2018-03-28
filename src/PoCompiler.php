@@ -250,22 +250,17 @@ class PoCompiler
      */
     protected function cleanExport($string)
     {
-        $quote = '"';
-        $slash = '\\';
+        $quote   = '"';
+        $slash   = '\\';
         $newline = "\n";
 
-        $replaces = array(
-            "$slash" => "$slash$slash",
-            "$quote" => "$slash$quote",
-            "\t" => '\t',
-        );
-
-        $string = str_replace(array_keys($replaces), array_values($replaces), $string);
-
-        $po = $quote.implode("${slash}n$quote$newline$quote", explode($newline, $string)).$quote;
+        // escape qoutes that are not allready escaped
+        $string = preg_replace('#(?<!\\\)"#', "$slash$quote", $string);
 
         // remove empty strings
-        return str_replace("$newline$quote$quote", '', $po);
+        $string = str_replace("$newline$quote$quote", '', $string);
+
+        return "$quote$string$quote";
     }
 
     /**

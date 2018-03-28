@@ -71,6 +71,30 @@ class WriteTest extends AbstractFixtureTest
         $this->assertCount(3, $entry->getMsgStrPlurals());
     }
 
+    public function testDoubleEscaped()
+    {
+        $catalogSource = new CatalogArray();
+        // Normal Entry
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'a\"b\"c',
+            'msgstr' => 'quotes'
+        ));
+        $catalogSource->addEntry($entry);
+
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'a\nb\nc',
+            'msgstr' => "linebreaks"
+        ));
+        $catalogSource->addEntry($entry);
+
+        $this->saveCatalog($catalogSource);
+
+        $catalog = $this->parseFile('temp.po');
+        $this->assertCount(2, $catalog->getEntries());
+        $this->assertNotNull($catalog->getEntry('a\"b\"c'));
+        $this->assertNotNull($catalog->getEntry('a\nb\nc'));
+    }
+
     /**
      * @throws \Exception
      */
