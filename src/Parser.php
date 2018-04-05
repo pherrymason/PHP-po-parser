@@ -62,14 +62,13 @@ class Parser
      * @param string $string po content
      *
      * @throws \Exception.
-     * @return Parser
+     * @return Catalog
      */
     public static function parseString($string)
     {
         $parser = new Parser(new StringSource($string));
-        $parser->parse();
 
-        return $parser;
+        return $parser->parse();
     }
 
     /**

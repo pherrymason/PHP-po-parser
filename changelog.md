@@ -1,3 +1,6 @@
+v5.1.4 (2018-04-05)
+* Fix #86 by making parseFile and parseString both return a Catalog
+
 v5.1.3 (2018-03-28)
 * Fix #83, double escaped special characters.
 * Add support for `msgid_plural` in `EntryFactory::createFromArray`
