@@ -73,6 +73,10 @@ class WriteTest extends AbstractFixtureTest
 
     public function testWriteMultibyte()
     {
+        // Make sure that encoding is set to UTF-8 for this test
+        $mbEncoding = mb_internal_encoding();
+        mb_internal_encoding('UTF-8');
+
         $catalogSource = new CatalogArray();
         // Normal Entry
         $entry = EntryFactory::createFromArray(array(
@@ -93,6 +97,9 @@ class WriteTest extends AbstractFixtureTest
         fgets($fh); // ignore line 2
         $this->assertEquals("\"multibyte.translá\"\n", fgets($fh));
         $this->assertEquals("\"tion.1\"\n", fgets($fh));
+
+        // Revert encoding to previous setting
+        mb_internal_encoding($mbEncoding);
     }
 
     public function testDoubleEscaped()
