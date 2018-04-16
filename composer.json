@@ -21,7 +21,8 @@
     "issues": "https://github.com/raulferras/PHP-po-parser/issues"
   },
   "require": {
-    "php": ">=5.3"
+    "php": ">=5.3",
+    "ext-mbstring": "*"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.0",
