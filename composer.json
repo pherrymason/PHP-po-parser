@@ -22,7 +22,7 @@
   },
   "require": {
     "php": ">=5.3",
-    "ext-mbstring": "*"
+    "symfony/polyfill-mbstring": "^1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.0",
