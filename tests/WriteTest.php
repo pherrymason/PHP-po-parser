@@ -71,6 +71,37 @@ class WriteTest extends AbstractFixtureTest
         $this->assertCount(3, $entry->getMsgStrPlurals());
     }
 
+    public function testWriteMultibyte()
+    {
+        // Make sure that encoding is set to UTF-8 for this test
+        $mbEncoding = mb_internal_encoding();
+        mb_internal_encoding('UTF-8');
+
+        $catalogSource = new CatalogArray();
+        // Normal Entry
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'string.1',
+            'msgstr' => 'multibyte.translátion.1'
+        ));
+
+        $catalogSource->addEntry($entry);
+
+        $this->saveCatalog($catalogSource, 17);
+        $catalog = $this->parseFile('temp.po');
+        $entry = $catalog->getEntry('string.1');
+        $this->assertEquals('multibyte.translátion.1', $entry->getMsgStr());
+
+        // Actual lines in PO file should not be split on multibyte character
+        $fh = fopen($this->resourcesPath . 'temp.po', 'r');
+        fgets($fh); // ignore line 1
+        fgets($fh); // ignore line 2
+        $this->assertEquals("\"multibyte.translá\"\n", fgets($fh));
+        $this->assertEquals("\"tion.1\"\n", fgets($fh));
+
+        // Revert encoding to previous setting
+        mb_internal_encoding($mbEncoding);
+    }
+
     public function testDoubleEscaped()
     {
         $catalogSource = new CatalogArray();
@@ -98,10 +129,10 @@ class WriteTest extends AbstractFixtureTest
     /**
      * @throws \Exception
      */
-    protected function saveCatalog(Catalog $catalog)
+    protected function saveCatalog(Catalog $catalog, $wrappingColumn = 80)
     {
         $fileHandler = new FileSystem($this->resourcesPath.'temp.po');
-        $compiler = new PoCompiler();
+        $compiler = new PoCompiler($wrappingColumn);
         $fileHandler->save($compiler->compile($catalog));
     }
 

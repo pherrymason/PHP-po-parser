@@ -270,8 +270,12 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        if (strlen($value) > $this->wrappingColumn) {
-            $tokens = str_split($value, $this->wrappingColumn);
+        $length = mb_strlen($value);
+        if ($length > $this->wrappingColumn) {
+            $tokens = array();
+            for ($i = 0; $i < $length; $i += $this->wrappingColumn) {
+                $tokens[] = mb_substr($value, $i, $this->wrappingColumn);
+            }
         } else {
             $tokens = array($value);
         }
