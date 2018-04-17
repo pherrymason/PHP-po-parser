@@ -1,3 +1,6 @@
+v5.1.5 (2018-04-17)
+* Fix #79 Prevent splitting multibyte characters across lines (thanks @chrisminett)
+
 v5.1.4 (2018-04-05)
 * Fix #86 by making parseFile and parseString both return a Catalog
 
@@ -48,7 +51,6 @@ v4.2.1
 v4.2.0
 * Add function to add plural and context to existing entry (thanks @Ben-Ho)
 * Add ability to change msg id of entry (thanks @wildex)
-
 
 v4.1.1
 * Fixes with multi-flags entries (thanks @gnouet)
