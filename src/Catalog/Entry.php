@@ -45,6 +45,7 @@ class Entry
     {
         $this->msgId = $msgId;
         $this->msgStr = $msgStr;
+        $this->msgStrPlurals = array();
         $this->flags = array();
         $this->translatorComments = array();
         $this->developerComments = array();
@@ -244,7 +245,7 @@ class Entry
      */
     public function isPlural()
     {
-        return $this->getMsgIdPlural() !== null || $this->getMsgStrPlurals() !== null;
+        return $this->getMsgIdPlural() !== null || count($this->getMsgStrPlurals()) > 0;
     }
 
     /**

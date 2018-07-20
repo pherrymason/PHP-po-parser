@@ -96,7 +96,17 @@ class ReadPoTest extends AbstractFixtureTest
             $entry->getMsgStrPlurals()
         );
     }
-    
+
+    public function testEmptyPlurals()
+    {
+        $catalog = $this->parseFile('plurals.po');
+
+        $entry = $catalog->getEntry('Light');
+        $this->assertNotNull($entry);
+        $this->assertNull($entry->getMsgIdPlural());
+        $this->assertEmpty($entry->getMsgStrPlurals());
+    }
+
     public function testFlags()
     {
         $catalog = $this->parseFile('multiflags.po');
