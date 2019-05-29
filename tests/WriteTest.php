@@ -126,6 +126,36 @@ class WriteTest extends AbstractFixtureTest
         $this->assertNotNull($catalog->getEntry('a\nb\nc'));
     }
 
+    public function testWrapping()
+    {
+        $catalogSource = new CatalogArray();
+        // Normal Entry
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
+            'msgstr' => 'quotes'
+        ));
+        $catalogSource->addEntry($entry);
+
+        $this->saveCatalog($catalogSource);
+
+        $written_contents = file_get_contents($this->resourcesPath.'temp.po');
+
+        $this->assertNotEmpty($written_contents);
+
+        $eol = "\n";
+
+        /**
+         * This is a buggy output and should not occur
+         */
+        $expected = '' .
+            'msgid ""' . $eol .
+            '"Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"' . $eol .
+            '"\"eighty\" chars. And char 80+81 is an escaped double quote."' . $eol .
+            'msgstr "quotes"' . $eol;
+
+        $this->assertNotEquals($expected, $written_contents, 'Wrapping should not split any escape sequence');
+    }
+
     /**
      * @throws \Exception
      */
