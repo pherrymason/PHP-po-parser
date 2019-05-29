@@ -199,7 +199,7 @@ class PoCompiler
             $maxIterations = max($nPlurals, $pluralsFound);
             for ($i = 0; $i < $maxIterations; $i++) {
                 $value = isset($plurals[$i]) ? $plurals[$i] : '';
-                $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE . ' ' : '';
+                $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
                 $output .= 'msgstr['.$i.'] '.$this->cleanExport($value).$this->eol();
             }
 
@@ -222,7 +222,7 @@ class PoCompiler
         }
 
         $output = '';
-        $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE . ' ' : '';
+        $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
         $output .= 'msgid_plural '.$this->cleanExport($value).$this->eol();
         return $output;
     }
