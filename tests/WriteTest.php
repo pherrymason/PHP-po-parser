@@ -240,6 +240,45 @@ class WriteTest extends AbstractFixtureTest
     }
 
 
+    public function testWriteObsoletePlural()
+    {
+
+        $catalogSource = new CatalogArray();
+
+        // Obsolete entry
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => '%d obsolete string',
+            'msgid_plural' => '%d obsolete strings',
+            'msgstr' => 'translation.2',
+            'msgstr[0]' => 'translation.plural.0',
+            'msgstr[1]' => 'translation.plural.1',
+            'msgstr[2]' => 'translation.plural.2',
+            'reference' => array('src/views/forms.php:45'),
+            'tcomment' => array('translator comment'),
+            'ccomment' => array('code comment'),
+            'flags' => array('fuzzy'),
+            'obsolete' => true
+        ));
+
+        $catalogSource->addEntry($entry);
+
+        $this->saveCatalog($catalogSource);
+
+        $written_contents = file_get_contents($this->resourcesPath.'temp.po');
+
+        $eol = "\n";
+
+        $expected_contents = '' .
+            '#, fuzzy' . $eol .
+            '#~ msgid "%d obsolete string"' . $eol .
+            '#~ msgid_plural "%d obsolete strings"' . $eol .
+            '#~ msgstr[0] "translation.plural.0"' . $eol .
+            '#~ msgstr[1] "translation.plural.1"' . $eol .
+            '#~ msgstr[2] "translation.plural.2"' . $eol;
+
+        $this->assertEquals($expected_contents, $written_contents);
+
+    }
 
     /**
      * @throws \Exception
