@@ -95,7 +95,7 @@ class WriteTest extends AbstractFixtureTest
 
         $entry = EntryFactory::createFromArray(array(
             'msgid' => 'a\nb\nc',
-            'msgstr' => "linebreaks"
+            'msgstr' => 'linebreaks'
         ));
         $catalogSource->addEntry($entry);
 
@@ -242,7 +242,11 @@ class WriteTest extends AbstractFixtureTest
 
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog');
+        }
 
         $written_contents = file_get_contents($this->resourcesPath.'temp.po');
 
@@ -261,6 +265,8 @@ class WriteTest extends AbstractFixtureTest
     }
 
     /**
+     * @param Catalog $catalog
+     * @param int $wrappingColumn
      * @throws Exception
      */
     protected function saveCatalog(Catalog $catalog, $wrappingColumn = 80)
