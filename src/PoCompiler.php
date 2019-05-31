@@ -263,28 +263,8 @@ class PoCompiler
         return "$quote$string$quote";
     }
 
-//    /**
-//     * @param string $value
-//     *
-//     * @return array
-//     */
-//    private function wrapStringBuggy($value)
-//    {
-//        $length = mb_strlen($value);
-//        if ($length > $this->wrappingColumn) {
-//            $tokens = array();
-//            for ($i = 0; $i < $length; $i += $this->wrappingColumn) {
-//                $tokens[] = mb_substr($value, $i, $this->wrappingColumn);
-//            }
-//        } else {
-//            $tokens = array($value);
-//        }
-//
-//        return $tokens;
-//    }
-
     /**
-     * @param $value
+     * @param string $value
      * @return array
      */
     private function wrapString($value)
