@@ -2,8 +2,10 @@
 
 namespace Sepia\Test;
 
+use Exception;
 use Faker\Factory;
 use ReflectionClass;
+use ReflectionException;
 use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Catalog\CatalogArray;
 use Sepia\PoParser\Catalog\EntryFactory;
@@ -43,7 +45,11 @@ class WriteTest extends AbstractFixtureTest
         ));
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
 
         $catalog = $this->parseFile('temp.po');
         $this->assertPoFile($catalogSource, $catalog);
@@ -67,7 +73,11 @@ class WriteTest extends AbstractFixtureTest
 
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
         $catalog = $this->parseFile('temp.po');
         $entry = $catalog->getEntry('string.1');
         $this->assertCount(3, $entry->getMsgStrPlurals());
@@ -89,7 +99,11 @@ class WriteTest extends AbstractFixtureTest
         ));
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
 
         $catalog = $this->parseFile('temp.po');
         $this->assertCount(2, $catalog->getEntries());
@@ -111,58 +125,58 @@ class WriteTest extends AbstractFixtureTest
             $method->setAccessible(true);
             $compiler = new PoCompiler();
 
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             $this->fail('Method wrapString not found in PoCompiler');
             return;
         }
 
-        $tests = [
+        $tests = array(
             // Test Multibyte Wrap (char 80)
-            [
+            array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
-                'assert' => [
+                'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation ',
                     'á with a multibyte beginning at char 80.'
-                ],
-            ],
+                ),
+            ),
             // Test Multibyte Wrap (char 79)
-            [
+            array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á with multibytes beginning at char 79.',
-                'assert' => [
+                'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á ',
                     'with multibytes beginning at char 79.'
-                ],
-            ],
+                ),
+            ),
             // Test Escape-Sequence Wrap (char 80+81)
-            [
+            array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
-                'assert' => [
+                'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen..... this is a line with more than ',
                     '\"eighty\" chars. And char 80+81 is an escaped double quote.'
-                ],
-            ],
+                ),
+            ),
             // Test Escape-Sequence Wrap (char 79+80)
-            [
+            array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a line with more than \"eighty\" chars. And char 79+80 is an escaped double quote.',
-                'assert' => [
+                'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen.... this is a line with more than ',
                     '\"eighty\" chars. And char 79+80 is an escaped double quote.'
-                ],
-            ],
+                ),
+            ),
             // Test Escaped Line-break
-            [
+            array(
                 'value' => 'Hello everybody, \\nHello ladies and gentlemen.',
-                'assert' => [
+                'assert' => array(
                     'Hello everybody, \\nHello ladies and gentlemen.'
-                ],
-            ],
+                ),
+            ),
 
-        ];
+        );
 
         // Test if the wrapping equals the assert
         foreach($tests as $test) {
             // Test the private method
-            $res = $method->invokeArgs($compiler, [$test['value']]);
+            $res = $method->invokeArgs($compiler, array($test['value']));
             $this->assertEquals($test['assert'], $res);
         }
 
@@ -187,7 +201,7 @@ class WriteTest extends AbstractFixtureTest
         unset($test);
         try {
             $this->saveCatalog($catalogSource);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('Cannot save catalog');
         }
 
@@ -208,7 +222,7 @@ class WriteTest extends AbstractFixtureTest
 
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function saveCatalog(Catalog $catalog, $wrappingColumn = 80)
     {
@@ -245,8 +259,8 @@ class WriteTest extends AbstractFixtureTest
     {
         parent::tearDown();
 
-        if (file_exists($this->resourcesPath.'temp.po')) {
+        //if (file_exists($this->resourcesPath.'temp.po')) {
         //    unlink($this->resourcesPath.'temp.po');
-        }
+        //}
     }
 }
