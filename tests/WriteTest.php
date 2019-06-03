@@ -2,6 +2,10 @@
 
 namespace Sepia\Test;
 
+use Exception;
+use Faker\Factory;
+use ReflectionClass;
+use ReflectionException;
 use Sepia\PoParser\Catalog\Catalog;
 use Sepia\PoParser\Catalog\CatalogArray;
 use Sepia\PoParser\Catalog\EntryFactory;
@@ -12,7 +16,7 @@ class WriteTest extends AbstractFixtureTest
 {
     public function testWrite()
     {
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
         $catalogSource = new CatalogArray();
 
         // Normal Entry
@@ -41,7 +45,11 @@ class WriteTest extends AbstractFixtureTest
         ));
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
 
         $catalog = $this->parseFile('temp.po');
         $this->assertPoFile($catalogSource, $catalog);
@@ -65,41 +73,14 @@ class WriteTest extends AbstractFixtureTest
 
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
         $catalog = $this->parseFile('temp.po');
         $entry = $catalog->getEntry('string.1');
         $this->assertCount(3, $entry->getMsgStrPlurals());
-    }
-
-    public function testWriteMultibyte()
-    {
-        // Make sure that encoding is set to UTF-8 for this test
-        $mbEncoding = mb_internal_encoding();
-        mb_internal_encoding('UTF-8');
-
-        $catalogSource = new CatalogArray();
-        // Normal Entry
-        $entry = EntryFactory::createFromArray(array(
-            'msgid' => 'string.1',
-            'msgstr' => 'multibyte.translátion.1'
-        ));
-
-        $catalogSource->addEntry($entry);
-
-        $this->saveCatalog($catalogSource, 17);
-        $catalog = $this->parseFile('temp.po');
-        $entry = $catalog->getEntry('string.1');
-        $this->assertEquals('multibyte.translátion.1', $entry->getMsgStr());
-
-        // Actual lines in PO file should not be split on multibyte character
-        $fh = fopen($this->resourcesPath . 'temp.po', 'r');
-        fgets($fh); // ignore line 1
-        fgets($fh); // ignore line 2
-        $this->assertEquals("\"multibyte.translá\"\n", fgets($fh));
-        $this->assertEquals("\"tion.1\"\n", fgets($fh));
-
-        // Revert encoding to previous setting
-        mb_internal_encoding($mbEncoding);
     }
 
     public function testDoubleEscaped()
@@ -114,17 +95,130 @@ class WriteTest extends AbstractFixtureTest
 
         $entry = EntryFactory::createFromArray(array(
             'msgid' => 'a\nb\nc',
-            'msgstr' => "linebreaks"
+            'msgstr' => 'linebreaks'
         ));
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog.');
+        }
 
         $catalog = $this->parseFile('temp.po');
         $this->assertCount(2, $catalog->getEntries());
         $this->assertNotNull($catalog->getEntry('a\"b\"c'));
         $this->assertNotNull($catalog->getEntry('a\nb\nc'));
     }
+
+    public function testWrapping()
+    {
+
+        // Make sure that encoding is set to UTF-8 for this test
+        $mbEncoding = mb_internal_encoding();
+        mb_internal_encoding('UTF-8');
+
+        $class = new ReflectionClass('\Sepia\PoParser\PoCompiler');
+        try {
+            // Use Reflection and make private method accessible...
+            $method = $class->getMethod('wrapString');
+            $method->setAccessible(true);
+            $compiler = new PoCompiler();
+
+        } catch (ReflectionException $e) {
+            $this->fail('Method wrapString not found in PoCompiler');
+            return;
+        }
+
+        $tests = array(
+            // Test Multibyte Wrap (char 80)
+            array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation ',
+                    'á with a multibyte beginning at char 80.'
+                ),
+            ),
+            // Test Multibyte Wrap (char 79)
+            array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á with multibytes beginning at char 79.',
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á ',
+                    'with multibytes beginning at char 79.'
+                ),
+            ),
+            // Test Escape-Sequence Wrap (char 80+81)
+            array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen..... this is a line with more than ',
+                    '\"eighty\" chars. And char 80+81 is an escaped double quote.'
+                ),
+            ),
+            // Test Escape-Sequence Wrap (char 79+80)
+            array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a line with more than \"eighty\" chars. And char 79+80 is an escaped double quote.',
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.... this is a line with more than ',
+                    '\"eighty\" chars. And char 79+80 is an escaped double quote.'
+                ),
+            ),
+            // Test Escaped Line-break
+            array(
+                'value' => 'Hello everybody, \\nHello ladies and gentlemen.',
+                'assert' => array(
+                    'Hello everybody, \\nHello ladies and gentlemen.'
+                ),
+            ),
+
+        );
+
+        // Test if the wrapping equals the assert
+        foreach($tests as $test) {
+            // Test the private method
+            $res = $method->invokeArgs($compiler, array($test['value']));
+            $this->assertEquals($test['assert'], $res);
+        }
+
+
+        // Create a po-file with all the test-values as msgid and a fake translation as msgstr
+        // And test if the entry could be fetched and the translation equals the msgstr.
+
+        $faker = Factory::create();
+        $catalogSource = new CatalogArray();
+
+        foreach($tests as &$test) {
+
+            $test['translation'] = $faker->paragraph(5);
+
+            $entry = EntryFactory::createFromArray(array(
+                'msgid' => $test['value'],
+                'msgstr' => $test['translation']
+            ));
+
+            $catalogSource->addEntry($entry);
+        }
+        unset($test);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog');
+        }
+
+        $catalog = $this->parseFile('temp.po');
+        foreach($tests as $test) {
+
+            $entry = $catalog->getEntry($test['value']);
+
+            $this->assertNotNull($entry);
+            $this->assertEquals($test['translation'], $entry->getMsgStr());
+        }
+
+
+        // Revert encoding to previous setting
+        mb_internal_encoding($mbEncoding);
+    }
+
 
     public function testWriteObsoletePlural()
     {
@@ -148,7 +242,11 @@ class WriteTest extends AbstractFixtureTest
 
         $catalogSource->addEntry($entry);
 
-        $this->saveCatalog($catalogSource);
+        try {
+            $this->saveCatalog($catalogSource);
+        } catch (Exception $e) {
+            $this->fail('Cannot save catalog');
+        }
 
         $written_contents = file_get_contents($this->resourcesPath.'temp.po');
 
@@ -167,7 +265,9 @@ class WriteTest extends AbstractFixtureTest
     }
 
     /**
-     * @throws \Exception
+     * @param Catalog $catalog
+     * @param int $wrappingColumn
+     * @throws Exception
      */
     protected function saveCatalog(Catalog $catalog, $wrappingColumn = 80)
     {
@@ -204,8 +304,8 @@ class WriteTest extends AbstractFixtureTest
     {
         parent::tearDown();
 
-        if (file_exists($this->resourcesPath.'temp.po')) {
+        //if (file_exists($this->resourcesPath.'temp.po')) {
         //    unlink($this->resourcesPath.'temp.po');
-        }
+        //}
     }
 }
