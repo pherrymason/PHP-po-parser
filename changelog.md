@@ -1,3 +1,10 @@
+v5.1.7 (2019-06-03)
+* Fix not fully flagging obsolete entries (thanks @Stefaminator).
+* Fix long lines wrapping not taking into account multi-byte characters. (thanks @Stefaminator).
+
+v5.1.6 (2018-07-20)
+* Fix wrong initialization of plural strings.
+
 v5.1.5 (2018-04-17)
 * Fix #79 Prevent splitting multibyte characters across lines (thanks @chrisminett)
 
