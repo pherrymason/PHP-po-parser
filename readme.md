@@ -40,7 +40,7 @@ composer require sepia/po-parser
 
 Usage
 =====
-```
+```php
 <?php 
 // Parse a po file
 $fileHandler = new Sepia\PoParser\SourceHandler\FileSystem('es.po');
@@ -63,7 +63,7 @@ $entry->setFlags(array('fuzzy', 'php-code'));
 ## Save Changes back to a file
 Use `PoCompiler` together with `FileSystem` to save a catalog back to a file:
  
-```
+```php
 $fileHandler = new Sepia\PoParser\SourceHandler\FileSystem('en.po');
 $compiler = new Sepia\PoParser\PoCompiler();
 $fileHandler->save($compiler->compile($catalog));
