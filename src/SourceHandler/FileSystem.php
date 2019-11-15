@@ -55,17 +55,17 @@ class FileSystem implements SourceHandler
             return;
         }
 
-        if (file_exists($this->filePath) === false) {
-            throw new \Exception('Parser: Input File does not exists: "' . htmlspecialchars($this->filePath) . '"');
+        if (\file_exists($this->filePath) === false) {
+            throw new \Exception('Parser: Input File does not exists: "' . \htmlspecialchars($this->filePath) . '"');
         }
 
-        if (is_readable($this->filePath) === false) {
-            throw new \Exception('Parser: File is not readable: "' . htmlspecialchars($this->filePath) . '"');
+        if (\is_readable($this->filePath) === false) {
+            throw new \Exception('Parser: File is not readable: "' . \htmlspecialchars($this->filePath) . '"');
         }
 
-        $this->fileHandle = @fopen($this->filePath, 'rb');
+        $this->fileHandle = @\fopen($this->filePath, 'rb');
         if ($this->fileHandle===false) {
-            throw new \Exception('Parser: Could not open file: "' . htmlspecialchars($this->filePath) . '"');
+            throw new \Exception('Parser: Could not open file: "' . \htmlspecialchars($this->filePath) . '"');
         }
     }
 
@@ -77,7 +77,7 @@ class FileSystem implements SourceHandler
     {
         $this->openFile();
 
-        return fgets($this->fileHandle);
+        return \fgets($this->fileHandle);
     }
 
     /**
@@ -88,7 +88,7 @@ class FileSystem implements SourceHandler
     {
         $this->openFile();
 
-        return feof($this->fileHandle);
+        return \feof($this->fileHandle);
     }
 
     public function close()
@@ -97,7 +97,7 @@ class FileSystem implements SourceHandler
             return true;
         }
 
-        return @fclose($this->fileHandle);
+        return @\fclose($this->fileHandle);
     }
 
     /**
@@ -109,9 +109,9 @@ class FileSystem implements SourceHandler
      */
     public function save($output)
     {
-        $result = file_put_contents($this->filePath, $output);
+        $result = \file_put_contents($this->filePath, $output);
         if ($result === false) {
-            throw new \Exception('Could not write into file '.htmlspecialchars($this->filePath));
+            throw new \Exception('Could not write into file '.\htmlspecialchars($this->filePath));
         }
 
         return true;

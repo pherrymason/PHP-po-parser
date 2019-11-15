@@ -115,8 +115,8 @@ class WriteTest extends AbstractFixtureTest
     {
 
         // Make sure that encoding is set to UTF-8 for this test
-        $mbEncoding = mb_internal_encoding();
-        mb_internal_encoding('UTF-8');
+        $mbEncoding = \mb_internal_encoding();
+        \mb_internal_encoding('UTF-8');
 
         $class = new ReflectionClass('\Sepia\PoParser\PoCompiler');
         try {
@@ -216,7 +216,7 @@ class WriteTest extends AbstractFixtureTest
 
 
         // Revert encoding to previous setting
-        mb_internal_encoding($mbEncoding);
+        \mb_internal_encoding($mbEncoding);
     }
 
 
@@ -248,7 +248,7 @@ class WriteTest extends AbstractFixtureTest
             $this->fail('Cannot save catalog');
         }
 
-        $written_contents = file_get_contents($this->resourcesPath.'temp.po');
+        $written_contents = \file_get_contents($this->resourcesPath.'temp.po');
 
         $eol = "\n";
 

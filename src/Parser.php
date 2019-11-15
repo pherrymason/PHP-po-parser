@@ -110,7 +110,7 @@ class Parser
         $headersFound = false;
 
         while (!$this->sourceHandler->ended()) {
-            $line = trim($this->sourceHandler->getNextLine());
+            $line = \trim($this->sourceHandler->getNextLine());
 
             if ($this->shouldIgnoreLine($line, $entry)) {
                 $this->lineNumber++;
@@ -144,7 +144,7 @@ class Parser
         $this->sourceHandler->close();
 
         // add final entry
-        if (count($entry)) {
+        if (\count($entry)) {
             if ($this->isHeader($entry)) {
                 $catalog->addHeaders(
                     $this->parseHeaders($entry['msgstr'])
@@ -166,7 +166,7 @@ class Parser
      */
     protected function parseLine($line, $entry)
     {
-        $firstChar = strlen($line) > 0 ? $line[0] : '';
+        $firstChar = \strlen($line) > 0 ? $line[0] : '';
 
         switch ($firstChar) {
             case '#':
@@ -209,13 +209,13 @@ class Parser
                 $this->property = $key;
                 break;
 
-            case strpos($key, 'msgstr[') !== false:
+            case \strpos($key, 'msgstr[') !== false:
                 $entry[$key] .= $this->unquote($value);
                 $this->property = $key;
                 break;
 
             default:
-                throw new ParseException(sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
+                throw new ParseException(\sprintf('Could not parse %s at line %d', $key, $this->lineNumber));
         }
 
         return $entry;
@@ -235,13 +235,13 @@ class Parser
             case $this->property === 'msgid':
             case $this->property === 'msgid_plural':
             case $this->property === 'msgstr':
-            case strpos($this->property, 'msgstr[') !== false:
+            case \strpos($this->property, 'msgstr[') !== false:
                 $entry[$this->property] .= $this->unquote($line);
                 break;
 
             default:
                 throw new ParseException(
-                    sprintf('Error parsing property %s as multiline.', $this->property)
+                    \sprintf('Error parsing property %s as multiline.', $this->property)
                 );
         }
 
@@ -257,17 +257,17 @@ class Parser
      */
     protected function parseComment($line, $entry)
     {
-        $comment = trim(substr($line, 0, 2));
+        $comment = \trim(\substr($line, 0, 2));
 
         switch ($comment) {
             case '#,':
-                $line = trim(substr($line, 2));
-                $entry['flags'] = preg_split('/,\s*/', $line);
+                $line = \trim(\substr($line, 2));
+                $entry['flags'] = \preg_split('/,\s*/', $line);
                 break;
 
             case '#.':
                 $entry['ccomment'] = !isset($entry['ccomment']) ? array() : $entry['ccomment'];
-                $entry['ccomment'][] = trim(substr($line, 2));
+                $entry['ccomment'][] = \trim(\substr($line, 2));
                 break;
 
 
@@ -280,7 +280,7 @@ class Parser
                     '#~|' => 'previous-obsolete'
                 );
 
-                $line = trim(substr($line, 2));
+                $line = \trim(\substr($line, 2));
                 $property = $mode[$comment];
                 if ($property === 'previous') {
                     if (!isset($entry[$property])) {
@@ -300,13 +300,13 @@ class Parser
 
             // Reference
             case '#:':
-                $entry['reference'][] = trim(substr($line, 2));
+                $entry['reference'][] = \trim(\substr($line, 2));
                 break;
 
             case '#':
             default:
                 $entry['tcomment'] = !isset($entry['tcomment']) ? array() : $entry['tcomment'];
-                $entry['tcomment'][] = trim(substr($line, 1));
+                $entry['tcomment'][] = \trim(\substr($line, 1));
                 break;
         }
 
@@ -320,7 +320,7 @@ class Parser
      */
     protected function parseHeaders($msgstr)
     {
-        $headers = array_filter(explode('\\n', $msgstr));
+        $headers = \array_filter(\explode('\\n', $msgstr));
 
         return new Header($headers);
     }
@@ -333,7 +333,7 @@ class Parser
      */
     protected function shouldIgnoreLine($line, array $entry)
     {
-        return empty($line) && count($entry) === 0;
+        return empty($line) && \count($entry) === 0;
     }
 
     /**
@@ -356,7 +356,7 @@ class Parser
      */
     protected function unquote($value)
     {
-        return preg_replace('/^\"|\"$/', '', $value);
+        return \preg_replace('/^\"|\"$/', '', $value);
     }
 
     /**
@@ -389,31 +389,31 @@ class Parser
             'Plural-Forms:',
         );
 
-        $headers = explode('\n', $entry['msgstr']);
+        $headers = \explode('\n', $entry['msgstr']);
         // Remove text after double colon
-        $headers = array_map(
+        $headers = \array_map(
             function ($header) {
                 $pattern = '/(.*?:)(.*)/i';
                 $replace = '${1}';
-                return preg_replace($pattern, $replace, $header);
+                return \preg_replace($pattern, $replace, $header);
             },
             $headers
         );
 
-        if (count(array_intersect($standardHeaders, $headers)) > 0) {
+        if (\count(\array_intersect($standardHeaders, $headers)) > 0) {
             return true;
         }
 
         // If it does not contain any of the standard headers
         // Let's see if it contains any custom header.
-        $customHeaders = array_filter(
+        $customHeaders = \array_filter(
             $headers,
             function ($header) {
-                return preg_match('/^X\-(.*):/i', $header) === 1;
+                return \preg_match('/^X\-(.*):/i', $header) === 1;
             }
         );
 
-        return count($customHeaders) > 0;
+        return \count($customHeaders) > 0;
     }
 
     /**
@@ -423,7 +423,7 @@ class Parser
      */
     protected function getProperty($line)
     {
-        $tokens = preg_split('/\s+/ ', $line, 2);
+        $tokens = \preg_split('/\s+/ ', $line, 2);
 
         return $tokens;
     }

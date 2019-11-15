@@ -46,13 +46,13 @@ class EntryFactory
                     $entry->setObsolete(true);
                     break;
 
-                case 0 === strpos($key, 'msgstr['):
+                case 0 === \strpos($key, 'msgstr['):
                     $plurals[] = $value;
                     break;
             }
         }
 
-        if (count($plurals) > 0) {
+        if (\count($plurals) > 0) {
             $entry->setMsgStrPlurals($plurals);
             if(!empty($entryArray['msgid_plural'])){
                 $entry->setMsgIdPlural($entryArray['msgid_plural']);
