@@ -98,6 +98,6 @@ class CatalogArray implements Catalog
      */
     private function getEntryHash($msgId, $context = null)
     {
-        return md5($msgId.$context);
+        return \md5($msgId.$context);
     }
 }

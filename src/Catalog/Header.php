@@ -28,7 +28,7 @@ class Header
         }
 
         $matches = array();
-        if (preg_match('/nplurals=([0-9]+)/', $header, $matches) !== 1) {
+        if (\preg_match('/nplurals=([0-9]+)/', $header, $matches) !== 1) {
             $this->nPlurals = 0;
             return $this->nPlurals;
         }
@@ -58,13 +58,13 @@ class Header
      */
     protected function getHeaderValue($headerName)
     {
-        $header = array_values(array_filter(
+        $header = \array_values(\array_filter(
             $this->headers,
             function ($string) use ($headerName) {
-                return preg_match('/'.$headerName.':(.*)/i', $string) == 1;
+                return \preg_match('/'.$headerName.':(.*)/i', $string) == 1;
             }
         ));
 
-        return count($header) ? $header[0] : null;
+        return \count($header) ? $header[0] : null;
     }
 }

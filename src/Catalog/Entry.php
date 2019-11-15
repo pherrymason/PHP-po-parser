@@ -237,7 +237,7 @@ class Entry
      */
     public function isFuzzy()
     {
-        return in_array('fuzzy', $this->getFlags(), true);
+        return \in_array('fuzzy', $this->getFlags(), true);
     }
 
     /**
@@ -245,7 +245,7 @@ class Entry
      */
     public function isPlural()
     {
-        return $this->getMsgIdPlural() !== null || count($this->getMsgStrPlurals()) > 0;
+        return $this->getMsgIdPlural() !== null || \count($this->getMsgStrPlurals()) > 0;
     }
 
     /**

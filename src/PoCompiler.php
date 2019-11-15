@@ -40,7 +40,7 @@ class PoCompiler
     {
         $output = '';
 
-        if (count($catalog->getHeaders()) > 0) {
+        if (\count($catalog->getHeaders()) > 0) {
             $output .= 'msgid ""'.$this->eol();
             $output .= 'msgstr ""'.$this->eol();
             foreach ($catalog->getHeaders() as $header) {
@@ -50,7 +50,7 @@ class PoCompiler
         }
 
 
-        $entriesCount = count($catalog->getEntries());
+        $entriesCount = \count($catalog->getEntries());
         $counter = 0;
         foreach ($catalog->getEntries() as $entry) {
             if ($entry->isObsolete() === false) {
@@ -141,7 +141,7 @@ class PoCompiler
     protected function buildReference(Entry $entry)
     {
         $reference = $entry->getReference();
-        if ($reference === null || count($reference) === 0) {
+        if ($reference === null || \count($reference) === 0) {
             return '';
         }
 
@@ -156,11 +156,11 @@ class PoCompiler
     protected function buildFlags(Entry $entry)
     {
         $flags = $entry->getFlags();
-        if ($flags === null || count($flags) === 0) {
+        if ($flags === null || \count($flags) === 0) {
             return '';
         }
 
-        return '#, '.implode(', ', $flags).$this->eol();
+        return '#, '.\implode(', ', $flags).$this->eol();
     }
 
     protected function buildContext(Entry $entry)
@@ -195,8 +195,8 @@ class PoCompiler
         if ($entry->isPlural()) {
             $output = '';
             $nPlurals = $headers->getPluralFormsCount();
-            $pluralsFound = count($plurals);
-            $maxIterations = max($nPlurals, $pluralsFound);
+            $pluralsFound = \count($plurals);
+            $maxIterations = \max($nPlurals, $pluralsFound);
             for ($i = 0; $i < $maxIterations; $i++) {
                 $value = isset($plurals[$i]) ? $plurals[$i] : '';
                 $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
@@ -232,8 +232,8 @@ class PoCompiler
         $tokens = $this->wrapString($value);
 
         $output = '';
-        if (count($tokens) > 1) {
-            array_unshift($tokens, '');
+        if (\count($tokens) > 1) {
+            \array_unshift($tokens, '');
         }
 
         foreach ($tokens as $i => $token) {
@@ -259,10 +259,10 @@ class PoCompiler
         $newline = "\n";
 
         // escape qoutes that are not allready escaped
-        $string = preg_replace('#(?<!\\\)"#', "$slash$quote", $string);
+        $string = \preg_replace('#(?<!\\\)"#', "$slash$quote", $string);
 
         // remove empty strings
-        $string = str_replace("$newline$quote$quote", '', $string);
+        $string = \str_replace("$newline$quote$quote", '', $string);
 
         return "$quote$string$quote";
     }
@@ -273,7 +273,7 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        $wrapped = wordwrap($value, $this->wrappingColumn, " \n");
-        return explode("\n", $wrapped);
+        $wrapped = \wordwrap($value, $this->wrappingColumn, " \n");
+        return \explode("\n", $wrapped);
     }
 }

@@ -19,6 +19,6 @@ class HeaderTest extends TestCase
      */
     protected function parseFile()
     {
-        return Parser::parseFile(dirname(dirname(__DIR__)).'/fixtures/basicHeadersMultiline.po');
+        return Parser::parseFile(\dirname(\dirname(__DIR__)).'/fixtures/basicHeadersMultiline.po');
     }
 }

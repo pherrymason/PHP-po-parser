@@ -13,7 +13,7 @@ abstract class AbstractFixtureTest extends TestCase
 
     public function setUp()
     {
-        $this->resourcesPath = dirname(__DIR__).'/fixtures/';
+        $this->resourcesPath = \dirname(__DIR__).'/fixtures/';
     }
 
     /**

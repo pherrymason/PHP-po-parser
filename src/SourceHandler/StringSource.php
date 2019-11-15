@@ -46,8 +46,8 @@ class StringSource implements SourceHandler
     public function __construct($string)
     {
         $this->line = 0;
-        $this->strings = explode("\n",$string);
-        $this->total = count($this->strings);
+        $this->strings = \explode("\n",$string);
+        $this->total = \count($this->strings);
     }
 
     public function getNextLine()
