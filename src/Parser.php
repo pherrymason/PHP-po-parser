@@ -320,7 +320,7 @@ class Parser
      */
     protected function parseHeaders($msgstr)
     {
-        $headers = \array_filter(\explode('\\n', $msgstr));
+        $headers = \array_filter(\explode("\n", $msgstr));
 
         return new Header($headers);
     }
@@ -356,7 +356,7 @@ class Parser
      */
     protected function unquote($value)
     {
-        return \preg_replace('/^\"|\"$/', '', $value);
+        return \stripcslashes(\preg_replace('/^\"|\"$/', '', $value));
     }
 
     /**
@@ -389,7 +389,7 @@ class Parser
             'Plural-Forms:',
         );
 
-        $headers = \explode('\n', $entry['msgstr']);
+        $headers = \explode("\n", $entry['msgstr']);
         // Remove text after double colon
         $headers = \array_map(
             function ($header) {

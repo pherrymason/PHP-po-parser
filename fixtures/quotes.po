@@ -14,4 +14,4 @@ msgid "a\nb\nc"
 msgstr "linebreaks"
 
 msgid "a\"b\"c"
-msgstr "quotes"
+msgstr "quotes in \"translation\""

@@ -254,17 +254,9 @@ class PoCompiler
      */
     protected function cleanExport($string)
     {
-        $quote   = '"';
-        $slash   = '\\';
-        $newline = "\n";
+        $string = sprintf('"%s"', addcslashes($string, "\42\134")); // " and \
 
-        // escape qoutes that are not allready escaped
-        $string = \preg_replace('#(?<!\\\)"#', "$slash$quote", $string);
-
-        // remove empty strings
-        $string = \str_replace("$newline$quote$quote", '', $string);
-
-        return "$quote$string$quote";
+        return str_replace(chr(13), '\n', $string);
     }
 
     /**
@@ -273,7 +265,8 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        $wrapped = \wordwrap($value, $this->wrappingColumn, " \n");
-        return \explode("\n", $wrapped);
+        $value = str_replace("\n", chr(13) . chr(28), $value);
+        $wrapped = \wordwrap($value, $this->wrappingColumn, sprintf(' %c', 28));
+        return \explode(chr(28), $wrapped);
     }
 }

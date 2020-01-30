@@ -20,7 +20,7 @@ class ReadPoTest extends AbstractFixtureTest
         $entry = $catalog->getEntry('string.2');
         $this->assertNotNull($entry);
         $this->assertEquals('string.2', $entry->getMsgId());
-        $this->assertEquals('translation \"quoted\"', $entry->getMsgStr());
+        $this->assertEquals('translation "quoted"', $entry->getMsgStr());
     }
 
     public function testBasicMultiline()
@@ -215,7 +215,9 @@ class ReadPoTest extends AbstractFixtureTest
         $catalog = $this->parseFile('quotes.po');
 
         $this->assertCount(2, $catalog->getEntries());
-        $this->assertNotNull($catalog->getEntry('a\"b\"c'));
-        $this->assertNotNull($catalog->getEntry('a\nb\nc'));
+        $this->assertNotNull($catalog->getEntry("a\nb\nc"));
+
+        $entryWithQuotes = $catalog->getEntry('a"b"c');
+        $this->assertEquals('a"b"c', $entryWithQuotes->getMsgId());
     }
 }
