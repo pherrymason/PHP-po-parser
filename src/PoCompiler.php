@@ -8,12 +8,17 @@ use Sepia\PoParser\Catalog\Header;
 
 class PoCompiler
 {
+    /** @var string */
     const TOKEN_OBSOLETE = '#~ ';
+
     /** @var int */
     protected $wrappingColumn;
 
     /** @var string */
     protected $lineEnding;
+
+    /** @var string */
+    protected $tokenCarriageReturn;
 
     /**
      * PoCompiler constructor.
@@ -25,6 +30,7 @@ class PoCompiler
     {
         $this->wrappingColumn = $wrappingColumn;
         $this->lineEnding = $lineEnding;
+        $this->tokenCarriageReturn = chr(13);
     }
 
     /**
@@ -254,9 +260,11 @@ class PoCompiler
      */
     protected function cleanExport($string)
     {
-        $string = sprintf('"%s"', addcslashes($string, "\42\134")); // " and \
+        // only quotation mark (" or \42) and backslash (\ or \134) chars needs to be escaped
+        $string = sprintf('"%s"', addcslashes($string, "\42\134"));
 
-        return str_replace(chr(13), '\n', $string);
+        // Replace newline character with \n after addcslashes to prevent escaping backslash.
+        return str_replace($this->tokenCarriageReturn, '\n', $string);
     }
 
     /**
@@ -265,8 +273,17 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        $value = str_replace("\n", chr(13) . chr(28), $value);
-        $wrapped = \wordwrap($value, $this->wrappingColumn, sprintf(' %c', 28));
+        // value that are most likely never present in the $value
+        $fileSeparator = chr(28);
+
+        /**
+         * Replace newline character with the same value that is used for wrapping ($fileSeparator)
+         * and with another character ($this->tokenCarriageReturn) that is later replaced back and thus
+         * newline won't be escaped by addcslashes function
+         */
+        $value = str_replace("\n", $this->tokenCarriageReturn . $fileSeparator, $value);
+        $wrapped = \wordwrap($value, $this->wrappingColumn, ' ' . $fileSeparator);
+
         return \explode(chr(28), $wrapped);
     }
 }
