@@ -95,7 +95,14 @@ class WriteTest extends AbstractFixtureTest
 
         $entry = EntryFactory::createFromArray(array(
             'msgid' => 'a\nb\nc',
-            'msgstr' => 'linebreaks'
+            'msgstr' => 'slashes'
+        ));
+        $catalogSource->addEntry($entry);
+
+        // Entry with line breaks
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => "a\nb\nc",
+            'msgstr' => "proper\nlinebreaks"
         ));
         $catalogSource->addEntry($entry);
 
@@ -106,9 +113,10 @@ class WriteTest extends AbstractFixtureTest
         }
 
         $catalog = $this->parseFile('temp.po');
-        $this->assertCount(2, $catalog->getEntries());
+        $this->assertCount(3, $catalog->getEntries());
         $this->assertNotNull($catalog->getEntry('a\"b\"c'));
         $this->assertNotNull($catalog->getEntry('a\nb\nc'));
+        $this->assertNotNull($catalog->getEntry("a\nb\nc"));
     }
 
     public function testWrapping()

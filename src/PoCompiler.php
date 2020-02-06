@@ -8,12 +8,17 @@ use Sepia\PoParser\Catalog\Header;
 
 class PoCompiler
 {
+    /** @var string */
     const TOKEN_OBSOLETE = '#~ ';
+
     /** @var int */
     protected $wrappingColumn;
 
     /** @var string */
     protected $lineEnding;
+
+    /** @var string */
+    protected $tokenCarriageReturn;
 
     /**
      * PoCompiler constructor.
@@ -25,6 +30,7 @@ class PoCompiler
     {
         $this->wrappingColumn = $wrappingColumn;
         $this->lineEnding = $lineEnding;
+        $this->tokenCarriageReturn = chr(13);
     }
 
     /**
@@ -254,17 +260,11 @@ class PoCompiler
      */
     protected function cleanExport($string)
     {
-        $quote   = '"';
-        $slash   = '\\';
-        $newline = "\n";
+        // only quotation mark (" or \42) and backslash (\ or \134) chars needs to be escaped
+        $string = sprintf('"%s"', addcslashes($string, "\42\134"));
 
-        // escape qoutes that are not allready escaped
-        $string = \preg_replace('#(?<!\\\)"#', "$slash$quote", $string);
-
-        // remove empty strings
-        $string = \str_replace("$newline$quote$quote", '', $string);
-
-        return "$quote$string$quote";
+        // Replace newline character with \n after addcslashes to prevent escaping backslash.
+        return str_replace($this->tokenCarriageReturn, '\n', $string);
     }
 
     /**
@@ -273,7 +273,17 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        $wrapped = \wordwrap($value, $this->wrappingColumn, " \n");
-        return \explode("\n", $wrapped);
+        // value that are most likely never present in the $value
+        $fileSeparator = chr(28);
+
+        /**
+         * Replace newline character with the same value that is used for wrapping ($fileSeparator)
+         * and with another character ($this->tokenCarriageReturn) that is later replaced back and thus
+         * newline won't be escaped by addcslashes function
+         */
+        $value = str_replace("\n", $this->tokenCarriageReturn . $fileSeparator, $value);
+        $wrapped = \wordwrap($value, $this->wrappingColumn, ' ' . $fileSeparator);
+
+        return \explode(chr(28), $wrapped);
     }
 }
