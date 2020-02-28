@@ -27,11 +27,15 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.0",
     "fzaninotto/faker": "^1.7",
-    "phpunit/phpunit": "^4.0"
+    "phpunit/phpunit": "^4.8.36"
   },
   "autoload": {
     "psr-4": {
-      "Sepia\\PoParser\\": "src/",
+      "Sepia\\PoParser\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Sepia\\Test\\": "tests/"
     }
   }
