@@ -33,7 +33,7 @@ interface Catalog
      * @param string      $msgId
      * @param string|null $context
      *
-     * @return Entry
+     * @return Entry|null
      */
     public function getEntry($msgId, $context = null);
 }
