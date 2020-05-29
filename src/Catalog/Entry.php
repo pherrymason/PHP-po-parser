@@ -7,10 +7,10 @@ class Entry
     /** @var string */
     protected $msgId;
 
-    /** @var string */
+    /** @var string|null */
     protected $msgStr;
 
-    /** @var string */
+    /** @var string|null */
     protected $msgIdPlural;
 
     /** @var string[] */
@@ -22,7 +22,7 @@ class Entry
     /** @var Entry|null */
     protected $previousEntry;
 
-    /** @var bool */
+    /** @var bool|null */
     protected $obsolete;
 
     /** @var array */
@@ -39,7 +39,7 @@ class Entry
 
     /**
      * @param string $msgId
-     * @param string $msgStr
+     * @param string|null $msgStr
      */
     public function __construct($msgId, $msgStr = null)
     {
@@ -193,7 +193,7 @@ class Entry
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMsgStr()
     {
@@ -201,7 +201,7 @@ class Entry
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMsgIdPlural()
     {
