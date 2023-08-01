@@ -124,6 +124,7 @@ class WriteTest extends AbstractFixtureTest
         return array(
             'Multibyte Wrap (char 80)' => array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
+                'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation ',
                     'á with a multibyte beginning at char 80.'
@@ -131,6 +132,7 @@ class WriteTest extends AbstractFixtureTest
             ),
             'Multibyte Wrap (char 79)' => array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á with multibytes beginning at char 79.',
+                'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á ',
                     'with multibytes beginning at char 79.'
@@ -138,6 +140,7 @@ class WriteTest extends AbstractFixtureTest
             ),
             'Escape-Sequence Wrap (char 80+81)' => array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
+                'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen..... this is a line with more than ',
                     '\"eighty\" chars. And char 80+81 is an escaped double quote.'
@@ -145,6 +148,7 @@ class WriteTest extends AbstractFixtureTest
             ),
             'Escape-Sequence Wrap (char 79+80)' => array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a line with more than \"eighty\" chars. And char 79+80 is an escaped double quote.',
+                'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, Hello ladies and gentlemen.... this is a line with more than ',
                     '\"eighty\" chars. And char 79+80 is an escaped double quote.'
@@ -152,6 +156,7 @@ class WriteTest extends AbstractFixtureTest
             ),
             'Escaped Line-break' => array(
                 'value' => 'Hello everybody, \\nHello ladies and gentlemen.',
+                'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, \\nHello ladies and gentlemen.'
                 ),
@@ -163,9 +168,10 @@ class WriteTest extends AbstractFixtureTest
      * @dataProvider wrappingDataProvider
      *
      * @param string $value
+     * @param int $wrappingColumn
      * @param array $assert
      */
-    public function testWrapping($value, array $assert)
+    public function testWrapping($value, $wrappingColumn, array $assert)
     {
 
         // Make sure that encoding is set to UTF-8 for this test
@@ -177,7 +183,7 @@ class WriteTest extends AbstractFixtureTest
             // Use Reflection and make private method accessible...
             $method = $class->getMethod('wrapString');
             $method->setAccessible(true);
-            $compiler = new PoCompiler();
+            $compiler = new PoCompiler($wrappingColumn);
 
         } catch (ReflectionException $e) {
             $this->fail('Method wrapString not found in PoCompiler');
