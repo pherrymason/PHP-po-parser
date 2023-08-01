@@ -65,7 +65,7 @@ class Entry
     }
 
     /**
-     * @param string $msgStr
+     * @param string|null $msgStr
      *
      * @return Entry
      */
@@ -77,7 +77,7 @@ class Entry
     }
 
     /**
-     * @param string $msgIdPlural
+     * @param string|null $msgIdPlural
      *
      * @return Entry
      */
@@ -89,7 +89,7 @@ class Entry
     }
 
     /**
-     * @param string $msgCtxt
+     * @param string|null $msgCtxt
      *
      * @return Entry
      */
@@ -113,7 +113,7 @@ class Entry
     }
 
     /**
-     * @param bool $obsolete
+     * @param bool|null $obsolete
      *
      * @return Entry
      */
