@@ -122,12 +122,20 @@ class WriteTest extends AbstractFixtureTest
     public function wrappingDataProvider()
     {
         return array(
+            'Multibyte Wrap (char 81)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a multibyte translation á with a multibyte beginning at char 81.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.... this is a multibyte translation ',
+                    'á with a multibyte beginning at char 81.'
+                ),
+            ),
             'Multibyte Wrap (char 80)' => array(
                 'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
                 'wrappingColumn' => 80,
                 'assert' => array(
-                    'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation ',
-                    'á with a multibyte beginning at char 80.'
+                    'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á',
+                    ' with a multibyte beginning at char 80.'
                 ),
             ),
             'Multibyte Wrap (char 79)' => array(
@@ -159,6 +167,13 @@ class WriteTest extends AbstractFixtureTest
                 'wrappingColumn' => 80,
                 'assert' => array(
                     'Hello everybody, \\nHello ladies and gentlemen.'
+                ),
+            ),
+            'String with a lot of multibyte characters should not break when wrappingColumn is at its mb_strlen' => array(
+                'value' => 'kategóriáját kötelező',
+                'wrappingColumn' => 21,
+                'assert' => array(
+                    'kategóriáját kötelező'
                 ),
             ),
         );

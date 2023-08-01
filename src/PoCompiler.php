@@ -275,11 +275,29 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        // value that are most likely never present in the $value
-        $fileSeparator = chr(28);
+        $length = mb_strlen($value);
+        if ($length <= $this->wrappingColumn) {
+            return array($value);
+        }
 
-        $wrapped = \wordwrap($value, $this->wrappingColumn, ' ' . $fileSeparator);
+        $lines = array();
+        $parts = preg_split('/( )/', $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $lineIndex = 0;
+        foreach ($parts as $part) {
+            if (
+                array_key_exists($lineIndex, $lines)
+                && mb_strlen($lines[$lineIndex] . $part) > $this->wrappingColumn
+            ) {
+                $lineIndex++;
+            }
 
-        return \explode(chr(28), $wrapped);
+            if (!array_key_exists($lineIndex, $lines)) {
+                $lines[$lineIndex] = '';
+            }
+
+            $lines[$lineIndex] .= $part;
+        }
+
+        return $lines;
     }
 }
