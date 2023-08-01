@@ -119,7 +119,74 @@ class WriteTest extends AbstractFixtureTest
         $this->assertNotNull($catalog->getEntry("a\nb\nc"));
     }
 
-    public function testWrapping()
+    public function wrappingDataProvider()
+    {
+        return array(
+            'Multibyte Wrap (char 81)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a multibyte translation á with a multibyte beginning at char 81.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.... this is a multibyte translation ',
+                    'á with a multibyte beginning at char 81.'
+                ),
+            ),
+            'Multibyte Wrap (char 80)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á',
+                    ' with a multibyte beginning at char 80.'
+                ),
+            ),
+            'Multibyte Wrap (char 79)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á with multibytes beginning at char 79.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á ',
+                    'with multibytes beginning at char 79.'
+                ),
+            ),
+            'Escape-Sequence Wrap (char 80+81)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen..... this is a line with more than ',
+                    '\"eighty\" chars. And char 80+81 is an escaped double quote.'
+                ),
+            ),
+            'Escape-Sequence Wrap (char 79+80)' => array(
+                'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a line with more than \"eighty\" chars. And char 79+80 is an escaped double quote.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, Hello ladies and gentlemen.... this is a line with more than ',
+                    '\"eighty\" chars. And char 79+80 is an escaped double quote.'
+                ),
+            ),
+            'Escaped Line-break' => array(
+                'value' => 'Hello everybody, \\nHello ladies and gentlemen.',
+                'wrappingColumn' => 80,
+                'assert' => array(
+                    'Hello everybody, \\nHello ladies and gentlemen.'
+                ),
+            ),
+            'String with a lot of multibyte characters should not break when wrappingColumn is at its mb_strlen' => array(
+                'value' => 'kategóriáját kötelező',
+                'wrappingColumn' => 21,
+                'assert' => array(
+                    'kategóriáját kötelező'
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider wrappingDataProvider
+     *
+     * @param string $value
+     * @param int $wrappingColumn
+     * @param array $assert
+     */
+    public function testWrapping($value, $wrappingColumn, array $assert)
     {
 
         // Make sure that encoding is set to UTF-8 for this test
@@ -131,62 +198,16 @@ class WriteTest extends AbstractFixtureTest
             // Use Reflection and make private method accessible...
             $method = $class->getMethod('wrapString');
             $method->setAccessible(true);
-            $compiler = new PoCompiler();
+            $compiler = new PoCompiler($wrappingColumn);
 
         } catch (ReflectionException $e) {
             $this->fail('Method wrapString not found in PoCompiler');
             return;
         }
 
-        $tests = array(
-            // Test Multibyte Wrap (char 80)
-            array(
-                'value' => 'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation á with a multibyte beginning at char 80.',
-                'assert' => array(
-                    'Hello everybody, Hello ladies and gentlemen... this is a multibyte translation ',
-                    'á with a multibyte beginning at char 80.'
-                ),
-            ),
-            // Test Multibyte Wrap (char 79)
-            array(
-                'value' => 'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á with multibytes beginning at char 79.',
-                'assert' => array(
-                    'Hello everybody, Hello ladies and gentlemen.. this is a multibyte translation á ',
-                    'with multibytes beginning at char 79.'
-                ),
-            ),
-            // Test Escape-Sequence Wrap (char 80+81)
-            array(
-                'value' => 'Hello everybody, Hello ladies and gentlemen..... this is a line with more than \"eighty\" chars. And char 80+81 is an escaped double quote.',
-                'assert' => array(
-                    'Hello everybody, Hello ladies and gentlemen..... this is a line with more than ',
-                    '\"eighty\" chars. And char 80+81 is an escaped double quote.'
-                ),
-            ),
-            // Test Escape-Sequence Wrap (char 79+80)
-            array(
-                'value' => 'Hello everybody, Hello ladies and gentlemen.... this is a line with more than \"eighty\" chars. And char 79+80 is an escaped double quote.',
-                'assert' => array(
-                    'Hello everybody, Hello ladies and gentlemen.... this is a line with more than ',
-                    '\"eighty\" chars. And char 79+80 is an escaped double quote.'
-                ),
-            ),
-            // Test Escaped Line-break
-            array(
-                'value' => 'Hello everybody, \\nHello ladies and gentlemen.',
-                'assert' => array(
-                    'Hello everybody, \\nHello ladies and gentlemen.'
-                ),
-            ),
-
-        );
-
-        // Test if the wrapping equals the assert
-        foreach($tests as $test) {
-            // Test the private method
-            $res = $method->invokeArgs($compiler, array($test['value']));
-            $this->assertEquals($test['assert'], $res);
-        }
+        // Test the private method
+        $res = $method->invokeArgs($compiler, array($value));
+        $this->assertEquals($assert, $res);
 
 
         // Create a po-file with all the test-values as msgid and a fake translation as msgstr
@@ -195,18 +216,14 @@ class WriteTest extends AbstractFixtureTest
         $faker = Factory::create();
         $catalogSource = new CatalogArray();
 
-        foreach($tests as &$test) {
+        $translation = $faker->paragraph(5);
 
-            $test['translation'] = $faker->paragraph(5);
+        $entry = EntryFactory::createFromArray(array(
+            'msgid' => $value,
+            'msgstr' => $translation
+        ));
 
-            $entry = EntryFactory::createFromArray(array(
-                'msgid' => $test['value'],
-                'msgstr' => $test['translation']
-            ));
-
-            $catalogSource->addEntry($entry);
-        }
-        unset($test);
+        $catalogSource->addEntry($entry);
         try {
             $this->saveCatalog($catalogSource);
         } catch (Exception $e) {
@@ -214,13 +231,10 @@ class WriteTest extends AbstractFixtureTest
         }
 
         $catalog = $this->parseFile('temp.po');
-        foreach($tests as $test) {
+        $entry = $catalog->getEntry($value);
 
-            $entry = $catalog->getEntry($test['value']);
-
-            $this->assertNotNull($entry);
-            $this->assertEquals($test['translation'], $entry->getMsgStr());
-        }
+        $this->assertNotNull($entry);
+        $this->assertEquals($translation, $entry->getMsgStr());
 
 
         // Revert encoding to previous setting

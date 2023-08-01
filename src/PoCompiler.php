@@ -205,8 +205,7 @@ class PoCompiler
             $maxIterations = \max($nPlurals, $pluralsFound);
             for ($i = 0; $i < $maxIterations; $i++) {
                 $value = isset($plurals[$i]) ? $plurals[$i] : '';
-                $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
-                $output .= 'msgstr['.$i.'] '.$this->cleanExport($value).$this->eol();
+                $output .= $this->buildProperty('msgstr['.$i.']', $value, $entry->isObsolete());
             }
 
             return $output;
@@ -227,10 +226,7 @@ class PoCompiler
             return '';
         }
 
-        $output = '';
-        $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
-        $output .= 'msgid_plural '.$this->cleanExport($value).$this->eol();
-        return $output;
+        return $this->buildProperty('msgid_plural', $value, $entry->isObsolete());
     }
 
     protected function buildProperty($property, $value, $obsolete = false)
@@ -260,6 +256,12 @@ class PoCompiler
      */
     protected function cleanExport($string)
     {
+        /**
+         * Replace newline character with $this->tokenCarriageReturn that is later replaced back and thus
+         * newline won't be escaped by addcslashes function
+         */
+        $string = str_replace("\n", $this->tokenCarriageReturn , $string);
+
         // only quotation mark (" or \42) and backslash (\ or \134) chars needs to be escaped
         $string = sprintf('"%s"', addcslashes($string, "\42\134"));
 
@@ -273,17 +275,29 @@ class PoCompiler
      */
     private function wrapString($value)
     {
-        // value that are most likely never present in the $value
-        $fileSeparator = chr(28);
+        $length = mb_strlen($value);
+        if ($length <= $this->wrappingColumn) {
+            return array($value);
+        }
 
-        /**
-         * Replace newline character with the same value that is used for wrapping ($fileSeparator)
-         * and with another character ($this->tokenCarriageReturn) that is later replaced back and thus
-         * newline won't be escaped by addcslashes function
-         */
-        $value = str_replace("\n", $this->tokenCarriageReturn . $fileSeparator, $value);
-        $wrapped = \wordwrap($value, $this->wrappingColumn, ' ' . $fileSeparator);
+        $lines = array();
+        $parts = preg_split('/( )/', $value, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $lineIndex = 0;
+        foreach ($parts as $part) {
+            if (
+                array_key_exists($lineIndex, $lines)
+                && mb_strlen($lines[$lineIndex] . $part) > $this->wrappingColumn
+            ) {
+                $lineIndex++;
+            }
 
-        return \explode(chr(28), $wrapped);
+            if (!array_key_exists($lineIndex, $lines)) {
+                $lines[$lineIndex] = '';
+            }
+
+            $lines[$lineIndex] .= $part;
+        }
+
+        return $lines;
     }
 }
