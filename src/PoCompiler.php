@@ -205,8 +205,7 @@ class PoCompiler
             $maxIterations = \max($nPlurals, $pluralsFound);
             for ($i = 0; $i < $maxIterations; $i++) {
                 $value = isset($plurals[$i]) ? $plurals[$i] : '';
-                $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
-                $output .= 'msgstr['.$i.'] '.$this->cleanExport($value).$this->eol();
+                $output .= $this->buildProperty('msgstr['.$i.']', $value, $entry->isObsolete());
             }
 
             return $output;
@@ -227,10 +226,7 @@ class PoCompiler
             return '';
         }
 
-        $output = '';
-        $output .= $entry->isObsolete() ? self::TOKEN_OBSOLETE : '';
-        $output .= 'msgid_plural '.$this->cleanExport($value).$this->eol();
-        return $output;
+        return $this->buildProperty('msgid_plural', $value, $entry->isObsolete());
     }
 
     protected function buildProperty($property, $value, $obsolete = false)
