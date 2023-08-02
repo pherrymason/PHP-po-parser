@@ -14,5 +14,6 @@ jobs:
       - name: PHPUnit tests
         uses: php-actions/phpunit@v3
         with:
+          version: "4.8.36"
           php_version: "7.3"
           
