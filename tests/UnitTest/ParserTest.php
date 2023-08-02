@@ -15,15 +15,18 @@ class ParserTest extends TestCase
         $doc =
         'msgid ""
         msgstr ""
-        "Header 1: value 1\n"
-        "Header 2: value 2\n"
+        "Project-Id-Version: value 1\n"
+        "Report-Msgid-Bugs-To: value 2\n"
+        
+        msgid "string.1"
+        msgstr "translation.1"
         ';
         $catalog = $this->parse($doc);
 
-        $expectedHeaders = new Header([
-            'Header 1' => 'value 1',
-            'Header 2' => 'value 2',
-        ]);
+        $expectedHeaders = new Header(array(
+            'Project-Id-Version: value 1',
+            'Report-Msgid-Bugs-To: value 2',
+        ));
         $this->assertEquals(
             $expectedHeaders,
             $catalog->getHeader()
