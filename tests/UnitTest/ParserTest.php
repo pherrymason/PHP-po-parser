@@ -5,6 +5,7 @@ namespace Sepia\Test\UnitTest;
 use PHPUnit\Framework\TestCase;
 use Sepia\PoParser\Catalog\Header;
 use Sepia\PoParser\Parser;
+use Sepia\PoParser\SourceHandler\StringSource;
 
 class ParserTest extends TestCase
 {
