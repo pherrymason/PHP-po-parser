@@ -18,6 +18,10 @@ class EntryFactory
 
         foreach ($entryArray as $key => $value) {
             switch (true) {
+                case $key === 'msgid_plural':
+                    $entry->setMsgIdPlural($entryArray['msgid_plural']);
+                    break;
+                    
                 case $key === 'msgctxt':
                     $entry->setMsgCtxt($entryArray['msgctxt']);
                     break;
